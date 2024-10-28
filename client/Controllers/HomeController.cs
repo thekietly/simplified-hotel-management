@@ -1,8 +1,8 @@
-using hotel_management.Models;
+using client.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
-namespace hotel_management.Controllers
+namespace client.Controllers
 {
     public class HomeController : Controller
     {
