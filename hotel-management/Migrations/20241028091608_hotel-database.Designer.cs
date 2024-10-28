@@ -11,7 +11,7 @@ using hotel_management.Data;
 namespace hotel_management.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20241028091035_hotel-database")]
+    [Migration("20241028091608_hotel-database")]
     partial class hoteldatabase
     {
         /// <inheritdoc />
