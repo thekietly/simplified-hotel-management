@@ -10,7 +10,7 @@
 *.userosscache
 *.sln.docstates
 
-wwwroot/lib/
+/hotel-management/wwwroot/lib/
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
 
