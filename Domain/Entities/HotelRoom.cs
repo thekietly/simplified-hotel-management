@@ -23,6 +23,7 @@ namespace Domain.Entities
         public double price { get; set; }
         [Required]
         public double size { get; set; }
+        
 
     }
 }
