@@ -5,57 +5,76 @@
 @{
 }
 
-<h1>Hotel Room</h1>
-
-<table class="table table-bordered table-striped">
-    <thead>
-        <tr>
-            <th>
-                Room Name
-            </th>
-            <th>
-                Price
-            </th>
-            <th>
-                Size
-            </th>
-            <th>
-                Number of Guests
-            </th>
-            <th>
-                Number of Beds
-            </th>
-            <th>
-                Description
-            </th>
 
 
-        </tr</thead>
-        <tbody>
-        @foreach (var item in Model)
-        {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Price)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Size)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Occupancy)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Beds)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Description)
-            </td>
-        </tr>    
-        }
-    </tbody>
-</table>
+
+<div class="w-100 card border-0 p-5">
+    <div class="card-header bg-primary bg-gradient m-lg-0 py-3">
+        <div class="row">
+            <div class="col-12 text-center">
+                <h2 class="text-white py-2">Hotel Room</h2>
+                
+            </div>
+        </div>
+    </div>
+    
+    <div class="card-body border p-4">
+        <div class="row pb-4">
+            <div class="col-6 offset-6 text-end">
+                <a asp-controller="HotelRoom" asp-action="" class="btn btn-outline-secondary"><i class="bi bi-plus-circle pe-4"></i>Add new room</a>
+            </div>
+        </div>
+        <table class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th>
+                        Room Name
+                    </th>
+                    <th>
+                        Price
+                    </th>
+                    <th>
+                        Size
+                    </th>
+                    <th>
+                        Number of Guests
+                    </th>
+                    <th>
+                        Number of Beds
+                    </th>
+                    <th>
+                        Description
+                    </th>
+
+
+                </tr</thead>
+                <tbody>
+                @foreach (var item in Model)
+                {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Name)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Price)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Size)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Occupancy)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Beds)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Description)
+                    </td>
+                </tr>    
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
 
 
