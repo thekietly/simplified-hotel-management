@@ -1,0 +1,61 @@
+﻿@model IEnumerable<Domain.Entities.HotelRoom>
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+
+<h1>Hotel Room</h1>
+
+<table class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th>
+                Room Name
+            </th>
+            <th>
+                Price
+            </th>
+            <th>
+                Size
+            </th>
+            <th>
+                Number of Guests
+            </th>
+            <th>
+                Number of Beds
+            </th>
+            <th>
+                Description
+            </th>
+
+
+        </tr</thead>
+        <tbody>
+        @foreach (var item in Model)
+        {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Price)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Size)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Occupancy)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Beds)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Description)
+            </td>
+        </tr>    
+        }
+    </tbody>
+</table>
+
+

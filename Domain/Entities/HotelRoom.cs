@@ -13,17 +13,18 @@ namespace Domain.Entities
         public int Id { get; set; }
         [Required]
         public string Name { get; set; }
-        [Required]
-        public string Address { get; set; }
+
         public string? Description{ get; set; }
-        public string? PhoneNumber { get; set; }
+
         public int Occupancy { get; set; }
+        public int Beds { get; set; }
         public string? ImageUrl { get; set; }
         [Required]
-        public double price { get; set; }
+        public double Price { get; set; }
         [Required]
-        public double size { get; set; }
-        
+        public double Size { get; set; }
+
+        public DateTime? UpdatedBy { get; set; }
 
     }
 }
