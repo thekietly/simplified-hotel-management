@@ -26,13 +26,31 @@ namespace Infrastructure.Data
                 Id = 1,
                 Name = "Standard Room",
                 Description = "Standard Room Description",
-                Address = "123 Main St, New York, NY 10001",
+
                 Occupancy = 2,
+                Beds = 2,
                 ImageUrl = "https://acihome.vn/uploads/15/tieu-chuan-biet-thu-5-sao-co-canh-quan-dep-gan-gui-voi-thien-nhien.jpg",
-                price = 90,
-                size = 200,
-                PhoneNumber = "123-456-7890"
-            });
+                Price = 90,
+                Size = 200,
+
+                UpdatedBy = DateTime.Now
+            },
+            new HotelRoom
+            {
+                Id = 2,
+                Name = "Standard Room",
+                Description = "Standard Room Description",
+
+                Occupancy = 2,
+                Beds = 2,
+                ImageUrl = "https://acihome.vn/uploads/15/tieu-chuan-biet-thu-5-sao-co-canh-quan-dep-gan-gui-voi-thien-nhien.jpg",
+                Price = 90,
+                Size = 200,
+
+                UpdatedBy = null
+            }
+
+            );
         }
     }
 }
