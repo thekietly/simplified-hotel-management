@@ -1,4 +1,5 @@
-﻿using Infrastructure.Data;
+﻿using Domain.Entities;
+using Infrastructure.Data;
 using Microsoft.AspNetCore.Mvc;
 
 namespace client.Controllers
@@ -19,9 +20,18 @@ namespace client.Controllers
             return View(hotelRooms);
         }
 
-        public IActionResult Create(int? id)
+        public IActionResult Create()
         {
             return View();
+        }
+        [HttpPost]
+        public IActionResult Create(HotelRoom hotelRoom)
+        {
+            // add hotel room to database
+            _db.HotelRooms.Add(hotelRoom);
+            // update database
+            _db.SaveChanges();
+            return RedirectToAction("Index", "HotelRoom");
         }
 
 
