@@ -28,8 +28,8 @@ namespace client.Controllers
         public IActionResult Create(HotelRoom hotelRoom)
         {
             if (hotelRoom.Name == hotelRoom.Description) {
-
-                ModelState.AddModelError("", "Please be creative! The room's name cannot be the same as its description.");
+                // key in AddModelError refers to the property in the model - in this case, error appears under the Name property
+                ModelState.AddModelError("Name", "Please be creative! The room's name cannot be the same as its description.");
             }
             // if model is not entered correctly return view
             if (!ModelState.IsValid)
