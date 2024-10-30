@@ -17,17 +17,18 @@ namespace Domain.Entities
 
         public string? Description{ get; set; }
 
-
+        [Range(1, 8)]
         public int Occupancy { get; set; }
 
+        [Range(1, 5)]
         public int Beds { get; set; }
 
         public string? ImageUrl { get; set; }
         [Required]
-        [Range(50, 10000)] // I don't want to stay in a room that's more expensive than this even if I'm a millionaire :)
+        [Range(50, 10000)] // I don't want to stay in a room that's more expensive than this (p/s I'm using aud currency system) even if I'm a millionaire :)
         public double Price { get; set; }
         [Required]
-
+        [Range(50, 3000)]
         public double Size { get; set; }
 
         public DateTime? UpdatedBy { get; set; }

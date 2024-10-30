@@ -27,6 +27,10 @@ namespace client.Controllers
         [HttpPost]
         public IActionResult Create(HotelRoom hotelRoom)
         {
+            if (hotelRoom.Name == hotelRoom.Description) {
+
+                ModelState.AddModelError("", "Please be creative! The room's name cannot be the same as its description.");
+            }
             // if model is not entered correctly return view
             if (!ModelState.IsValid)
             {
