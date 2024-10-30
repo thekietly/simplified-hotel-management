@@ -18,5 +18,12 @@ namespace client.Controllers
             var hotelRooms = _db.HotelRooms.ToList();
             return View(hotelRooms);
         }
+
+        public IActionResult Create(int? id)
+        {
+            return View();
+        }
+
+
     }
 }
