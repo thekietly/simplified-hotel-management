@@ -27,7 +27,12 @@ namespace client.Controllers
         [HttpPost]
         public IActionResult Create(HotelRoom hotelRoom)
         {
-            // add hotel room to database
+            // if model is not entered correctly return view
+            if (!ModelState.IsValid)
+            {
+                return View();
+            }
+            // if user inputs are valid then add hotel room to database
             _db.HotelRooms.Add(hotelRoom);
             // update database
             _db.SaveChanges();

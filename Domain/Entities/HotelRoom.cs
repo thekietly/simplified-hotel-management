@@ -12,23 +12,22 @@ namespace Domain.Entities
 
         public int Id { get; set; }
         [Required]
-        public string Name { get; set; }
+        [MaxLength(100)]
+        public required string Name { get; set; }
 
-        [Display(Name = "Room description")]
         public string? Description{ get; set; }
 
-        [Display(Name = "Max people")]
+
         public int Occupancy { get; set; }
-        [Display(Name = "Number of beds")]
+
         public int Beds { get; set; }
 
-        [Display(Name = "Image URL")]
         public string? ImageUrl { get; set; }
         [Required]
-        [Display(Name = "Price per night")]
+        [Range(50, 10000)] // I don't want to stay in a room that's more expensive than this even if I'm a millionaire :)
         public double Price { get; set; }
         [Required]
-        [Display(Name = "Room size in square meter")]
+
         public double Size { get; set; }
 
         public DateTime? UpdatedBy { get; set; }
