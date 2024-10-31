@@ -88,10 +88,12 @@ namespace client.Controllers
             // any edge case where the hotel room is not found? go directly to this page without hotel room?
             if (hotelRoom == null)
             {
+                TempData["Error"] = "The hotel room you are trying to delete does not exist.";
                 // TODO: Try to find a way to trigger this edge case
                 return RedirectToAction("Error", "Home");
             }
             _db.HotelRooms.Remove(hotelRoom);
+            TempData["Success"] = "The hotel room has been deleted successfully.";
             _db.SaveChanges();
             return RedirectToAction("Index", "HotelRoom");
 
