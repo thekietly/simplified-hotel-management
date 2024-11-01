@@ -58,6 +58,7 @@ namespace Infrastructure.Data
                 Occupancy = 2,
                 Beds = 2,
                 Price = 90,
+                Name = "Standard Room"
             },
             new HotelRoom
             {
@@ -68,6 +69,7 @@ namespace Infrastructure.Data
                 Occupancy = 2,
                 Beds = 2,
                 Price = 90,
+                Name = "Standard Room"
             },
             new HotelRoom
             {
@@ -78,6 +80,8 @@ namespace Infrastructure.Data
                 Occupancy = 2,
                 Beds = 2,
                 Price = 90,
+                Name = "Standard Room"
+
             },
             new HotelRoom
             {
@@ -88,6 +92,7 @@ namespace Infrastructure.Data
                 Occupancy = 2,
                 Beds = 2,
                 Price = 90,
+                Name = "Standard Room"
             }
             );
 

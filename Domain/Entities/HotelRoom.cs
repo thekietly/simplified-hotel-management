@@ -14,6 +14,8 @@ namespace Domain.Entities
         public int RoomId { get; set; } // Room number within the hotel
         [Range(1, 8)]
         public int Occupancy { get; set; }
+        [MaxLength(50)]
+        public required string Name { get; set; }
 
         [Range(1, 5)]
         public int Beds { get; set; }
