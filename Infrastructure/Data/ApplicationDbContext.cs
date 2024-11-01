@@ -16,15 +16,18 @@ namespace Infrastructure.Data
 
 
         }
-        public DbSet<HotelRoom> HotelRooms { get; set; }
+        public DbSet<Hotel> Hotels { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             // initializing data for the model - HotelRoom
             base.OnModelCreating(modelBuilder);
-            modelBuilder.Entity<HotelRoom>().HasData(new HotelRoom
+            modelBuilder.Entity<Hotel>().HasData(new Hotel
             {
                 Id = 1,
                 Name = "Standard Room",
+                Address = "1234, 5th Avenue, New York",
+
+
                 Description = "Standard Room Description",
 
                 Occupancy = 2,
@@ -35,10 +38,11 @@ namespace Infrastructure.Data
 
                 UpdatedBy = DateTime.Now
             },
-            new HotelRoom
+            new Hotel
             {
                 Id = 2,
                 Name = "Standard Room",
+                Address = "1234, 5th Avenue, New York",
                 Description = "Standard Room Description",
 
                 Occupancy = 2,

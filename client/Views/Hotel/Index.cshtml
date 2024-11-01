@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Domain.Entities.HotelRoom>
+﻿@model IEnumerable<Domain.Entities.Hotel>
 @*
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
@@ -12,7 +12,7 @@
     <div class="card-header bg-primary bg-gradient m-lg-0 py-3">
         <div class="row">
             <div class="col-12 text-center">
-                <h2 class="text-white py-2">Hotel Room</h2>
+                <h2 class="text-white py-2">Hotels</h2>
                 
             </div>
         </div>
@@ -21,14 +21,14 @@
     <div class="card-body border p-4">
         <div class="row pb-4">
             <div class="col-6 offset-6 text-end">
-                <a asp-controller="HotelRoom" asp-action="Create" class="btn btn-outline-secondary"><i class="bi bi-plus-circle pe-4"></i>Add new room</a>
+                <a asp-controller="Hotel" asp-action="Create" class="btn btn-outline-secondary"><i class="bi bi-plus-circle pe-4"></i>Add new room</a>
             </div>
         </div>
         <table class="table table-bordered table-striped">
             <thead>
                 <tr>
                     <th>
-                        Room Name
+                        Hotel Name
                     </th>
                     <th>
                         Price
@@ -45,6 +45,7 @@
                     <th>
                         Description
                     </th>
+                    <th>Address</th>
                     <th>Actions</th>
 
                 </tr</thead>
@@ -71,13 +72,16 @@
                         @Html.DisplayFor(modelItem => item.Description)
                     </td>
                     <td>
+                        @Html.DisplayFor(modelItem => item.Address)
+                    </td>
+                    <td>
                         <div class="w-75 btn-group" role="group">
                             <a 
                                 asp-action="Update" 
-                                asp-controller="HotelRoom" 
+                                asp-controller="Hotel" 
                                 asp-route-id="@item.Id" class="btn btn-outline-secondary"><i class="bi bi-pencil-square"></i> Update</a>
                             @*A form to trigger delete action*@
-                            <form asp-action="Delete" asp-controller="HotelRoom" asp-route-id="@item.Id" method="post">
+                            <form asp-action="Delete" asp-controller="Hotel" asp-route-id="@item.Id" method="post">
                                 <button type="submit" class="btn btn-outline-danger"><i class="bi bi-trash"></i> Delete</button>
                             </form>
 

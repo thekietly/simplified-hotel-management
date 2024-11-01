@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Domain.Entities
 {
-    public class HotelRoom
+    public class Hotel
     {
 
         public int Id { get; set; }
@@ -15,6 +15,8 @@ namespace Domain.Entities
         [MaxLength(100)]
         public required string Name { get; set; }
 
+        [MaxLength(200)]
+        public required string Address { get; set; }
         public string? Description{ get; set; }
 
         [Range(1, 8)]

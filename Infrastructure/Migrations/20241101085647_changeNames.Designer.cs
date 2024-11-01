@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20241030103836_update-input-range")]
-    partial class updateinputrange
+    [Migration("20241101085647_changeNames")]
+    partial class changeNames
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -25,13 +25,18 @@ namespace Infrastructure.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("Domain.Entities.HotelRoom", b =>
+            modelBuilder.Entity("Domain.Entities.Hotel", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Address")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
 
                     b.Property<int>("Beds")
                         .HasColumnType("int");
@@ -61,12 +66,13 @@ namespace Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("HotelRooms");
+                    b.ToTable("Hotels");
 
                     b.HasData(
                         new
                         {
                             Id = 1,
+                            Address = "1234, 5th Avenue, New York",
                             Beds = 2,
                             Description = "Standard Room Description",
                             ImageUrl = "https://acihome.vn/uploads/15/tieu-chuan-biet-thu-5-sao-co-canh-quan-dep-gan-gui-voi-thien-nhien.jpg",
@@ -74,11 +80,12 @@ namespace Infrastructure.Migrations
                             Occupancy = 2,
                             Price = 90.0,
                             Size = 200.0,
-                            UpdatedBy = new DateTime(2024, 10, 30, 21, 8, 36, 228, DateTimeKind.Local).AddTicks(9350)
+                            UpdatedBy = new DateTime(2024, 11, 1, 19, 26, 47, 260, DateTimeKind.Local).AddTicks(4982)
                         },
                         new
                         {
                             Id = 2,
+                            Address = "1234, 5th Avenue, New York",
                             Beds = 2,
                             Description = "Standard Room Description",
                             ImageUrl = "https://acihome.vn/uploads/15/tieu-chuan-biet-thu-5-sao-co-canh-quan-dep-gan-gui-voi-thien-nhien.jpg",
