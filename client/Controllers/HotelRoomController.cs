@@ -93,7 +93,7 @@ namespace client.Controllers
                 return RedirectToAction("Error", "Home");
             }
             _db.HotelRooms.Remove(hotelRoom);
-            TempData["Success"] = "The hotel room has been deleted successfully.";
+            TempData["Success"] = hotelRoom.Name + " has been deleted successfully.";
             _db.SaveChanges();
             return RedirectToAction("Index", "HotelRoom");
 
