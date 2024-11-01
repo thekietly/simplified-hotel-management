@@ -17,6 +17,9 @@ namespace Infrastructure.Data
 
         }
         public DbSet<Hotel> Hotels { get; set; }
+        
+        public DbSet<HotelRoom> HotelRooms { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             // initializing data for the model - HotelRoom
@@ -26,17 +29,11 @@ namespace Infrastructure.Data
                 Id = 1,
                 Name = "Standard Room",
                 Address = "1234, 5th Avenue, New York",
-
-
                 Description = "Standard Room Description",
-
-                Occupancy = 2,
-                Beds = 2,
                 ImageUrl = "https://acihome.vn/uploads/15/tieu-chuan-biet-thu-5-sao-co-canh-quan-dep-gan-gui-voi-thien-nhien.jpg",
-                Price = 90,
                 Size = 200,
-
-                UpdatedBy = DateTime.Now
+                UpdatedBy = DateTime.Now,
+                
             },
             new Hotel
             {
@@ -44,17 +41,58 @@ namespace Infrastructure.Data
                 Name = "Standard Room",
                 Address = "1234, 5th Avenue, New York",
                 Description = "Standard Room Description",
-
-                Occupancy = 2,
-                Beds = 2,
                 ImageUrl = "https://acihome.vn/uploads/15/tieu-chuan-biet-thu-5-sao-co-canh-quan-dep-gan-gui-voi-thien-nhien.jpg",
-                Price = 90,
                 Size = 200,
-
                 UpdatedBy = null
             }
 
             );
+            // Composite key - hotel id and room id allows for multiple rooms in a hotel while each room is unique.
+            modelBuilder.Entity<HotelRoom>().HasKey(hr => new { hr.HotelId, hr.RoomId });
+            modelBuilder.Entity<HotelRoom>().HasData(new HotelRoom
+            {
+                HotelId = 1,
+                RoomId = 101,
+                SpecialDetails = "Room 101 is a standard room with a view of the city.",
+                ImageUrl = "https://acihome.vn/uploads/15/tieu-chuan-biet-thu-5-sao-co-canh-quan-dep-gan-gui-voi-thien-nhien.jpg",
+                Occupancy = 2,
+                Beds = 2,
+                Price = 90,
+            },
+            new HotelRoom
+            {
+                HotelId = 1,
+                RoomId = 102,
+                SpecialDetails = "Room 102 is a standard room with a view of the city.",
+                ImageUrl = "https://acihome.vn/uploads/15/tieu-chuan-biet-thu-5-sao-co-canh-quan-dep-gan-gui-voi-thien-nhien.jpg",
+                Occupancy = 2,
+                Beds = 2,
+                Price = 90,
+            },
+            new HotelRoom
+            {
+                HotelId = 2,
+                RoomId = 101,
+                SpecialDetails = "Room 101 is a standard room with a view of the city.",
+                ImageUrl = "https://acihome.vn/uploads/15/tieu-chuan-biet-thu-5-sao-co-canh-quan-dep-gan-gui-voi-thien-nhien.jpg",
+                Occupancy = 2,
+                Beds = 2,
+                Price = 90,
+            },
+            new HotelRoom
+            {
+                HotelId = 2,
+                RoomId = 102,
+                SpecialDetails = "Room 102 is a standard room with a view of the city.",
+                ImageUrl = "https://acihome.vn/uploads/15/tieu-chuan-biet-thu-5-sao-co-canh-quan-dep-gan-gui-voi-thien-nhien.jpg",
+                Occupancy = 2,
+                Beds = 2,
+                Price = 90,
+            }
+            );
+
+
+
         }
     }
 }

@@ -13,18 +13,20 @@ namespace client.Controllers
         {
             _db = context;
         }
-
+        // Get: /Hotel
         public IActionResult Index()
         {
             var hotel = _db.Hotels.ToList();
             return View(hotel);
         }
 
+        // Get: /Hotel/Create
         public IActionResult Create()
         {
             return View();
         }
         [HttpPost]
+        // Post: /Hotel/Create
         public IActionResult Create(Hotel hotel)
         {
             if (hotel.Name == hotel.Description) {
@@ -42,6 +44,7 @@ namespace client.Controllers
             _db.SaveChanges();
             return RedirectToAction("Index", "Hotel");
         }
+        // Get: /Hotel/Update/{id}
         /*
          Purposes of Update method:
         1. Retrieve the hotel room with the given id from the database.
@@ -61,6 +64,7 @@ namespace client.Controllers
         }
 
         [HttpPost]
+        // Post: /Hotel/Update/{id}
         public IActionResult Update(Hotel hotel)
         {
             if (hotel.Name == hotel.Description)
@@ -79,7 +83,8 @@ namespace client.Controllers
             _db.SaveChanges();
             return RedirectToAction("Index", "Hotel");
         }
-
+        // Post: /Hotel
+        // Delete and show the affect of the delete on the website homepage.
         [HttpPost]
         public IActionResult Delete(int? id)
         {

@@ -1,19 +1,27 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Domain.Entities
 {
     public class HotelRoom
     {
-        [Key]
-        public int RoomId { get; set; }
+        [Key, Column(Order = 0)]
         [ForeignKey("Hotel")]
         public int HotelId { get; set; }
         public Hotel Hotel { get; set; }
+
+        [Key, Column(Order = 1)]
+        public int RoomId { get; set; } // Room number within the hotel
+        [Range(1, 8)]
+        public int Occupancy { get; set; }
+
+        [Range(1, 5)]
+        public int Beds { get; set; }
+
+        public string? ImageUrl { get; set; }
+        [Required]
+        [Range(50, 10000)] // I don't want to stay in a room that's more expensive than this (p/s I'm using aud currency system) even if I'm a millionaire :)
+        public double Price { get; set; }
+        public string? SpecialDetails { get; set; }
     }
 }
