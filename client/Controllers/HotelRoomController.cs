@@ -1,4 +1,5 @@
-﻿using Domain.Entities;
+﻿using client.Models;
+using Domain.Entities;
 using Infrastructure.Data;
 
 using Microsoft.AspNetCore.Mvc;
@@ -46,28 +47,34 @@ namespace client.Controllers
         // GET: HotelRoom/Create
         public ActionResult Create()
         {
-            var hotels = _db.Hotels.Select(h => new SelectListItem
+            var hotels = _db.Hotels.ToList();
+            var hotelRoomViewModel = new HotelRoomViewModel()
             {
-                Text = h.Name,
-                Value = h.Id.ToString()
-            }).ToList();
-            return View(hotels);
+                HotelRoom = new HotelRoom(),
+                Hotels = hotels.Select(h => new SelectListItem
+                {
+                    Text = h.Name,
+                    Value = h.Id.ToString()
+                }).ToList()
+
+            };  
+            return View(hotelRoomViewModel);
         }
 
         // POST: HotelRoom/Create
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Create(HotelRoom hotelRoom)
-        {
 
-            
+        public ActionResult Create(HotelRoomViewModel hotelRoomVM)
+        {
+            var temp = hotelRoomVM.HotelRoom;
+
             // if model is not entered correctly return view
             if (!ModelState.IsValid)
             {
                 return View();
             }
             // if user inputs are valid then add hotel room to database
-            _db.HotelRooms.Add(hotelRoom);
+            _db.HotelRooms.Add(hotelRoomVM.HotelRoom);
             // update database
             _db.SaveChanges();
             return RedirectToAction("Index", "HotelRoom");

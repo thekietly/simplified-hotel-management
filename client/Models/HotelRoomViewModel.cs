@@ -5,7 +5,7 @@ namespace client.Models
 {
     public class HotelRoomViewModel
     {
-        public HotelRoom HotelRoom { get; set; }
+        public HotelRoom HotelRoom{ get; set; }
         public List<SelectListItem> Hotels { get; set; }
     }
 }

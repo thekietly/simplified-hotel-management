@@ -1,4 +1,4 @@
-﻿@model Domain.Entities.HotelRoom
+﻿@model client.Models.HotelRoomViewModel
 @*
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
@@ -10,53 +10,53 @@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
             <div class="form-floating py-2 col-12">
-                <label asp-for="Name" class="ms-2">Name</label>
-                <input asp-for="Name" class="form-control border shadow" />
-                <span asp-validation-for="Name" class="text-danger"></span>
+                <label asp-for="HotelRoom.Name" class="ms-2">Name</label>
+                <input asp-for="HotelRoom.Name" class="form-control border shadow" />
+                <span asp-validation-for="HotelRoom.Name" class="text-danger"></span>
             </div>
 
             <div class="form-floating py-2 col-12">
-                <label asp-for="RoomId" class="ms-2">Room number</label>
-                <input asp-for="RoomId" class="form-control border shadow" />
-                <span asp-validation-for="RoomId" class="text-danger"></span>
+                <label asp-for="HotelRoom.RoomId" class="ms-2">Room number</label>
+                <input asp-for="HotelRoom.RoomId" class="form-control border shadow" />
+                <span asp-validation-for="HotelRoom.RoomId" class="text-danger"></span>
             </div>
 
             <div class="form-floating py-2 col-12">
-                <label asp-for="HotelId" class="ms-2">Hotel name</label>
+                <label asp-for="HotelRoom.HotelId" class="ms-2">Hotel name</label>
                 
-                <select asp-for="HotelId" asp-items="Model.Hotel" class="form-control border shadow">
+                <select asp-for="HotelRoom.HotelId" asp-items="Model.Hotels" class="form-control border shadow">
                     <option value="">Select hotel</option>
                     </select>
-                <span asp-validation-for="HotelId" class="text-danger"></span>
+                <span asp-validation-for="HotelRoom.HotelId" class="text-danger"></span>
             </div>
 
             <div class="form-floating py-2 col-12">
-                <label asp-for="Price" class="ms-2">Price per night</label>
-                <input asp-for="Price" class="form-control border shadow" />
-                <span asp-validation-for="Price" class="text-danger"></span>
+                <label asp-for="HotelRoom.Price" class="ms-2">Price per night</label>
+                <input asp-for="HotelRoom.Price" class="form-control border shadow" />
+                <span asp-validation-for="HotelRoom.Price" class="text-danger"></span>
             </div>
 
             <div class="form-floating py-2 col-12">
-                <label asp-for="Occupancy" class="ms-2">Number of guests</label>
-                <input asp-for="Occupancy" class="form-control border shadow" />
-                <span asp-validation-for="Occupancy" class="text-danger"></span>
+                <label asp-for="HotelRoom.Occupancy" class="ms-2">Number of guests</label>
+                <input asp-for="HotelRoom.Occupancy" class="form-control border shadow" />
+                <span asp-validation-for="HotelRoom.Occupancy" class="text-danger"></span>
             </div>
 
             <div class="form-floating py-2 col-12">
-                <label asp-for="Beds" class="ms-2">Number of beds</label>
-                <input asp-for="Beds" class="form-control border shadow" />
-                <span asp-validation-for="Beds" class="text-danger"></span>
+                <label asp-for="HotelRoom.Beds" class="ms-2">Number of beds</label>
+                <input asp-for="HotelRoom.Beds" class="form-control border shadow" />
+                <span asp-validation-for="HotelRoom.Beds" class="text-danger"></span>
             </div>
 
             <div class="form-floating py-2 col-12">
-                <label asp-for="ImageUrl" class="ms-2">Room image</label>
-                <input asp-for="ImageUrl" class="form-control border shadow" />
-                <span asp-validation-for="ImageUrl" class="text-danger"></span>
+                <label asp-for="HotelRoom.ImageUrl" class="ms-2">Room image</label>
+                <input asp-for="HotelRoom.ImageUrl" class="form-control border shadow" />
+                <span asp-validation-for="HotelRoom.ImageUrl" class="text-danger"></span>
             </div>
             <div class="form-floating py-2 col-12">
-                <label asp-for="SpecialDetails" class="ms-2">Special details</label>
-                <input asp-for="SpecialDetails" class="form-control border shadow" />
-                <span asp-validation-for="SpecialDetails" class="text-danger"></span>
+                <label asp-for="HotelRoom.SpecialDetails" class="ms-2">Special details</label>
+                <input asp-for="HotelRoom.SpecialDetails" class="form-control border shadow" />
+                <span asp-validation-for="HotelRoom.SpecialDetails" class="text-danger"></span>
             </div>
 
 
