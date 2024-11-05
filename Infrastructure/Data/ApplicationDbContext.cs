@@ -27,7 +27,7 @@ namespace Infrastructure.Data
             modelBuilder.Entity<Hotel>().HasData(new Hotel
             {
                 Id = 1,
-                Name = "Standard Room",
+                Name = "Hotel 1",
                 Address = "1234, 5th Avenue, New York",
                 Description = "Standard Room Description",
                 ImageUrl = "https://acihome.vn/uploads/15/tieu-chuan-biet-thu-5-sao-co-canh-quan-dep-gan-gui-voi-thien-nhien.jpg",
@@ -38,7 +38,7 @@ namespace Infrastructure.Data
             new Hotel
             {
                 Id = 2,
-                Name = "Standard Room",
+                Name = "Hotel 2",
                 Address = "1234, 5th Avenue, New York",
                 Description = "Standard Room Description",
                 ImageUrl = "https://acihome.vn/uploads/15/tieu-chuan-biet-thu-5-sao-co-canh-quan-dep-gan-gui-voi-thien-nhien.jpg",
