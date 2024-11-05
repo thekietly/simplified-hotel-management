@@ -63,9 +63,9 @@ namespace Infrastructure.Migrations
                             Address = "1234, 5th Avenue, New York",
                             Description = "Standard Room Description",
                             ImageUrl = "https://acihome.vn/uploads/15/tieu-chuan-biet-thu-5-sao-co-canh-quan-dep-gan-gui-voi-thien-nhien.jpg",
-                            Name = "Standard Room",
+                            Name = "Hotel 1",
                             Size = 200.0,
-                            UpdatedBy = new DateTime(2024, 11, 1, 21, 46, 40, 874, DateTimeKind.Local).AddTicks(3683)
+                            UpdatedBy = new DateTime(2024, 11, 5, 18, 8, 28, 13, DateTimeKind.Local).AddTicks(7434)
                         },
                         new
                         {
@@ -73,7 +73,7 @@ namespace Infrastructure.Migrations
                             Address = "1234, 5th Avenue, New York",
                             Description = "Standard Room Description",
                             ImageUrl = "https://acihome.vn/uploads/15/tieu-chuan-biet-thu-5-sao-co-canh-quan-dep-gan-gui-voi-thien-nhien.jpg",
-                            Name = "Standard Room",
+                            Name = "Hotel 2",
                             Size = 200.0
                         });
                 });
