@@ -1,15 +1,26 @@
 ﻿using Domain.Entities;
-using Microsoft.AspNetCore.Http;
+using Infrastructure.Data;
+
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace client.Controllers
 {
     public class HotelRoomController : Controller
     {
+
+        // database context
+        private readonly ApplicationDbContext _db;
+        public HotelRoomController(ApplicationDbContext context)
+        {
+            _db = context;
+        }
         // GET: HotelRoom
         public ActionResult Index()
         {
-            return View();
+            var hotelRooms = _db.HotelRooms.ToList();
+
+            return View(hotelRooms);
         }
 
         // GET: HotelRoom/Update/5
@@ -35,7 +46,12 @@ namespace client.Controllers
         // GET: HotelRoom/Create
         public ActionResult Create()
         {
-            return View();
+            var hotels = _db.Hotels.Select(h => new SelectListItem
+            {
+                Text = h.Name,
+                Value = h.Id.ToString()
+            }).ToList();
+            return View(hotels);
         }
 
         // POST: HotelRoom/Create
@@ -43,14 +59,18 @@ namespace client.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create(HotelRoom hotelRoom)
         {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
+
+            
+            // if model is not entered correctly return view
+            if (!ModelState.IsValid)
             {
                 return View();
             }
+            // if user inputs are valid then add hotel room to database
+            _db.HotelRooms.Add(hotelRoom);
+            // update database
+            _db.SaveChanges();
+            return RedirectToAction("Index", "HotelRoom");
         }
 
 
