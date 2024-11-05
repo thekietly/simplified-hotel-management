@@ -4,6 +4,7 @@ using Infrastructure.Data;
 
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 
 namespace client.Controllers
 {
@@ -17,9 +18,9 @@ namespace client.Controllers
             _db = context;
         }
         // GET: HotelRoom
-        public ActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            var hotelRooms = _db.HotelRooms.ToList();
+            var hotelRooms = await _db.HotelRooms.Include(h => h.Hotel).ToListAsync();
 
             return View(hotelRooms);
         }
@@ -48,17 +49,17 @@ namespace client.Controllers
         public ActionResult Create()
         {
             var hotels = _db.Hotels.ToList();
-            var hotelRoomViewModel = new HotelRoomViewModel()
-            {
-                HotelRoom = new HotelRoom(),
-                Hotels = hotels.Select(h => new SelectListItem
-                {
-                    Text = h.Name,
-                    Value = h.Id.ToString()
-                }).ToList()
+            //var hotelRoomViewModel = new HotelRoomViewModel()
+            //{
+            //    HotelRoom = new HotelRoom(),
+            //    HotelList = hotels.Select(h => new SelectList
+            //    {
+            //        Value = h.Id.ToString(),
+            //        Text = h.Name
+            //    }).ToList()
 
-            };  
-            return View(hotelRoomViewModel);
+            //};  
+            return View();
         }
 
         // POST: HotelRoom/Create
