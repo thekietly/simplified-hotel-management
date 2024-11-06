@@ -7,6 +7,7 @@ namespace Domain.Entities
     {
         [Key, Column(Order = 0)]
         [Required]
+        [ForeignKey("Hotel")]
         public int HotelId { get; set; }
 
 
@@ -26,6 +27,7 @@ namespace Domain.Entities
         [Range(50, 10000)] // I don't want to stay in a room that's more expensive than this (p/s I'm using aud currency system) even if I'm a millionaire :)
         public double Price { get; set; }
         public string? SpecialDetails { get; set; }
+
 
         public virtual Hotel Hotel { get; set; } = null!;
     }

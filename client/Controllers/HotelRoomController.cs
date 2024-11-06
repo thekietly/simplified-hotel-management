@@ -48,34 +48,36 @@ namespace client.Controllers
         // GET: HotelRoom/Create
         public ActionResult Create()
         {
+            // Retrieve all hotels from the database
             var hotels = _db.Hotels.ToList();
-            //var hotelRoomViewModel = new HotelRoomViewModel()
-            //{
-            //    HotelRoom = new HotelRoom(),
-            //    HotelList = hotels.Select(h => new SelectList
-            //    {
-            //        Value = h.Id.ToString(),
-            //        Text = h.Name
-            //    }).ToList()
+            // Turn this hotels into a select list
+            var hotelSelectList = hotels.Select(h => new SelectListItem
+            {
+                Text = h.Name,
+                Value = h.Id.ToString()
+            });
 
-            //};  
-            return View();
+            // Add the select list to the view model
+            // Initialize the HotelRoom object as it can't be null
+            var hotelRoomViewModel = new HotelRoomViewModel
+            {
+
+                HotelList = hotelSelectList,
+                HotelRoomVM = new HotelRoom()
+            };
+
+            // Pass the view model to the view
+            return View(hotelRoomViewModel);
         }
 
         // POST: HotelRoom/Create
         [HttpPost]
 
-        public ActionResult Create(HotelRoomViewModel hotelRoomVM)
+        public ActionResult Create(HotelRoomViewModel hotelRoomView)
         {
-            var temp = hotelRoomVM.HotelRoom;
 
-            // if model is not entered correctly return view
-            if (!ModelState.IsValid)
-            {
-                return View();
-            }
-            // if user inputs are valid then add hotel room to database
-            _db.HotelRooms.Add(hotelRoomVM.HotelRoom);
+            // add hotel room from the view model to the database
+            _db.HotelRooms.Add(hotelRoomView.HotelRoomVM);
             // update database
             _db.SaveChanges();
             return RedirectToAction("Index", "HotelRoom");
