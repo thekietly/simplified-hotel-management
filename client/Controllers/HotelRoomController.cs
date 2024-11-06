@@ -5,6 +5,7 @@ using Infrastructure.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace client.Controllers
 {
@@ -28,16 +29,29 @@ namespace client.Controllers
         // GET: HotelRoom/Update/5
         public ActionResult Update(int roomId, int hotelId)
         {
-            return View();
+            // Retrieve the hotel room with the given id from the database
+            var hotelRoom = _db.HotelRooms.FirstOrDefault(hr => hr.RoomId == roomId && hr.HotelId == hotelId);
+            if (hotelRoom == null)
+            {
+                return RedirectToAction("Error", "Home");
+            }
+
+            return View(hotelRoom);
         }
         // POST: HotelRoom/Update/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Update(HotelRoom hotelRoom)
+        public ActionResult Update(HotelRoomViewModel hotelRoomViewModel)
         {
             try
             {
-                return RedirectToAction(nameof(Index));
+                // update hotel room in the database
+                _db.HotelRooms.Update(hotelRoomViewModel.HotelRoomVM);
+                // update database
+                _db.SaveChanges();
+
+
+                return RedirectToAction("Index", "HotelRoom");
             }
             catch
             {
@@ -75,12 +89,19 @@ namespace client.Controllers
 
         public ActionResult Create(HotelRoomViewModel hotelRoomView)
         {
-
-            // add hotel room from the view model to the database
-            _db.HotelRooms.Add(hotelRoomView.HotelRoomVM);
-            // update database
-            _db.SaveChanges();
-            return RedirectToAction("Index", "HotelRoom");
+            try
+            {
+                // add hotel room from the view model to the database
+                _db.HotelRooms.Add(hotelRoomView.HotelRoomVM);
+                // update database
+                _db.SaveChanges();
+                return RedirectToAction("Index", "HotelRoom");
+            }
+            catch (Exception e){
+                // If something goes wrong, return this model state with the message. Then go back to the create page.
+                ModelState.AddModelError(string.Empty, "An unexpected error occurred: " + e.Message + "\nPlease contact the IT support for additional help! Sorry for the inconvenience. :(");
+                return RedirectToAction("Error", "Home"); ;  
+            }
         }
 
 
