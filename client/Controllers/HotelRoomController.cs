@@ -29,14 +29,32 @@ namespace client.Controllers
         // GET: HotelRoom/Update/5
         public ActionResult Update(int roomId, int hotelId)
         {
+
             // Retrieve the hotel room with the given id from the database
             var hotelRoom = _db.HotelRooms.FirstOrDefault(hr => hr.RoomId == roomId && hr.HotelId == hotelId);
+            // Retrieve all hotels from the database
+            var hotels = _db.Hotels.ToList();
+            // Turn this hotels into a select list
+            var hotelSelectList = hotels.Select(h => new SelectListItem
+            {
+                Text = h.Name,
+                Value = h.Id.ToString()
+            });
+
+            // Add the select list to the view model
+            // Initialize the HotelRoom object as it can't be null
+            var hotelRoomViewModel = new HotelRoomViewModel
+            {
+
+                HotelList = hotelSelectList,
+                HotelRoomVM = hotelRoom
+            };
             if (hotelRoom == null)
             {
                 return RedirectToAction("Error", "Home");
             }
 
-            return View(hotelRoom);
+            return View(hotelRoomViewModel);
         }
         // POST: HotelRoom/Update/5
         [HttpPost]
@@ -91,6 +109,17 @@ namespace client.Controllers
         {
             try
             {
+                //TODO [Feature]: Add validation to avoid duplicate room numbers in the same hotel
+
+
+                if (hotelRoomView.HotelRoomVM.HotelId == 0)
+                {
+                    ModelState.AddModelError("", "Hotel number is required");
+                    return View(hotelRoomView);
+                }
+                // Bind the hotel model to the hotel room model based on the selected hotel ID
+                hotelRoomView.HotelRoomVM.Hotel = _db.Hotels.FirstOrDefault(h => h.Id == hotelRoomView.HotelRoomVM.HotelId);
+
                 // add hotel room from the view model to the database
                 _db.HotelRooms.Add(hotelRoomView.HotelRoomVM);
                 // update database
