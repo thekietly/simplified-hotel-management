@@ -27,7 +27,7 @@ namespace client.Controllers
         }
 
         // GET: HotelRoom/Update/5
-        public ActionResult Update(int roomId, int hotelId)
+        public ActionResult Update(string roomId, int hotelId)
         {
 
             // Retrieve the hotel room with the given id from the database
@@ -104,7 +104,6 @@ namespace client.Controllers
 
         // POST: HotelRoom/Create
         [HttpPost]
-
         public ActionResult Create(HotelRoomViewModel hotelRoomView)
         {
             try
@@ -120,6 +119,17 @@ namespace client.Controllers
                 // Bind the hotel model to the hotel room model based on the selected hotel ID
                 hotelRoomView.HotelRoomVM.Hotel = _db.Hotels.FirstOrDefault(h => h.Id == hotelRoomView.HotelRoomVM.HotelId);
 
+                // After binding the hotel model to the hotel room model, the model is supposed to be valid
+                if (!ModelState.IsValid)
+                {
+                    hotelRoomView.HotelList = _db.Hotels
+                        .Select(h => new SelectListItem
+                        {
+                            Text = h.Name,
+                            Value = h.Id.ToString()
+                        }).ToList();
+                    return View(hotelRoomView);
+                }
                 // add hotel room from the view model to the database
                 _db.HotelRooms.Add(hotelRoomView.HotelRoomVM);
                 // update database
@@ -141,7 +151,7 @@ namespace client.Controllers
         // POST: HotelRoom/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(int roomId, int hotelId)
+        public ActionResult Delete(string roomId, int hotelId)
         {
             try
             {

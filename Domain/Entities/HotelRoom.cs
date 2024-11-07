@@ -12,12 +12,14 @@ namespace Domain.Entities
 
 
         [Key, Column(Order = 1)]
-        public int RoomId { get; set; } // Room number within the hotel
+        [Required(ErrorMessage = "Room number is required")]
+        [RegularExpression("^[0-9]+$", ErrorMessage = "Only numeric values are allowed for the room number")]
+        public  string RoomId { get; set; } // Room number within the hotel
         [Range(1, 8)]
         public int Occupancy { get; set; }
         [MaxLength(50)]
         [Required]
-        public string Name { get; set; }
+        public  string Name { get; set; }
 
         [Range(1, 5)]
         public int Beds { get; set; }

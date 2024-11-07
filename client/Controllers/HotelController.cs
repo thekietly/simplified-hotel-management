@@ -35,13 +35,17 @@ namespace client.Controllers
                     // key in AddModelError refers to the property in the model - in this case, error appears under the Name property
                     ModelState.AddModelError("Name", "Please be creative! The room's name cannot be the same as its description.");
                 }
+                // if not valid
+                if (!ModelState.IsValid) {
+                    return View(hotel);
+                }
                 // TODO: Check duplicate hotels.
 
                 // if user inputs are valid then add hotel room to database
                 _db.Hotels.Add(hotel);
                 // update database
                 _db.SaveChanges();
-                return RedirectToAction("Index", "Hotel");
+                return RedirectToAction("Index", "Hotel"); 
 
             } catch {
                 return RedirectToAction("Error", "Home");
