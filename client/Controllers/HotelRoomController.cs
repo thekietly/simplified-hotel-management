@@ -135,24 +135,32 @@ namespace client.Controllers
 
 
 
-        // GET: HotelRoom/Delete/5
-        public ActionResult Delete(int id)
-        {
-            return View();
-        }
 
         // POST: HotelRoom/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
+        public ActionResult Delete(int roomId, int hotelId)
         {
             try
             {
-                return RedirectToAction(nameof(Index));
+                HotelRoom hotelRoom = _db.HotelRooms.FirstOrDefault(hr => hr.HotelId == hotelId && hr.RoomId == roomId);
+                // any edge case where the hotel room is not found? go directly to this page without hotel room?
+                if (hotelRoom == null)
+                {
+                    TempData["Error"] = "The hotel room you are trying to delete does not exist.";
+                    // TODO: Try to find a way to trigger this edge case
+                    return RedirectToAction("Error", "Home");
+                }
+                _db.HotelRooms.Remove(hotelRoom);
+                TempData["Success"] = hotelRoom.Name + " has been deleted successfully.";
+                _db.SaveChanges();
+                return RedirectToAction("Index", "HotelRoom");
+
             }
             catch
-            {
-                return View();
+            { 
+                // Any other edge cases or unexpected behaviour would redirect users back to error page.
+                return RedirectToAction("Error", "Home"); ;
             }
         }
     }
