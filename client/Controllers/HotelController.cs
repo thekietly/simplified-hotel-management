@@ -36,7 +36,8 @@ namespace client.Controllers
                     ModelState.AddModelError("Name", "Please be creative! The room's name cannot be the same as its description.");
                 }
                 // if not valid
-                if (!ModelState.IsValid) {
+                if (!ModelState.IsValid)
+                {
                     return View(hotel);
                 }
                 // TODO: Check duplicate hotels.
@@ -65,8 +66,8 @@ namespace client.Controllers
             // any edge case where the hotel room is not found? go directly to this page without hotel room?
             if (hotel == null)
             {
-                // TODO: Try to find a way to trigger this edge case
-                return NotFound();
+                TempData["Error"] = "The hotel room you are trying to update does not exist.";
+                return RedirectToAction("Error", "Home");
             }
             return View(hotel);
         }
@@ -83,7 +84,8 @@ namespace client.Controllers
             // if model is not entered correctly return view
             if (!ModelState.IsValid)
             {
-                return View();
+                // return view with the hotel room
+                return View(hotel);
             }
             // if user inputs are valid then update hotel room details
             _db.Hotels.Update(hotel);
@@ -102,7 +104,7 @@ namespace client.Controllers
             if (hotel == null)
             {
                 TempData["Error"] = "The hotel room you are trying to delete does not exist.";
-                // TODO: Try to find a way to trigger this edge case
+
                 return RedirectToAction("Error", "Home");
             }
             _db.Hotels.Remove(hotel);

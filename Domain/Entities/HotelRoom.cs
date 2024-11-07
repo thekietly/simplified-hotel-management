@@ -31,6 +31,6 @@ namespace Domain.Entities
         public string? SpecialDetails { get; set; }
 
 
-        public virtual Hotel Hotel { get; set; } = null!;
+        public virtual Hotel? Hotel { get; set; }
     }
 }
