@@ -124,6 +124,8 @@ namespace client.Controllers
                 _db.HotelRooms.Add(hotelRoomView.HotelRoomVM);
                 // update database
                 _db.SaveChanges();
+                // Added a pop up message to show that the hotel room has been created successfully
+                TempData["Success"] = hotelRoomView.HotelRoomVM.Name + " has been created successfully.";
                 return RedirectToAction("Index", "HotelRoom");
             }
             catch (Exception e){
