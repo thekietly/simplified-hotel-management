@@ -29,20 +29,24 @@ namespace client.Controllers
         // Post: /Hotel/Create
         public IActionResult Create(Hotel hotel)
         {
-            if (hotel.Name == hotel.Description) {
-                // key in AddModelError refers to the property in the model - in this case, error appears under the Name property
-                ModelState.AddModelError("Name", "Please be creative! The room's name cannot be the same as its description.");
+            try {
+                if (hotel.Name == hotel.Description)
+                {
+                    // key in AddModelError refers to the property in the model - in this case, error appears under the Name property
+                    ModelState.AddModelError("Name", "Please be creative! The room's name cannot be the same as its description.");
+                }
+                // TODO: Check duplicate hotels.
+
+                // if user inputs are valid then add hotel room to database
+                _db.Hotels.Add(hotel);
+                // update database
+                _db.SaveChanges();
+                return RedirectToAction("Index", "Hotel");
+
+            } catch {
+                return RedirectToAction("Error", "Home");
             }
-            // if model is not entered correctly return view
-            if (!ModelState.IsValid)
-            {
-                return View();
-            }
-            // if user inputs are valid then add hotel room to database
-            _db.Hotels.Add(hotel);
-            // update database
-            _db.SaveChanges();
-            return RedirectToAction("Index", "Hotel");
+            
         }
         // Get: /Hotel/Update/{id}
         /*
