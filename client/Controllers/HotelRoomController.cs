@@ -14,9 +14,16 @@ namespace client.Controllers
 
         // database context
         private readonly ApplicationDbContext _db;
+        private List<SelectListItem> _hotelSelectList;
         public HotelRoomController(ApplicationDbContext context)
         {
             _db = context;
+            // Initialize the hotel select list as we are going to use this in multiple places
+            _hotelSelectList = _db.Hotels.Select(h => new SelectListItem
+            {
+                Text = h.Name,
+                Value = h.Id.ToString()
+            }).ToList();
         }
         // GET: HotelRoom
         public async Task<IActionResult> Index()
@@ -32,21 +39,13 @@ namespace client.Controllers
 
             // Retrieve the hotel room with the given id from the database
             var hotelRoom = _db.HotelRooms.FirstOrDefault(hr => hr.RoomId == roomId && hr.HotelId == hotelId);
-            // Retrieve all hotels from the database
-            var hotels = _db.Hotels.ToList();
-            // Turn this hotels into a select list
-            var hotelSelectList = hotels.Select(h => new SelectListItem
-            {
-                Text = h.Name,
-                Value = h.Id.ToString()
-            });
-
+            
             // Add the select list to the view model
             // Initialize the HotelRoom object as it can't be null
             var hotelRoomViewModel = new HotelRoomViewModel
             {
 
-                HotelList = hotelSelectList,
+                HotelList = _hotelSelectList,
                 HotelRoomVM = hotelRoom
             };
             if (hotelRoom == null)
@@ -63,11 +62,15 @@ namespace client.Controllers
         {
             try
             {
+                // After binding the hotel model to the hotel room model, the model is supposed to be valid
+                if (!ModelState.IsValid)
+                {
+                    return View(hotelRoomViewModel);
+                }
                 // update hotel room in the database
                 _db.HotelRooms.Update(hotelRoomViewModel.HotelRoomVM);
                 // update database
                 _db.SaveChanges();
-
 
                 return RedirectToAction("Index", "HotelRoom");
             }
@@ -80,21 +83,13 @@ namespace client.Controllers
         // GET: HotelRoom/Create
         public ActionResult Create()
         {
-            // Retrieve all hotels from the database
-            var hotels = _db.Hotels.ToList();
-            // Turn this hotels into a select list
-            var hotelSelectList = hotels.Select(h => new SelectListItem
-            {
-                Text = h.Name,
-                Value = h.Id.ToString()
-            });
 
             // Add the select list to the view model
             // Initialize the HotelRoom object as it can't be null
             var hotelRoomViewModel = new HotelRoomViewModel
             {
 
-                HotelList = hotelSelectList,
+                HotelList = _hotelSelectList,
                 HotelRoomVM = new HotelRoom()
             };
 
@@ -110,7 +105,8 @@ namespace client.Controllers
             {
                 //TODO [Feature]: Add validation to avoid duplicate room numbers in the same hotel
 
-
+                // Re-bind the hotel list to the view model
+                hotelRoomView.HotelList = _hotelSelectList;
                 if (hotelRoomView.HotelRoomVM.HotelId == 0)
                 {
                     ModelState.AddModelError("", "Hotel number is required");
@@ -122,12 +118,6 @@ namespace client.Controllers
                 // After binding the hotel model to the hotel room model, the model is supposed to be valid
                 if (!ModelState.IsValid)
                 {
-                    hotelRoomView.HotelList = _db.Hotels
-                        .Select(h => new SelectListItem
-                        {
-                            Text = h.Name,
-                            Value = h.Id.ToString()
-                        }).ToList();
                     return View(hotelRoomView);
                 }
                 // add hotel room from the view model to the database
