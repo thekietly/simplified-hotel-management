@@ -1,9 +1,5 @@
 ﻿@model Domain.Entities.Hotel
-@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
-}
+
 
 <h1>Coming from Hotel Room index</h1>
 
@@ -17,7 +13,7 @@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-floating py-2 col-12">
                 @*Use display names from the model instead*@
-                <label asp-for="Name" class="ms-2">Room name</label>
+                <label asp-for="Name" class="ms-2">Hotel name</label>
                 <input asp-for="Name" class="form-control border shadow" />
                 <span asp-validation-for="Name" class="text-danger"></span>
 
@@ -31,20 +27,20 @@
             </div>
 
             <div class="form-floating py-2 col-12">
-                <label asp-for="Size" class="ms-2">Room size</label>
+                <label asp-for="Size" class="ms-2">Hotel size</label>
                 <input asp-for="Size" class="form-control border shadow" />
                 <span asp-validation-for="Size" class="text-danger"></span>
 
             </div>
 
             <div class="form-floating py-2 col-12">
-                <label asp-for="Description" class="ms-2">Room description</label>
+                <label asp-for="Description" class="ms-2">Hotel description</label>
                 <input asp-for="Description" class="form-control border shadow" />
                 <span asp-validation-for="Description" class="text-danger"></span>
 
             </div>
             <div class="form-floating py-2 col-12">
-                <label asp-for="ImageUrl" class="ms-2">Room image</label>
+                <label asp-for="ImageUrl" class="ms-2">Hotel image</label>
                 <input asp-for="ImageUrl" class="form-control border shadow" />
                 <span asp-validation-for="ImageUrl" class="text-danger"></span>
 
