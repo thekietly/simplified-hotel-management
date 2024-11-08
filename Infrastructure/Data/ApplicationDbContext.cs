@@ -57,8 +57,11 @@ namespace Infrastructure.Data
                 ImageUrl = "https://acihome.vn/uploads/15/tieu-chuan-biet-thu-5-sao-co-canh-quan-dep-gan-gui-voi-thien-nhien.jpg",
                 Occupancy = 2,
                 Beds = 2,
-                Price = 90,
-                Name = "Standard Room"
+                Name = "Standard Room",
+                RoomType = RoomType.Standard,
+                BedType = BedType.Double
+
+
             },
             new HotelRoom
             {
@@ -68,8 +71,9 @@ namespace Infrastructure.Data
                 ImageUrl = "https://acihome.vn/uploads/15/tieu-chuan-biet-thu-5-sao-co-canh-quan-dep-gan-gui-voi-thien-nhien.jpg",
                 Occupancy = 2,
                 Beds = 2,
-                Price = 90,
-                Name = "Standard Room"
+                Name = "Standard Room",
+                RoomType = RoomType.Standard,
+                BedType = BedType.Double
             },
             new HotelRoom
             {
@@ -79,8 +83,9 @@ namespace Infrastructure.Data
                 ImageUrl = "https://acihome.vn/uploads/15/tieu-chuan-biet-thu-5-sao-co-canh-quan-dep-gan-gui-voi-thien-nhien.jpg",
                 Occupancy = 2,
                 Beds = 2,
-                Price = 90,
-                Name = "Standard Room"
+                Name = "Standard Room",
+                RoomType = RoomType.Standard,
+                BedType = BedType.Double
 
             },
             new HotelRoom
@@ -91,8 +96,9 @@ namespace Infrastructure.Data
                 ImageUrl = "https://acihome.vn/uploads/15/tieu-chuan-biet-thu-5-sao-co-canh-quan-dep-gan-gui-voi-thien-nhien.jpg",
                 Occupancy = 2,
                 Beds = 2,
-                Price = 90,
-                Name = "Standard Room"
+                Name = "Standard Room",
+                RoomType = RoomType.Standard,
+                BedType = BedType.Double
             }
             );
 

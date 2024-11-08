@@ -3,6 +3,21 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Domain.Entities
 {
+    public enum RoomType
+    {
+        Standard,
+        Deluxe,
+        Suite,
+        Superior,
+        Executive
+    }
+    public enum BedType {
+        Single,
+        Double,
+        Queen,
+        King,
+        Twin
+    }
     public class HotelRoom
     {
         [Key, Column(Order = 0)]
@@ -15,6 +30,9 @@ namespace Domain.Entities
         [Required(ErrorMessage = "Room number is required")]
         [RegularExpression("^[0-9]+$", ErrorMessage = "Only numeric values are allowed for the room number")]
         public  string RoomId { get; set; } // Room number within the hotel
+
+        public RoomType RoomType { get; set; }
+
         [Range(1, 8)]
         public int Occupancy { get; set; }
         [MaxLength(50)]
@@ -24,10 +42,9 @@ namespace Domain.Entities
         [Range(1, 5)]
         public int Beds { get; set; }
 
+        public BedType BedType { get; set; }
         public string? ImageUrl { get; set; }
-        [Required]
-        [Range(50, 10000)] // I don't want to stay in a room that's more expensive than this (p/s I'm using aud currency system) even if I'm a millionaire :)
-        public double Price { get; set; }
+
         public string? SpecialDetails { get; set; }
 
 
