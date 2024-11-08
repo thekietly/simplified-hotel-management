@@ -40,7 +40,15 @@ namespace client.Controllers
                 {
                     return View(hotel);
                 }
-                // TODO: Check duplicate hotels.
+
+                // Check if the hotel name already exists in the database
+                var hotelExists = _db.Hotels.Any(h => h.Name == hotel.Name);
+                if (hotelExists)
+                {
+                    // key in AddModelError refers to the property in the model - in this case, error appears under the Name property
+                    ModelState.AddModelError("Name", "A hotel with the same name already exists.");
+                    return View(hotel);
+                }
 
                 // if user inputs are valid then add hotel room to database
                 _db.Hotels.Add(hotel);

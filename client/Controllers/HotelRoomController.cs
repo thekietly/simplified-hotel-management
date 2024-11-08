@@ -128,7 +128,8 @@ namespace client.Controllers
                     return View(hotelRoomView);
                 }
                 // Check if the hotel room already exists in the database
-                if (_db.HotelRooms.Any(hr => hr.HotelId == hotelRoomView.HotelRoomVM.HotelId && hr.RoomId == hotelRoomView.HotelRoomVM.RoomId))
+                var hotelRoomExists = _db.HotelRooms.Any(hr => hr.HotelId == hotelRoomView.HotelRoomVM.HotelId && hr.RoomId == hotelRoomView.HotelRoomVM.RoomId);
+                if (hotelRoomExists)
                 {
                     ModelState.AddModelError("", "The hotel room already exists in the database. Consider using a different room number or a different hotel.");
                     return View(hotelRoomView);
