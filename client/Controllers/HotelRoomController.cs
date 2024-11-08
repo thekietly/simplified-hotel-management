@@ -14,8 +14,7 @@ namespace client.Controllers
         // database context
         private readonly ApplicationDbContext _db;
         private List<SelectListItem> _hotelSelectList;
-        private List<SelectListItem> _roomTypeSelectList;
-        private List<SelectListItem> _bedTypeSelectList;
+
         public HotelRoomController(ApplicationDbContext context)
         {
             _db = context;
@@ -25,26 +24,6 @@ namespace client.Controllers
                 Text = h.Name,
                 Value = h.Id.ToString()
             }).ToList();
-
-            // Room type select list initialization
-            _roomTypeSelectList = Enum.GetValues(typeof(RoomType))
-                                .Cast<RoomType>()
-                                .Select(roomType => new SelectListItem
-                                {
-                                    Text = roomType.ToString(),
-                                    Value = roomType.ToString()
-                                })
-                                .ToList();
-
-            // Bed type select list initialization
-            _bedTypeSelectList = Enum.GetValues(typeof(BedType))
-                                .Cast<BedType>()
-                                .Select(bedType => new SelectListItem
-                                {
-                                    Text = bedType.ToString(),
-                                    Value = bedType.ToString()
-                                })
-                                .ToList();
 
         }
         // GET: HotelRoom
