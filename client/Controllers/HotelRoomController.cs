@@ -51,7 +51,6 @@ namespace client.Controllers
                 HotelRoomVM = hotelRoom
             };
             
-
             return View(hotelRoomViewModel);
         }
         // POST: HotelRoom/Update/5
@@ -73,7 +72,7 @@ namespace client.Controllers
                 {
                     return View(hotelRoomViewModel);
                 }
-                // ERROR: After inserted the hotel room, you cannot update the hotel room number and its hotel id.
+               
                 // update hotel room in the database
                 _db.HotelRooms.Update(hotelRoomViewModel.HotelRoomVM);
                 // update database
@@ -123,11 +122,17 @@ namespace client.Controllers
                 // Bind the hotel model to the hotel room model based on the selected hotel ID
                 hotelRoomView.HotelRoomVM.Hotel = _db.Hotels.FirstOrDefault(h => h.Id == hotelRoomView.HotelRoomVM.HotelId);
 
-                //// After binding the hotel model to the hotel room model, the model is supposed to be valid
-                //if (!ModelState.IsValid)
-                //{
-                //    return View(hotelRoomView);
-                //}
+                // After binding the hotel model to the hotel room model, the model is supposed to be valid
+                if (!ModelState.IsValid)
+                {
+                    return View(hotelRoomView);
+                }
+                // Check if the hotel room already exists in the database
+                if (_db.HotelRooms.Any(hr => hr.HotelId == hotelRoomView.HotelRoomVM.HotelId && hr.RoomId == hotelRoomView.HotelRoomVM.RoomId))
+                {
+                    ModelState.AddModelError("", "The hotel room already exists in the database. Consider using a different room number or a different hotel.");
+                    return View(hotelRoomView);
+                }
                 // add hotel room from the view model to the database
                 _db.HotelRooms.Add(hotelRoomView.HotelRoomVM);
                 // update database
