@@ -7,6 +7,7 @@ namespace client.Models
     {
         public HotelRoom HotelRoomVM{ get; set; }
         public IEnumerable<SelectListItem> ?HotelList { get; set; }
-
+        public IEnumerable<SelectListItem>? RoomTypeList { get; set; }
+        public IEnumerable<SelectListItem>? BedTypeList { get; set; }
     }
 }

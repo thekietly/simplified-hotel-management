@@ -49,5 +49,6 @@ namespace Domain.Entities
 
 
         public virtual Hotel? Hotel { get; set; }
+
     }
 }
