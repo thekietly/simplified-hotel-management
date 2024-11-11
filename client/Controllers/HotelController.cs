@@ -31,7 +31,12 @@ namespace client.Controllers
             return View();
         }
         [HttpPost]
-        // Post: /Hotel/Create
+        /// <summary>
+        /// Handles the creation of a new hotel and adds it to the database.
+        /// </summary>
+        /// <param name="hotel">The hotel entity to create.</param>
+        /// <returns>Redirects to the Index view if successful; otherwise, returns the Create view with validation errors.</returns>
+
         public IActionResult Create(Hotel hotel)
         {
             try {
@@ -47,8 +52,8 @@ namespace client.Controllers
                 }
 
                 // Check if the hotel name already exists in the database
-                var hotelExists = _db.Hotels.Any(h => h.Name == hotel.Name);
-                if (hotelExists)
+                
+                if (_hotelRepository.Exists(hotel))
                 {
                     // key in AddModelError refers to the property in the model - in this case, error appears under the Name property
                     ModelState.AddModelError("Name", "A hotel with the same name already exists.");
@@ -56,9 +61,9 @@ namespace client.Controllers
                 }
 
                 // if user inputs are valid then add hotel room to database
-                _db.Hotels.Add(hotel);
+                _hotelRepository.Add(hotel);
                 // update database
-                _db.SaveChanges();
+                _hotelRepository.Save();
                 return RedirectToAction("Index", "Hotel"); 
 
             } catch {
@@ -75,7 +80,7 @@ namespace client.Controllers
          */
         public IActionResult Update(int? id) { 
 
-            Hotel hotel = _db.Hotels.FirstOrDefault(hr => hr.Id == id);
+            Hotel hotel = _hotelRepository.Get(h => h.Id == id);
             // any edge case where the hotel room is not found? go directly to this page without hotel room?
             if (hotel == null)
             {
