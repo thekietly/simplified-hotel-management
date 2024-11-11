@@ -15,8 +15,11 @@ namespace Domain.Entities
         public string Status { get; set; }
         public double TotalPrice { get; set; }
         public int NumberOfNights { get; set; }
-
+        public DateTime BookingDate { get; set; }
         public DateTime CheckInDate { get; set; }
         public DateTime CheckOutDate { get; set; }
+
+        public DateTime ActualCheckInDate { get; set; }
+        public DateTime ActualCheckOutDate { get; set; }
     }
 }
