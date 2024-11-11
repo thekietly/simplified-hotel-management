@@ -1,4 +1,6 @@
+using Application.Common.Interface;
 using Infrastructure.Data;
+using Infrastructure.Repository;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -14,6 +16,8 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 
 });
 var app = builder.Build();
+
+builder.Services.AddScoped<IHotelRepository,HotelRepository>();
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
