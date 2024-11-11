@@ -1,23 +1,28 @@
-﻿using Domain.Entities;
-using Infrastructure.Data;
+﻿using Application.Common.Interface;
+using Domain.Entities;
+
 using Microsoft.AspNetCore.Mvc;
 
 namespace client.Controllers
 {
     public class HotelController : Controller
     {
-        // database context
-        private readonly ApplicationDbContext _db;
+        // giving access to the hotel database collection via the IHotelRepository interface
+        private readonly IHotelRepository _hotelRepository;
 
-        public HotelController(ApplicationDbContext context)
+        
+        public HotelController(IHotelRepository hotelRepository)
         {
-            _db = context;
+            // Program.cs will inject the IHotelRepository into the HotelController
+            // Logic in the HotelRepository class will be executed
+            _hotelRepository = hotelRepository;
         }
         // Get: /Hotel
         public IActionResult Index()
         {
-            var hotel = _db.Hotels.ToList();
-            return View(hotel);
+            // Ultilize the GetAll method from the IHotelRepository interface to get all hotels
+            var hotels = _hotelRepository.GetAll();
+            return View(hotels);
         }
 
         // Get: /Hotel/Create
