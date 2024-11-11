@@ -12,7 +12,7 @@ namespace Application.Common.Interface
     {
         // Return all hotels
         IEnumerable<Hotel> GetAll(Expression<Func<Hotel, bool>>? filter = null, string? includeProperties = null);
-        IEnumerable<Hotel> Get(Expression<Func<Hotel, bool>> filter, string? includeProperties = null);
+        Hotel Get(Expression<Func<Hotel, bool>> filter, string? includeProperties = null);
 
         // Mimic the CRUD operations in the controller
         // .Add a hotel
@@ -23,5 +23,6 @@ namespace Application.Common.Interface
         void Remove(Hotel entity);
         // .SaveChanges()
         void Save();
+        bool Exists(Hotel entity);
     }
 }

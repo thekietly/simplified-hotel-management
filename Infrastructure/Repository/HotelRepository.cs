@@ -48,24 +48,39 @@ namespace Infrastructure.Repository
             // if filter is not null, apply the filter i.e h => h.Id == 1
             if (filter != null)
             {
-                query
+                query = query.Where(filter);
+            }
+            // if include properties is not null, include them i.e include(h => h.Hotel)
+            if (!string.IsNullOrEmpty(includeProperties))
+            {
+                foreach (var property in includeProperties.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+                {
+                    query = query.Include(property);
+                }
+            }
+            return query.ToList();
 
 
         }
-
+        // Remove a hotel entity from the database
         public void Remove(Hotel entity)
         {
             _db.Remove(entity);
         }
-
+        // Save changes to the database
         public void Save()
         {
             _db.SaveChanges();
         }
-
+        // Update a whole hotel entity
         public void Update(Hotel entity)
         {
             _db.Update(entity);
+        }
+        // Check if a hotel with the same name already exists
+        public bool Exists(Hotel entity)
+        {
+            return _db.Hotels.Any(e => e.Name == entity.Name);
         }
     }
 }
