@@ -8,21 +8,15 @@ using Domain.Entities;
 
 namespace Application.Common.Interface
 {
-    public interface IHotelRepository
+    public interface IHotelRepository : IRepository<Hotel>
     {
-        // Return all hotels
-        IEnumerable<Hotel> GetAll(Expression<Func<Hotel, bool>>? filter = null, string? includeProperties = null);
-        Hotel Get(Expression<Func<Hotel, bool>> filter, string? includeProperties = null);
 
-        // Mimic the CRUD operations in the controller
-        // .Add a hotel
-        void Add(Hotel entity);
         // .Update a hotel
         void Update(Hotel entity);
-        // .Remove a hotel
-        void Remove(Hotel entity);
-        // .SaveChanges()
-        void Save();
+
+        // .Check if a hotel with the same name already exists
         bool Exists(Hotel entity);
+
+
     }
 }
