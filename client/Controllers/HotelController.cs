@@ -106,9 +106,9 @@ namespace client.Controllers
                 return View(hotel);
             }
             // if user inputs are valid then update hotel room details
-            _db.Hotels.Update(hotel);
+            _hotelRepository.Update(hotel);
             // update database
-            _db.SaveChanges();
+            _hotelRepository.Save();
             return RedirectToAction("Index", "Hotel");
         }
         // Post: /Hotel
@@ -117,7 +117,7 @@ namespace client.Controllers
         public IActionResult Delete(int? id)
         {
 
-            Hotel hotel = _db.Hotels.FirstOrDefault(hr => hr.Id == id);
+            Hotel hotel = _hotelRepository.Get(h => h.Id == id);
             // any edge case where the hotel room is not found? go directly to this page without hotel room?
             if (hotel == null)
             {
@@ -125,9 +125,9 @@ namespace client.Controllers
 
                 return RedirectToAction("Error", "Home");
             }
-            _db.Hotels.Remove(hotel);
+            _hotelRepository.Remove(hotel);
             TempData["Success"] = hotel.Name + " has been deleted successfully.";
-            _db.SaveChanges();
+            _hotelRepository.Save();
             return RedirectToAction("Index", "Hotel");
 
         }

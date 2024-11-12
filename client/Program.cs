@@ -15,9 +15,10 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 
 });
+
+builder.Services.AddScoped<IHotelRepository, HotelRepository>();
 var app = builder.Build();
 
-builder.Services.AddScoped<IHotelRepository,HotelRepository>();
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
