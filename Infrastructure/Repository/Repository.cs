@@ -28,9 +28,13 @@ namespace Infrastructure.Repository
             throw new NotImplementedException();
         }
 
-        public T Get(Expression<Func<T, bool>> filter, string? includeProperties = null)
+        public T Get(Expression<Func<T, bool>> filter, string? includeProperties = null, bool tracked= true)
         {
             IQueryable<T> query =dbSet;
+            if (!tracked)
+            {
+                query = query.AsNoTracking();
+            }
             // if filter is not null, apply the filter i.e h => h.Id == 1
             if (filter != null)
             {
@@ -50,7 +54,11 @@ namespace Infrastructure.Repository
         public IEnumerable<T> GetAll(Expression<Func<T, bool>>? filter = null, string? includeProperties = null, bool tracked = false)
         {
             // Read-only operations should not be tracked. No need to modify the records.
-            IQueryable<T> query = dbSet.AsNoTracking();
+            IQueryable<T> query = dbSet;
+            if (!tracked)
+            {
+                query = query.AsNoTracking();
+            }
             // if filter is not null, apply the filter i.e h => h.Id == 1
             if (filter != null)
             {
