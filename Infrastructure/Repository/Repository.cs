@@ -20,13 +20,10 @@ namespace Infrastructure.Repository
         }
         public void Add(T entity)
         {
-            throw new NotImplementedException();
+            _db.Add(entity);
         }
 
-        public bool Exists(T entity)
-        {
-            throw new NotImplementedException();
-        }
+
 
         public T Get(Expression<Func<T, bool>> filter, string? includeProperties = null, bool tracked= true)
         {
@@ -51,7 +48,7 @@ namespace Infrastructure.Repository
             return query.FirstOrDefault();
         }
 
-        public IEnumerable<T> GetAll(Expression<Func<T, bool>>? filter = null, string? includeProperties = null, bool tracked = false)
+        public IEnumerable<T> GetAll(Expression<Func<T, bool>>? filter = null, string? includeProperties = null, bool tracked = true)
         {
             // Read-only operations should not be tracked. No need to modify the records.
             IQueryable<T> query = dbSet;
@@ -77,17 +74,17 @@ namespace Infrastructure.Repository
 
         public void Remove(T entity)
         {
-            throw new NotImplementedException();
+            _db.Remove(entity);
         }
 
         public void Save()
         {
-            throw new NotImplementedException();
+            _db.SaveChanges();
         }
 
         public void Update(T entity)
         {
-            throw new NotImplementedException();
+            _db.Update(entity);
         }
     }
 }
