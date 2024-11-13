@@ -1,4 +1,5 @@
-﻿using client.Models;
+﻿using Application.Common.Interface;
+using client.Models;
 using Domain.Entities;
 using Infrastructure.Data;
 
@@ -12,33 +13,35 @@ namespace client.Controllers
     {
 
         // database context
-        private readonly ApplicationDbContext _db;
-        private List<SelectListItem> _hotelSelectList;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public HotelRoomController(ApplicationDbContext context)
+        public HotelRoomController(IUnitOfWork unitOfWork)
         {
-            _db = context;
-            // Initialize the hotel select list as we are going to use this in multiple places
-            _hotelSelectList = _db.Hotels.Select(h => new SelectListItem
+            _unitOfWork = unitOfWork;
+
+        }
+        private async Task<List<SelectListItem>> GetHotelSelectListAsync()
+        {
+            var hotels = await _unitOfWork.Hotel.GetAll();
+            return hotels.Select(h => new SelectListItem
             {
                 Text = h.Name,
                 Value = h.Id.ToString()
             }).ToList();
-
         }
         // GET: HotelRoom
         public async Task<IActionResult> Index()
         {
-            var hotelRooms = await _db.HotelRooms.Include(h => h.Hotel).ToListAsync();
+            var hotelRooms = await _unitOfWork.HotelRoom.GetAll();  
             return View(hotelRooms);
         }
 
         // GET: HotelRoom/Update/5
-        public ActionResult Update(string roomId, int hotelId)
+        public async Task<IActionResult> Update(string roomId, int hotelId)
         {
 
             // Retrieve the hotel room with the given id from the database
-            var hotelRoom = _db.HotelRooms.FirstOrDefault(hr => hr.RoomId == roomId && hr.HotelId == hotelId);
+            var hotelRoom = _unitOfWork.HotelRoom.Get(hr => hr.RoomId == roomId && hr.HotelId == hotelId);
             // Return early if the hotel room is not found
             if (hotelRoom == null)
             {
@@ -49,8 +52,8 @@ namespace client.Controllers
             // Initialize the HotelRoom object as it can't be null
             var hotelRoomViewModel = new HotelRoomViewModel
             {
-                HotelList = _hotelSelectList,
-                HotelRoomVM = hotelRoom
+                HotelList = await GetHotelSelectListAsync(),
+                HotelRoomVM = await hotelRoom
             };
             
             return View(hotelRoomViewModel);
@@ -58,15 +61,15 @@ namespace client.Controllers
         // POST: HotelRoom/Update/5
         [HttpPost]
 
-        public ActionResult Update(HotelRoomViewModel hotelRoomViewModel)
+        public async Task<IActionResult> Update(HotelRoomViewModel hotelRoomViewModel)
         {
             try
             {
-                hotelRoomViewModel.HotelList = _hotelSelectList;
+                hotelRoomViewModel.HotelList = await GetHotelSelectListAsync();
                 // If the hotel model is not bound to the hotel room model because it is inserted via the database then bind it again.
 
                 if (hotelRoomViewModel.HotelRoomVM.Hotel == null) {
-                    hotelRoomViewModel.HotelRoomVM.Hotel = _db.Hotels.FirstOrDefault(h => h.Id == hotelRoomViewModel.HotelRoomVM.HotelId);
+                    hotelRoomViewModel.HotelRoomVM.Hotel = _unitOfWork.HotelRoom.Get(h => h.Id == hotelRoomViewModel.HotelRoomVM.HotelId);
                 }
 
                 // After binding the hotel model to the hotel room model, the model is supposed to be valid
@@ -76,9 +79,9 @@ namespace client.Controllers
                 }
                
                 // update hotel room in the database
-                _db.HotelRooms.Update(hotelRoomViewModel.HotelRoomVM);
+                _unitOfWork.HotelRoom.Update(hotelRoomViewModel.HotelRoomVM);
                 // update database
-                _db.SaveChanges();
+                _unitOfWork.Save();
 
                 return RedirectToAction("Index", "HotelRoom");
             }
@@ -90,7 +93,7 @@ namespace client.Controllers
         }
 
         // GET: HotelRoom/Create
-        public ActionResult Create()
+        public async Task<IActionResult> Create()
         {
 
             // Add the select list to the view model
@@ -98,7 +101,7 @@ namespace client.Controllers
             var hotelRoomViewModel = new HotelRoomViewModel
             {
 
-                HotelList = _hotelSelectList,
+                HotelList = await GetHotelSelectListAsync(),
                 HotelRoomVM = new HotelRoom()
             };
 
@@ -108,21 +111,21 @@ namespace client.Controllers
 
         // POST: HotelRoom/Create
         [HttpPost]
-        public ActionResult Create(HotelRoomViewModel hotelRoomView)
+        public async Task<IActionResult> Create(HotelRoomViewModel hotelRoomView)
         {
             try
             {
                 //TODO [Feature]: Add validation to avoid duplicate room numbers in the same hotel
 
                 // Re-bind the hotel list to the view model
-                hotelRoomView.HotelList = _hotelSelectList;
+                hotelRoomView.HotelList = await GetHotelSelectListAsync();
                 if (hotelRoomView.HotelRoomVM.HotelId == 0)
                 {
                     ModelState.AddModelError("", "Hotel number is required");
                     return View(hotelRoomView);
                 }
                 // Bind the hotel model to the hotel room model based on the selected hotel ID
-                hotelRoomView.HotelRoomVM.Hotel = _db.Hotels.FirstOrDefault(h => h.Id == hotelRoomView.HotelRoomVM.HotelId);
+                hotelRoomView.HotelRoomVM.Hotel = await _unitOfWork.Hotel.Get(h => h.Id == hotelRoomView.HotelRoomVM.HotelId);
 
                 // After binding the hotel model to the hotel room model, the model is supposed to be valid
                 if (!ModelState.IsValid)
@@ -130,16 +133,16 @@ namespace client.Controllers
                     return View(hotelRoomView);
                 }
                 // Check if the hotel room already exists in the database
-                var hotelRoomExists = _db.HotelRooms.Any(hr => hr.HotelId == hotelRoomView.HotelRoomVM.HotelId && hr.RoomId == hotelRoomView.HotelRoomVM.RoomId);
-                if (hotelRoomExists)
+                
+                if (_unitOfWork.HotelRoom.Exists(hotelRoomView.HotelRoomVM))
                 {
                     ModelState.AddModelError("", "The hotel room already exists in the database. Consider using a different room number or a different hotel.");
                     return View(hotelRoomView);
                 }
                 // add hotel room from the view model to the database
-                _db.HotelRooms.Add(hotelRoomView.HotelRoomVM);
+                _unitOfWork.HotelRoom.Add(hotelRoomView.HotelRoomVM);
                 // update database
-                _db.SaveChanges();
+                _unitOfWork.Save();
                 // Added a pop up message to show that the hotel room has been created successfully
                 TempData["Success"] = hotelRoomView.HotelRoomVM.Name + " has been created successfully.";
                 return RedirectToAction("Index", "HotelRoom");
@@ -157,21 +160,21 @@ namespace client.Controllers
         // POST: HotelRoom/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(string roomId, int hotelId)
+        public async Task<IActionResult> Delete(string roomId, int hotelId)
         {
             try
             {
-                HotelRoom hotelRoom = _db.HotelRooms.FirstOrDefault(hr => hr.HotelId == hotelId && hr.RoomId == roomId);
+                HotelRoom hotelRoom = await _unitOfWork.HotelRoom.Get(hr => hr.HotelId == hotelId && hr.RoomId == roomId);
                 // any edge case where the hotel room is not found? go directly to this page without hotel room?
                 if (hotelRoom == null)
                 {
                     TempData["Error"] = "The hotel room you are trying to delete does not exist.";
-                    // TODO: Try to find a way to trigger this edge case
                     return RedirectToAction("Error", "Home");
                 }
-                _db.HotelRooms.Remove(hotelRoom);
+                _unitOfWork.HotelRoom.Remove(hotelRoom);
+                // TODO: Verify if the hotel room has been deleted successfully -> check affected rows
                 TempData["Success"] = hotelRoom.Name + " has been deleted successfully.";
-                _db.SaveChanges();
+                _unitOfWork.Save();
                 return RedirectToAction("Index", "HotelRoom");
 
             }
