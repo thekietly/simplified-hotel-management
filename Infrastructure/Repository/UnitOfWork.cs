@@ -8,10 +8,13 @@ namespace Infrastructure.Repository
     {
         private readonly ApplicationDbContext _db;
         public IHotelRepository Hotel { get; private set; }
+        public IHotelRoomRepository HotelRoom { get; private set; }
+
         public UnitOfWork(ApplicationDbContext db)
         {
             _db = db;
             Hotel = new HotelRepository(_db);
+            HotelRoom = new HotelRoomRepository(_db);
         }
         public void Save()
         {

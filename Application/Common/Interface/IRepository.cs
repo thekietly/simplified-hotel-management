@@ -12,9 +12,9 @@ namespace Application.Common.Interface
     public interface IRepository<T> where T : class
     {
         // Retrieve all records from the database
-        IEnumerable<T> GetAll(Expression<Func<T, bool>>? filter = null, string? includeProperties = null, bool tracked=true);
+        Task<IEnumerable<T>> GetAll(Expression<Func<T, bool>>? filter = null, string? includeProperties = null, bool tracked=true);
         // Retrieve a single record from the database
-        T Get(Expression<Func<T, bool>> filter, string? includeProperties = null, bool tracked =true);
+        Task<T> Get(Expression<Func<T, bool>> filter, string? includeProperties = null, bool tracked =true);
         // Add a new record to the database
         void Add(T entity);
         // Update an existing record in the database
