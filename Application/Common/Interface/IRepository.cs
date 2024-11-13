@@ -16,7 +16,6 @@ namespace Application.Common.Interface
         void Add(T entity);
         void Update(T entity);
         void Remove(T entity);
-        void Save();
 
 
     }

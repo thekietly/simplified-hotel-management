@@ -18,7 +18,7 @@ namespace Infrastructure.Repository
             _db = db;
             dbSet = _db.Set<T>();
         }
-        public void Add(T entity)
+        public virtual void Add(T entity)
         {
             _db.Add(entity);
         }
@@ -72,17 +72,14 @@ namespace Infrastructure.Repository
             return query.ToList();
         }
 
-        public void Remove(T entity)
+        public virtual void Remove(T entity)
         {
             _db.Remove(entity);
         }
 
-        public void Save()
-        {
-            _db.SaveChanges();
-        }
 
-        public void Update(T entity)
+
+        public virtual void Update(T entity)
         {
             _db.Update(entity);
         }
