@@ -114,10 +114,10 @@ namespace client.Controllers
         // Post: /Hotel
         // Delete and show the affect of the delete on the website homepage.
         [HttpPost]
-        public IActionResult Delete(int? id)
+        public async Task<IActionResult> Delete(int? id)
         {
 
-            Hotel hotel = _unitOfWork.Hotel.Get(h => h.Id == id);
+            Hotel hotel = await _unitOfWork.Hotel.Get(h => h.Id == id);
             // any edge case where the hotel room is not found? go directly to this page without hotel room?
             if (hotel == null)
             {

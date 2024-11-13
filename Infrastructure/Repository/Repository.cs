@@ -60,7 +60,7 @@ namespace Infrastructure.Repository
                     query = query.Include(property);
                 }
             }
-            return query.ToListAsync();
+            return await query.ToListAsync();
         }
         // Allow derived classes to override this method
         public virtual void Add(T entity)

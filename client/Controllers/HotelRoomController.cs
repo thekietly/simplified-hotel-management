@@ -41,7 +41,7 @@ namespace client.Controllers
         {
 
             // Retrieve the hotel room with the given id from the database
-            var hotelRoom = _unitOfWork.HotelRoom.Get(hr => hr.RoomId == roomId && hr.HotelId == hotelId);
+            var hotelRoom = await _unitOfWork.HotelRoom.Get(hr => hr.RoomId == roomId && hr.HotelId == hotelId);
             // Return early if the hotel room is not found
             if (hotelRoom == null)
             {
@@ -53,7 +53,7 @@ namespace client.Controllers
             var hotelRoomViewModel = new HotelRoomViewModel
             {
                 HotelList = await GetHotelSelectListAsync(),
-                HotelRoomVM = await hotelRoom
+                HotelRoomVM = hotelRoom
             };
             
             return View(hotelRoomViewModel);
@@ -69,14 +69,14 @@ namespace client.Controllers
                 // If the hotel model is not bound to the hotel room model because it is inserted via the database then bind it again.
 
                 if (hotelRoomViewModel.HotelRoomVM.Hotel == null) {
-                    hotelRoomViewModel.HotelRoomVM.Hotel = _unitOfWork.HotelRoom.Get(h => h.Id == hotelRoomViewModel.HotelRoomVM.HotelId);
+                    hotelRoomViewModel.HotelRoomVM.Hotel = await _unitOfWork.Hotel.Get(h => h.Id == hotelRoomViewModel.HotelRoomVM.HotelId);
                 }
 
-                // After binding the hotel model to the hotel room model, the model is supposed to be valid
-                if (!ModelState.IsValid)
-                {
-                    return View(hotelRoomViewModel);
-                }
+                //// After binding the hotel model to the hotel room model, the model is supposed to be valid
+                //if (!ModelState.IsValid)
+                //{
+                //    return View(hotelRoomViewModel);
+                //}
                
                 // update hotel room in the database
                 _unitOfWork.HotelRoom.Update(hotelRoomViewModel.HotelRoomVM);
