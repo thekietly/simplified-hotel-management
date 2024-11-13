@@ -18,13 +18,6 @@ namespace Infrastructure.Repository
             _db = db;
             dbSet = _db.Set<T>();
         }
-        public virtual void Add(T entity)
-        {
-            _db.Add(entity);
-        }
-
-
-
         public T Get(Expression<Func<T, bool>> filter, string? includeProperties = null, bool tracked= true)
         {
             IQueryable<T> query =dbSet;
@@ -71,14 +64,17 @@ namespace Infrastructure.Repository
             }
             return query.ToList();
         }
-
+        // Allow derived classes to override this method
+        public virtual void Add(T entity)
+        {
+            _db.Add(entity);
+        }
+        // Allow derived classes to override this method
         public virtual void Remove(T entity)
         {
             _db.Remove(entity);
         }
-
-
-
+        // Allow derived classes to override this method
         public virtual void Update(T entity)
         {
             _db.Update(entity);
