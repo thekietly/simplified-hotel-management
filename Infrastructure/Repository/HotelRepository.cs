@@ -1,13 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
-using Application.Common.Interface;
+﻿using Application.Common.Interface;
 using Domain.Entities;
 using Infrastructure.Data;
-using Microsoft.EntityFrameworkCore;
+
 
 namespace Infrastructure.Repository
 {

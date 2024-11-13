@@ -1,8 +1,6 @@
 ﻿using Application.Common.Interface;
-using Domain.Entities;
 using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
-using System.Linq;
 using System.Linq.Expressions;
 
 
@@ -18,7 +16,7 @@ namespace Infrastructure.Repository
             _db = db;
             dbSet = _db.Set<T>();
         }
-        public T Get(Expression<Func<T, bool>> filter, string? includeProperties = null, bool tracked= true)
+        public async Task<T> Get(Expression<Func<T, bool>> filter, string? includeProperties = null, bool tracked= true)
         {
             IQueryable<T> query =dbSet;
             if (!tracked)
@@ -41,7 +39,7 @@ namespace Infrastructure.Repository
             return query.FirstOrDefault();
         }
 
-        public IEnumerable<T> GetAll(Expression<Func<T, bool>>? filter = null, string? includeProperties = null, bool tracked = true)
+        public async Task<IEnumerable<T>>GetAll(Expression<Func<T, bool>>? filter = null, string? includeProperties = null, bool tracked = true)
         {
             // Read-only operations should not be tracked. No need to modify the records.
             IQueryable<T> query = dbSet;
@@ -62,7 +60,7 @@ namespace Infrastructure.Repository
                     query = query.Include(property);
                 }
             }
-            return query.ToList();
+            return query.ToListAsync();
         }
         // Allow derived classes to override this method
         public virtual void Add(T entity)
