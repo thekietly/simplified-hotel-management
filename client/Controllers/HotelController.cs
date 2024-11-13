@@ -18,10 +18,10 @@ namespace client.Controllers
             _unitOfWork = unitOfWork;
         }
         // Get: /Hotel
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
             // Ultilize the GetAll method from the IHotelRepository interface to get all hotels
-            var hotels = _unitOfWork.Hotel.GetAll();
+            var hotels = await _unitOfWork.Hotel.GetAll();
             return View(hotels);
         }
 
@@ -78,9 +78,9 @@ namespace client.Controllers
         2. If the hotel room is not found, return a 404 Not Found response.
         3. If the hotel room is found, return a view with the hotel room as the model.
          */
-        public IActionResult Update(int? id) { 
+        public async Task<IActionResult> Update(int? id) { 
 
-            Hotel hotel = _unitOfWork.Hotel.Get(h => h.Id == id);
+            Hotel hotel = await _unitOfWork.Hotel.Get(h => h.Id == id);
             // any edge case where the hotel room is not found? go directly to this page without hotel room?
             if (hotel == null)
             {
