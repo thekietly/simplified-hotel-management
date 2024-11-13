@@ -13,10 +13,9 @@ namespace Infrastructure.Repository
             _db = db;
             Hotel = new HotelRepository(_db);
         }
-        // Save changes to the database one by one.
-        public async Task Save()
+        public void Save()
         {
-            await _db.SaveChangesAsync();
+            _db.SaveChanges();
         }
     }
 }

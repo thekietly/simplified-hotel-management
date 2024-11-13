@@ -8,20 +8,20 @@ namespace client.Controllers
     public class HotelController : Controller
     {
         // giving access to the hotel database collection via the IHotelRepository interface
-        private readonly IHotelRepository _hotelRepository;
+        private readonly IUnitOfWork _unitOfWork;
 
         
-        public HotelController(IHotelRepository hotelRepository)
+        public HotelController(IUnitOfWork unitOfWork)
         {
             // Program.cs will inject the IHotelRepository into the HotelController
             // Logic in the HotelRepository class will be executed
-            _hotelRepository = hotelRepository;
+            _unitOfWork = unitOfWork;
         }
         // Get: /Hotel
         public IActionResult Index()
         {
             // Ultilize the GetAll method from the IHotelRepository interface to get all hotels
-            var hotels = _hotelRepository.GetAll();
+            var hotels = _unitOfWork.Hotel.GetAll();
             return View(hotels);
         }
 
@@ -53,7 +53,7 @@ namespace client.Controllers
 
                 // Check if the hotel name already exists in the database
                 
-                if (_hotelRepository.Exists(hotel))
+                if (_unitOfWork.Hotel.Exists(hotel))
                 {
                     // key in AddModelError refers to the property in the model - in this case, error appears under the Name property
                     ModelState.AddModelError("Name", "A hotel with the same name already exists.");
@@ -61,9 +61,9 @@ namespace client.Controllers
                 }
 
                 // if user inputs are valid then add hotel room to database
-                _hotelRepository.Add(hotel);
+                _unitOfWork.Hotel.Add(hotel);
                 // update database
-                _hotelRepository.Save();
+                _unitOfWork.Save();
                 return RedirectToAction("Index", "Hotel"); 
 
             } catch {
@@ -80,7 +80,7 @@ namespace client.Controllers
          */
         public IActionResult Update(int? id) { 
 
-            Hotel hotel = _hotelRepository.Get(h => h.Id == id);
+            Hotel hotel = _unitOfWork.Hotel.Get(h => h.Id == id);
             // any edge case where the hotel room is not found? go directly to this page without hotel room?
             if (hotel == null)
             {
@@ -106,9 +106,9 @@ namespace client.Controllers
                 return View(hotel);
             }
             // if user inputs are valid then update hotel room details
-            _hotelRepository.Update(hotel);
+            _unitOfWork.Hotel.Update(hotel);
             // update database
-            _hotelRepository.Save();
+            _unitOfWork.Save();
             return RedirectToAction("Index", "Hotel");
         }
         // Post: /Hotel
@@ -117,7 +117,7 @@ namespace client.Controllers
         public IActionResult Delete(int? id)
         {
 
-            Hotel hotel = _hotelRepository.Get(h => h.Id == id);
+            Hotel hotel = _unitOfWork.Hotel.Get(h => h.Id == id);
             // any edge case where the hotel room is not found? go directly to this page without hotel room?
             if (hotel == null)
             {
@@ -125,9 +125,9 @@ namespace client.Controllers
 
                 return RedirectToAction("Error", "Home");
             }
-            _hotelRepository.Remove(hotel);
+            _unitOfWork.Hotel.Remove(hotel);
+            _unitOfWork.Save();
             TempData["Success"] = hotel.Name + " has been deleted successfully.";
-            _hotelRepository.Save();
             return RedirectToAction("Index", "Hotel");
 
         }

@@ -6,9 +6,12 @@ using System.Threading.Tasks;
 
 namespace Application.Common.Interface
 {
+    // A central point for accessing all repositories
     public interface IUnitOfWork
     {
+        // Provide access to the hotel repository
         public IHotelRepository Hotel { get; }
-        Task Save();
+        // Save changes to the database asynchronously
+        void Save();
     }
 }
