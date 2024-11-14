@@ -9,13 +9,16 @@ namespace client.Controllers
     {
         // giving access to the hotel database collection via the IHotelRepository interface
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IWebHostEnvironment _hostEnvironment;
 
-        
-        public HotelController(IUnitOfWork unitOfWork)
+        public HotelController(IUnitOfWork unitOfWork, IWebHostEnvironment webHostEnvironment)
         {
             // Program.cs will inject the IHotelRepository into the HotelController
             // Logic in the HotelRepository class will be executed
             _unitOfWork = unitOfWork;
+
+            // IWebHostEnvironment is to work with the file system on the webserver.
+            _hostEnvironment = webHostEnvironment;
         }
         // Get: /Hotel
         public async Task<IActionResult> Index()
