@@ -62,20 +62,27 @@ namespace Infrastructure.Repository
             }
             return await query.ToListAsync();
         }
+
+        public bool Any(Expression<Func<T, bool>> filter)
+        {
+            return dbSet.Any(filter);
+        }
+
+
         // Allow derived classes to override this method
         public virtual void Add(T entity)
         {
-            _db.Add(entity);
+            dbSet.Add(entity);
         }
         // Allow derived classes to override this method
         public virtual void Remove(T entity)
         {
-            _db.Remove(entity);
+            dbSet.Remove(entity);
         }
         // Allow derived classes to override this method
         public virtual void Update(T entity)
         {
-            _db.Update(entity);
+            dbSet.Update(entity);
         }
     }
 }

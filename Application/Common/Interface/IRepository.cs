@@ -15,6 +15,8 @@ namespace Application.Common.Interface
         Task<IEnumerable<T>> GetAll(Expression<Func<T, bool>>? filter = null, string? includeProperties = null, bool tracked=true);
         // Retrieve a single record from the database
         Task<T> Get(Expression<Func<T, bool>> filter, string? includeProperties = null, bool tracked =true);
+        // Return true if any record exists in the database that satisfies the given filter
+        bool Any(Expression<Func<T, bool>> filter);
         // Add a new record to the database
         void Add(T entity);
         // Update an existing record in the database
