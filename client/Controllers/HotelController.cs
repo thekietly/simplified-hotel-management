@@ -65,13 +65,15 @@ namespace client.Controllers
                 // User has uploaded an image
                 if (hotel.Image != null)
                 {
-                    // TODO: Test this
+                    // Retrieve the file path 
                     string fileName = Guid.NewGuid().ToString() + Path.GetExtension(hotel.Image.FileName);
                     string imagePath = Path.Combine(_hostEnvironment.WebRootPath, @"assets\img\Hotel");
+                    // Navigate to the file path and create the file
                     using (var fileStream = new FileStream(Path.Combine(imagePath, fileName), FileMode.Create))
                     {
                         hotel.Image.CopyTo(fileStream);
                     }
+                    // Set the image URL to the file path
                     hotel.ImageUrl = @"\assets\img\Hotel\"+ fileName;
                 }
                 // Add default image. 
