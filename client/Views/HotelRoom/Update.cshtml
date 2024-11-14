@@ -17,16 +17,18 @@
 
             <div class="form-floating py-2 col-12">
                 <label asp-for="HotelRoomVM.RoomId" class="ms-2">Room number</label>
-                <input asp-for="HotelRoomVM.RoomId" class="form-control border shadow" />
+                <input asp-for="HotelRoomVM.RoomId" class="form-control border shadow" readonly/>
                 <span asp-validation-for="HotelRoomVM.RoomId" class="text-danger"></span>
             </div>
 
             <div class="form-floating py-2 col-12">
                 <label asp-for="HotelRoomVM.HotelId" class="ms-2">Hotel name</label>
 
-                <select asp-for="HotelRoomVM.HotelId" asp-items="Model.HotelList" class="form-control border shadow" >
+                <select asp-for="HotelRoomVM.HotelId" asp-items="Model.HotelList" class="form-control border shadow" disabled>
                     <option value="">Select hotel</option>
                 </select>
+
+                <input asp-for="HotelRoomVM.HotelId" type="hidden" />
                 <span asp-validation-for="HotelRoomVM.HotelId" class="text-danger"></span>
             </div>
             
