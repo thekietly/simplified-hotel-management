@@ -1,6 +1,8 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -21,12 +23,13 @@ namespace Domain.Entities
         public required string Address { get; set; }
 
         public string? Description{ get; set; }
-
-        
+        [NotMapped]
+        public IFormFile? Image { get; set; }
         public string? ImageUrl { get; set; }
         [Required]
         [Range(50, 3000, ErrorMessage = "Please enter the correct value from 50 to 3000")]
         public double Size { get; set; }
+
 
         public DateTime? UpdatedBy { get; set; }
 
