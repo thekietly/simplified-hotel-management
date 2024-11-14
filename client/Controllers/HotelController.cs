@@ -62,6 +62,22 @@ namespace client.Controllers
                     ModelState.AddModelError("Name", "A hotel with the same name already exists.");
                     return View(hotel);
                 }
+                // User has uploaded an image
+                if (hotel.Image != null)
+                {
+                    // TODO: Test this
+                    string fileName = Guid.NewGuid().ToString() + Path.GetExtension(hotel.Image.FileName);
+                    string imagePath = Path.Combine(_hostEnvironment.WebRootPath, @"assets\img\Hotel");
+                    using (var fileStream = new FileStream(Path.Combine(imagePath, fileName), FileMode.Create))
+                    {
+                        hotel.Image.CopyTo(fileStream);
+                    }
+                    hotel.ImageUrl = @"\assets\img\Hotel\"+ fileName;
+                }
+                // Add default image. 
+                else { 
+                    hotel.ImageUrl = "https://pix8.agoda.net/hotelImages/2418908/-1/d97ea16b355f57cb293d11b5ce90d530.jpg?ca=8&ce=1&s=450x450";
+                }
 
                 // if user inputs are valid then add hotel room to database
                 _unitOfWork.Hotel.Add(hotel);
