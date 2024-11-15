@@ -130,8 +130,10 @@ namespace client.Controllers
             // If hotel image is not null then remove the old image and add the new image
             if (hotel.Image != null)
             {
-                // Retrieve the file path 
+                // Generate a new unique file name
                 string fileName = Guid.NewGuid().ToString() + Path.GetExtension(hotel.Image.FileName);
+
+                // Retrieve the file path of the new image
                 string imagePath = Path.Combine(_hostEnvironment.WebRootPath, @"assets\img\Hotel");
                 // Navigate to the file path and create the file
                 using (var fileStream = new FileStream(Path.Combine(imagePath, fileName), FileMode.Create))
@@ -150,7 +152,7 @@ namespace client.Controllers
                         System.IO.File.Delete(oldImagePath);
                     }
                 }
-                // Set the image URL to the file path
+                // Set the image URL to new file path
                 hotel.ImageUrl = @"\assets\img\Hotel\" + fileName;
             }
 
@@ -173,6 +175,17 @@ namespace client.Controllers
                 TempData["Error"] = "The hotel room you are trying to delete does not exist.";
 
                 return RedirectToAction("Error", "Home");
+            }
+
+            // TODO: Delete this hotel also deletes all the hotel rooms associated with it - this hotel ought to be deleted from the database
+            // Delete this hotel also deletes the image associated with it
+            if (hotel.ImageUrl != null) {
+                string imagePath = Path.Combine(_hostEnvironment.WebRootPath, hotel.ImageUrl.TrimStart('\\'));
+                if (System.IO.File.Exists(imagePath))
+                {
+                    System.IO.File.Delete(imagePath);
+                }
+
             }
             _unitOfWork.Hotel.Remove(hotel);
             _unitOfWork.Save();
