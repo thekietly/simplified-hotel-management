@@ -20,8 +20,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="wwwroot\assets\img\Hotel\" />
     <Folder Include="wwwroot\assets\img\HotelRoom\" />
+    <Folder Include="wwwroot\assets\img\Hotel\" />
   </ItemGroup>
 
 </Project>

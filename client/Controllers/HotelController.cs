@@ -126,6 +126,34 @@ namespace client.Controllers
                 // return view with the hotel room
                 return View(hotel);
             }
+
+            // If hotel image is not null then remove the old image and add the new image
+            if (hotel.Image != null)
+            {
+                // Retrieve the file path 
+                string fileName = Guid.NewGuid().ToString() + Path.GetExtension(hotel.Image.FileName);
+                string imagePath = Path.Combine(_hostEnvironment.WebRootPath, @"assets\img\Hotel");
+                // Navigate to the file path and create the file
+                using (var fileStream = new FileStream(Path.Combine(imagePath, fileName), FileMode.Create))
+                {
+                    hotel.Image.CopyTo(fileStream);
+                }
+                // Remove the old image
+
+                if (!string.IsNullOrEmpty(fileName))
+                {
+                    // Retrieve the file path of the old image
+                    string oldImagePath = Path.Combine(_hostEnvironment.WebRootPath, hotel.ImageUrl.TrimStart('\\'));
+                    // Delete the old image
+                    if (System.IO.File.Exists(oldImagePath))
+                    {
+                        System.IO.File.Delete(oldImagePath);
+                    }
+                }
+                // Set the image URL to the file path
+                hotel.ImageUrl = @"\assets\img\Hotel\" + fileName;
+            }
+
             // if user inputs are valid then update hotel room details
             _unitOfWork.Hotel.Update(hotel);
             // update database
