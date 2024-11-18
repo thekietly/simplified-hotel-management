@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Http;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Domain.Entities
@@ -43,6 +44,9 @@ namespace Domain.Entities
         public int Beds { get; set; }
 
         public BedType BedType { get; set; }
+
+        [NotMapped]
+        public IFormFile? Image { get; set; }
         public string? ImageUrl { get; set; }
 
         public string? SpecialDetails { get; set; }

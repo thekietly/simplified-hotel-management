@@ -9,7 +9,7 @@ namespace client.Controllers
     {
         // giving access to the hotel database collection via the IHotelRepository interface
         private readonly IUnitOfWork _unitOfWork;
-        private readonly IWebHostEnvironment _hostEnvironment;
+        private readonly IWebHostEnvironment _webHostEnvironment;
 
         public HotelController(IUnitOfWork unitOfWork, IWebHostEnvironment webHostEnvironment)
         {
@@ -18,7 +18,7 @@ namespace client.Controllers
             _unitOfWork = unitOfWork;
 
             // IWebHostEnvironment is to work with the file system on the webserver.
-            _hostEnvironment = webHostEnvironment;
+            _webHostEnvironment = webHostEnvironment;
         }
         // Get: /Hotel
         public async Task<IActionResult> Index()
@@ -65,9 +65,9 @@ namespace client.Controllers
                 // User has uploaded an image
                 if (hotel.Image != null)
                 {
-                    // Retrieve the file path 
+                    // Generate a new unique id + file extension to prevent duplicate file names
                     string fileName = Guid.NewGuid().ToString() + Path.GetExtension(hotel.Image.FileName);
-                    string imagePath = Path.Combine(_hostEnvironment.WebRootPath, @"assets\img\Hotel");
+                    string imagePath = Path.Combine(_webHostEnvironment.WebRootPath, @"assets\img\Hotel");
                     // Navigate to the file path and create the file
                     using (var fileStream = new FileStream(Path.Combine(imagePath, fileName), FileMode.Create))
                     {
@@ -134,7 +134,7 @@ namespace client.Controllers
                 string fileName = Guid.NewGuid().ToString() + Path.GetExtension(hotel.Image.FileName);
 
                 // Retrieve the file path of the new image
-                string imagePath = Path.Combine(_hostEnvironment.WebRootPath, @"assets\img\Hotel");
+                string imagePath = Path.Combine(_webHostEnvironment.WebRootPath, @"assets\img\Hotel");
                 // Navigate to the file path and create the file
                 using (var fileStream = new FileStream(Path.Combine(imagePath, fileName), FileMode.Create))
                 {
@@ -145,7 +145,7 @@ namespace client.Controllers
                 if (!string.IsNullOrEmpty(fileName))
                 {
                     // Retrieve the file path of the old image
-                    string oldImagePath = Path.Combine(_hostEnvironment.WebRootPath, hotel.ImageUrl.TrimStart('\\'));
+                    string oldImagePath = Path.Combine(_webHostEnvironment.WebRootPath, hotel.ImageUrl.TrimStart('\\'));
                     // Delete the old image
                     if (System.IO.File.Exists(oldImagePath))
                     {
@@ -180,7 +180,7 @@ namespace client.Controllers
             // TODO: Delete this hotel also deletes all the hotel rooms associated with it - this hotel ought to be deleted from the database
             // Delete this hotel also deletes the image associated with it
             if (hotel.ImageUrl != null) {
-                string imagePath = Path.Combine(_hostEnvironment.WebRootPath, hotel.ImageUrl.TrimStart('\\'));
+                string imagePath = Path.Combine(_webHostEnvironment.WebRootPath, hotel.ImageUrl.TrimStart('\\'));
                 if (System.IO.File.Exists(imagePath))
                 {
                     System.IO.File.Delete(imagePath);

@@ -6,11 +6,13 @@
 }
 <h1>Update hotel room details</h1>
 <div class="card-body border p-4">
-    <form method="post" class="row">
+    <form method="post" class="row" enctype="multipart/form-data">
 
         <div class="p-3">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-
+            <div class="col-2">
+                <img src="@Model.HotelRoomVM.ImageUrl" class="rounded" alt="@(Model.HotelRoomVM.Name ?? "Hotel room") Image" />
+            </div>
             <div class="form-floating py-2 col-12">
                 <label asp-for="HotelRoomVM.Name" class="ms-2">Name</label>
                 <input asp-for="HotelRoomVM.Name" class="form-control border shadow" />
@@ -58,8 +60,13 @@
                 <span asp-validation-for="HotelRoomVM.BedType" class="text-danger"></span>
             </div>
             <div class="form-floating py-2 col-12">
-                <label asp-for="HotelRoomVM.ImageUrl" class="ms-2">Room image</label>
-                <input asp-for="HotelRoomVM.ImageUrl" class="form-control border shadow" />
+                <label asp-for="HotelRoomVM.Image" class="ms-2">Hotel image</label>
+                <input asp-for="HotelRoomVM.Image" class="form-control border shadow" />
+                <span asp-validation-for="HotelRoomVM.Image" class="text-danger"></span>
+            </div>
+            <div class="form-floating py-2 col-12">
+                <label asp-for="HotelRoomVM.ImageUrl" hidden class="ms-2">Room image</label>
+                <input asp-for="HotelRoomVM.ImageUrl" hidden class="form-control border shadow" />
                 <span asp-validation-for="HotelRoomVM.ImageUrl" class="text-danger"></span>
             </div>
             <div class="form-floating py-2 col-12">
