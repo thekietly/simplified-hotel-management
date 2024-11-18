@@ -20,6 +20,10 @@ namespace Infrastructure.Data
         
         public DbSet<HotelRoom> HotelRooms { get; set; }
 
+        public DbSet<Amenity> Amenities { get; set; }
+        public DbSet<RoomAmenity> RoomAmenities { get; set; }
+        public DbSet<HotelAmenity> HotelAmenities { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             // initializing data for the model - HotelRoom
@@ -33,7 +37,7 @@ namespace Infrastructure.Data
                 ImageUrl = "https://acihome.vn/uploads/15/tieu-chuan-biet-thu-5-sao-co-canh-quan-dep-gan-gui-voi-thien-nhien.jpg",
                 Size = 200,
                 UpdatedBy = DateTime.Now,
-                
+
             },
             new Hotel
             {
@@ -101,7 +105,104 @@ namespace Infrastructure.Data
                 BedType = BedType.Double
             }
             );
+            modelBuilder.Entity<Amenity>().HasData(new Amenity
+            {
+                Id = 1,
+                Name = "Wifi",
+                Description = "Standard wifi service",
+                Icon = "bi-wifi"
+            },
+            new Amenity
+            {
+                Id = 2,
+                Name = "TV",
+                Description = "Standard TV service",
+                Icon = "bi-tv"
+            },
+            new Amenity
+            {
+                Id = 3,
+                Name = "Air conditioner",
+                Description = "Standard air conditioner",
+                Icon = "bi-thermometer-snow"
+            },
+            new Amenity
+            {
+                Id = 4,
+                Name = "Mini bar",
+                Description = "Standard mini bar",
+                Icon = "bi-fridge"
+            },
+            new Amenity
+            {
+                Id = 5,
+                Name = "Parking",
+                Description = "Standard parking lot",
+                Icon = "bi-p-circle"
+            },
+            new Amenity
+            {
+                Id = 6,
+                Name = "Restaurant",
+                Description = "Standard breakfast",
+                Icon = "bi-egg-fried"
+            },
+            new Amenity
+            {
+                Id = 7,
+                Name = "Taxi to airport",
+                Description = "Travelling services",
+                Icon = "bi-airplane"
+            }
+            );
 
+            modelBuilder.Entity<RoomAmenity>().HasKey(ra => new { ra.RoomId, ra.AmenityId });
+            modelBuilder.Entity<RoomAmenity>().HasData(new RoomAmenity
+            {
+                RoomId = "101",
+                AmenityId = 1
+            }, new RoomAmenity
+            {
+                RoomId = "101",
+                AmenityId = 2
+            },
+            new RoomAmenity
+            {
+                RoomId = "101",
+                AmenityId = 3
+            },
+            new RoomAmenity
+            {
+                RoomId = "102",
+                AmenityId = 1
+            },
+            new RoomAmenity
+            {
+                RoomId = "102",
+                AmenityId = 2
+            },
+            new RoomAmenity
+            {
+                RoomId = "102",
+                AmenityId = 3
+            });
+
+            modelBuilder.Entity<HotelAmenity>().HasKey(ha => new { ha.HotelId, ha.AmenityId });
+            modelBuilder.Entity<HotelAmenity>().HasData(new HotelAmenity
+            {
+                HotelId = 1,
+                AmenityId = 5
+            }, 
+            new HotelAmenity
+            {
+                HotelId = 1,
+                AmenityId = 6
+            }, 
+            new HotelAmenity
+            {
+                HotelId = 1,
+                AmenityId = 7
+            });
 
 
         }

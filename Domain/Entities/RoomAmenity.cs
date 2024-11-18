@@ -10,12 +10,12 @@ namespace Domain.Entities
 
         [Key, Column(Order = 1)]
         [Required]
-        [ForeignKey("HotelRoom")]
-        public int HotelRoomId { get; set; }
 
-        public HotelRoom HotelRoom { get; set; }
+        public string RoomId { get; set; }
 
-        public Amenity Amenity { get; set; }
+        public virtual HotelRoom? HotelRoom { get; set; }
+
+        public virtual Amenity? Amenity { get; set; }
 
 
     }
