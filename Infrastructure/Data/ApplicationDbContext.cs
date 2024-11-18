@@ -156,7 +156,8 @@ namespace Infrastructure.Data
                 Icon = "bi-airplane"
             }
             );
-
+            // Add composite key (AmenityId, HotelId, RoomId) to RoomAmenity
+            // Add foreign key constraints to RoomAmenity (HotelId, RoomId) for HotelRoom and AmenityId for Amenity.
             modelBuilder.Entity<RoomAmenity>(entity =>
             {
                 entity.HasKey(ra => new { ra.AmenityId, ra.HotelId, ra.RoomId });
