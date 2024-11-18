@@ -54,5 +54,8 @@ namespace Domain.Entities
 
         public virtual Hotel? Hotel { get; set; }
 
+        public ICollection<RoomAmenity> RoomAmenities { get; set; }
+
+
     }
 }

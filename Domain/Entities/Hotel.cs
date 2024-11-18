@@ -34,5 +34,6 @@ namespace Domain.Entities
         public DateTime? UpdatedBy { get; set; }
 
         public virtual ICollection<HotelRoom>? HotelRooms { get; set; }
+        public virtual ICollection<HotelAmenity>? HotelAmenities { get; set; }
     }
 }
