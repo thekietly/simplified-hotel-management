@@ -50,11 +50,8 @@ namespace Domain.Entities
         public string? ImageUrl { get; set; }
 
         public string? SpecialDetails { get; set; }
-
-
         public virtual Hotel? Hotel { get; set; }
 
-
-
+        public ICollection<RoomAmenity>? RoomAmenities { get; set; }
     }
 }

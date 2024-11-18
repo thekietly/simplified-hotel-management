@@ -14,8 +14,8 @@ namespace Domain.Entities
         public string Description { get; set; }
 
         public string? Icon { get; set; }
-
-
+        public ICollection<RoomAmenity>? RoomAmenities { get; set; }
+        public ICollection<HotelAmenity>? HotelAmenities { get; set; }
 
     }
 }

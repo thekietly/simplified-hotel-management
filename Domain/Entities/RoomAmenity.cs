@@ -9,15 +9,15 @@ namespace Domain.Entities
         public int AmenityId { get; set; }
 
         [Key, Column(Order = 1)]
-        [Required]
+        public int HotelId { get; set; }
+        [Key, Column(Order = 2)]
 
         public string RoomId { get; set; }
 
         public virtual HotelRoom? HotelRoom { get; set; }
+        public virtual Hotel? Hotel { get; set; }
 
         public virtual Amenity? Amenity { get; set; }
-
-
     }
 
 }

@@ -1,6 +1,7 @@
 ﻿using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -17,7 +18,7 @@ namespace Infrastructure.Data
 
         }
         public DbSet<Hotel> Hotels { get; set; }
-        
+
         public DbSet<HotelRoom> HotelRooms { get; set; }
 
         public DbSet<Amenity> Amenities { get; set; }
@@ -156,34 +157,53 @@ namespace Infrastructure.Data
             }
             );
 
-            modelBuilder.Entity<RoomAmenity>().HasKey(ra => new { ra.RoomId, ra.AmenityId });
+            modelBuilder.Entity<RoomAmenity>(entity =>
+            {
+                entity.HasKey(ra => new { ra.AmenityId, ra.HotelId, ra.RoomId });
+
+                entity.HasOne(ra => ra.HotelRoom)
+                    .WithMany(hr => hr.RoomAmenities)
+                    .HasForeignKey(ra => new { ra.HotelId, ra.RoomId })
+                    .OnDelete(DeleteBehavior.NoAction); // Change to NoAction
+
+                entity.HasOne(ra => ra.Amenity)
+                    .WithMany(a => a.RoomAmenities)
+                    .HasForeignKey(ra => ra.AmenityId)
+                    .OnDelete(DeleteBehavior.NoAction); // Change to NoAction
+            });
             modelBuilder.Entity<RoomAmenity>().HasData(new RoomAmenity
             {
                 RoomId = "101",
+                HotelId = 1,
                 AmenityId = 1
             }, new RoomAmenity
             {
                 RoomId = "101",
+                HotelId = 1,
                 AmenityId = 2
             },
             new RoomAmenity
             {
                 RoomId = "101",
+                HotelId = 1,
                 AmenityId = 3
             },
             new RoomAmenity
             {
                 RoomId = "102",
+                HotelId = 1,
                 AmenityId = 1
             },
             new RoomAmenity
             {
                 RoomId = "102",
+                HotelId = 1,
                 AmenityId = 2
             },
             new RoomAmenity
             {
                 RoomId = "102",
+                HotelId = 1,
                 AmenityId = 3
             });
 
@@ -192,12 +212,12 @@ namespace Infrastructure.Data
             {
                 HotelId = 1,
                 AmenityId = 5
-            }, 
+            },
             new HotelAmenity
             {
                 HotelId = 1,
                 AmenityId = 6
-            }, 
+            },
             new HotelAmenity
             {
                 HotelId = 1,
