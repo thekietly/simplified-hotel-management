@@ -60,6 +60,12 @@
                 <span asp-validation-for="HotelRoomVM.BedType" class="text-danger"></span>
             </div>
             <div class="form-floating py-2 col-12">
+                <label asp-for="HotelRoomVM.RoomSize" class="ms-2">Size of the room</label>
+                <input asp-for="HotelRoomVM.RoomSize" class="form-control border shadow" />
+                <span asp-validation-for="HotelRoomVM.RoomSize" class="text-danger"></span>
+            </div>
+
+            <div class="form-floating py-2 col-12">
                 <label asp-for="HotelRoomVM.Image" class="ms-2">Hotel image</label>
                 <input asp-for="HotelRoomVM.Image" class="form-control border shadow" />
                 <span asp-validation-for="HotelRoomVM.Image" class="text-danger"></span>
