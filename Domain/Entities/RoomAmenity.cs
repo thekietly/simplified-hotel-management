@@ -19,5 +19,4 @@ namespace Domain.Entities
 
         public virtual Amenity? Amenity { get; set; }
     }
-
 }

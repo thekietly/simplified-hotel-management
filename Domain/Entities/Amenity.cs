@@ -2,6 +2,10 @@
 
 namespace Domain.Entities
 {
+    public enum AmenityType
+    {
+        Hotel, Room, Both
+    }
     public class Amenity
     {
         [Key]
@@ -10,12 +14,11 @@ namespace Domain.Entities
         [MaxLength(50)]
         [Required]
         public string Name { get; set; }
-
         public string Description { get; set; }
 
-        public string? Icon { get; set; }
+        public AmenityType? AmenityType { get; set; }
         public ICollection<RoomAmenity>? RoomAmenities { get; set; }
         public ICollection<HotelAmenity>? HotelAmenities { get; set; }
-
     }
+
 }

@@ -1,7 +1,6 @@
 ﻿using Domain.Entities;
 using Application.Common.Interface;
 using Infrastructure.Data;
-
 namespace Infrastructure.Repository
 {
     public class HotelAmenityRepository : Repository<HotelAmenity>, IHotelAmenityRepository
@@ -11,6 +10,5 @@ namespace Infrastructure.Repository
         {
             _db = db;
         }
-
     }
 }

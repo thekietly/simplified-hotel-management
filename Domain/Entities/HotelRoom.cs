@@ -44,7 +44,8 @@ namespace Domain.Entities
         public int Beds { get; set; }
 
         public BedType BedType { get; set; }
-
+        [Range(1, 200)]
+        public int RoomSize { get; set; }   
         [NotMapped]
         public IFormFile? Image { get; set; }
         public string? ImageUrl { get; set; }

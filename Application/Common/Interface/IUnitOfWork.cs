@@ -13,6 +13,11 @@ namespace Application.Common.Interface
         public IHotelRepository Hotel { get; }
         // Provide access to the hotel room repository
         public IHotelRoomRepository HotelRoom { get; }
+        // Provide access to the amenity repository
+        public IHotelAmenityRepository HotelAmenity { get; }
+        public IRoomAmenityRepository RoomAmenity { get; }
+        public IAmenityRepository Amenity { get; }
+
         // Save changes to the database asynchronously
         void Save();
     }

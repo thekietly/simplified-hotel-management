@@ -22,6 +22,7 @@ namespace Infrastructure.Data
         public DbSet<HotelRoom> HotelRooms { get; set; }
 
         public DbSet<Amenity> Amenities { get; set; }
+
         public DbSet<RoomAmenity> RoomAmenities { get; set; }
         public DbSet<HotelAmenity> HotelAmenities { get; set; }
 
@@ -64,9 +65,8 @@ namespace Infrastructure.Data
                 Beds = 2,
                 Name = "Standard Room",
                 RoomType = RoomType.Standard,
-                BedType = BedType.Double
-
-
+                BedType = BedType.Double,
+                RoomSize = 200
             },
             new HotelRoom
             {
@@ -78,7 +78,8 @@ namespace Infrastructure.Data
                 Beds = 2,
                 Name = "Standard Room",
                 RoomType = RoomType.Standard,
-                BedType = BedType.Double
+                BedType = BedType.Double,
+                RoomSize = 200
             },
             new HotelRoom
             {
@@ -90,8 +91,8 @@ namespace Infrastructure.Data
                 Beds = 2,
                 Name = "Standard Room",
                 RoomType = RoomType.Standard,
-                BedType = BedType.Double
-
+                BedType = BedType.Double,
+                RoomSize = 200
             },
             new HotelRoom
             {
@@ -103,61 +104,64 @@ namespace Infrastructure.Data
                 Beds = 2,
                 Name = "Standard Room",
                 RoomType = RoomType.Standard,
-                BedType = BedType.Double
+                BedType = BedType.Double,
+                RoomSize = 200
             }
             );
+            // Initializing data for the model - Amenity
             modelBuilder.Entity<Amenity>().HasData(new Amenity
             {
                 Id = 1,
                 Name = "Wifi",
                 Description = "Standard wifi service",
-                Icon = "bi-wifi"
+                AmenityType = AmenityType.Both
             },
             new Amenity
             {
                 Id = 2,
                 Name = "TV",
                 Description = "Standard TV service",
-                Icon = "bi-tv"
+                AmenityType = AmenityType.Room
             },
             new Amenity
             {
                 Id = 3,
-                Name = "Air conditioner",
-                Description = "Standard air conditioner",
-                Icon = "bi-thermometer-snow"
+                Name = "Air conditioning",
+                Description = "Standard air conditioning",
+                AmenityType = AmenityType.Room
             },
             new Amenity
             {
                 Id = 4,
                 Name = "Mini bar",
                 Description = "Standard mini bar",
-                Icon = "bi-fridge"
+                AmenityType = AmenityType.Room
             },
             new Amenity
             {
                 Id = 5,
                 Name = "Parking",
                 Description = "Standard parking lot",
-                Icon = "bi-p-circle"
+                AmenityType = AmenityType.Hotel
             },
             new Amenity
             {
                 Id = 6,
                 Name = "Restaurant",
                 Description = "Standard breakfast",
-                Icon = "bi-egg-fried"
+                AmenityType = AmenityType.Hotel
             },
             new Amenity
             {
                 Id = 7,
                 Name = "Taxi to airport",
                 Description = "Travelling services",
-                Icon = "bi-airplane"
+                AmenityType = AmenityType.Hotel
             }
             );
             // Add composite key (AmenityId, HotelId, RoomId) to RoomAmenity
             // Add foreign key constraints to RoomAmenity (HotelId, RoomId) for HotelRoom and AmenityId for Amenity.
+            // Purpose is to link amenities to rooms.
             modelBuilder.Entity<RoomAmenity>(entity =>
             {
                 entity.HasKey(ra => new { ra.AmenityId, ra.HotelId, ra.RoomId });
@@ -207,7 +211,7 @@ namespace Infrastructure.Data
                 HotelId = 1,
                 AmenityId = 3
             });
-
+            // This is the same as RoomAmenity but for HotelAmenity, purpose is to link amenities to hotels.
             modelBuilder.Entity<HotelAmenity>().HasKey(ha => new { ha.HotelId, ha.AmenityId });
             modelBuilder.Entity<HotelAmenity>().HasData(new HotelAmenity
             {

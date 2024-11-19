@@ -1,7 +1,6 @@
 ﻿using Application.Common.Interface;
 using Domain.Entities;
 using Infrastructure.Data;
-
 namespace Infrastructure.Repository
 {
     public class RoomAmenityRepository : Repository<RoomAmenity>, IRoomAmenityRepository
