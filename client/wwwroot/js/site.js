@@ -6,3 +6,23 @@
 function submitDeleteForm(id) {
     document.getElementById('deleteForm-' + id).submit();
 }
+
+function toggleEditForm() {
+    // Select all elements with the class 'toggle-edit' and add an event listener
+    document.querySelectorAll('.toggle-edit').forEach(icon => {
+        icon.addEventListener('click', function () {
+            const targetId = this.dataset.target;
+            const inputField = document.querySelector(`[asp-for='${targetId}']`);
+
+            if (inputField) {
+                inputField.readOnly = !inputField.readOnly; // Toggle readonly
+                if (!inputField.readOnly) {
+                    inputField.classList.add('border-primary'); // Highlight editable field
+                } else {
+                    inputField.classList.remove('border-primary'); // Remove highlight
+                }
+            }
+        });
+    });
+}
+document.addEventListener('DOMContentLoaded', initializeFieldToggles);
