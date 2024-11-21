@@ -1,0 +1,43 @@
+﻿@model Domain.Entities.Amenity
+
+<h1>Update amenities details</h1>
+
+<div class="card-body border p-4">
+
+    <form method="post" class="row">
+
+        <div class="p-3">
+
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-floating py-2 col-12">
+                @*Use display names from the model instead*@
+                <label asp-for="Name" class="ms-2">Amenity name</label>
+                <input asp-for="Name" class="form-control border shadow" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+
+            </div>
+            <div class="form-floating py-2 col-12">
+                <label asp-for="Description" class="ms-2">Amenity description</label>
+                <input asp-for="Description" class="form-control border shadow" />
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+            <div class="form-floating py-2 col-12">
+                <label asp-for="AmenityType" class="ms-2">Amenity type</label>
+                <input asp-for="AmenityType" class="form-control border shadow" />
+                <span asp-validation-for="AmenityType" class="text-danger"></span>
+            </div>           
+
+            <div class="row pt-2 ">
+
+                <div class="col-6 col-md-3">
+                    <button type="submit" class="btn btn-success w-100"><i class="bi bi-check"></i> Update</button>
+                </div>
+
+                <div class="col-6 col-md-3">
+
+                    <a asp-controller="Amenity" asp-action="Index" class="btn btn-outline-success w-100"><i class="bi bi-x"></i> Cancel</a>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
