@@ -25,7 +25,7 @@ namespace client.Controllers
         {
 
             Amenity amenity= await _unitOfWork.Amenity.Get(a => a.Id == id);
-            // any edge case where the hotel room is not found? go directly to this page without hotel room?
+            // any edge case where the amenity is not found? go directly to this page without hotel room/hotel?
             if (amenity == null)
             {
                 TempData["Error"] = "The amenity you are trying to update does not exist.";
