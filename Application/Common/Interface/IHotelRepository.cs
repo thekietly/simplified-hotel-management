@@ -10,8 +10,7 @@ namespace Application.Common.Interface
 {
     public interface IHotelRepository : IRepository<Hotel>
     {
-        // .Check if a hotel with the same name already exists
-        bool Exists(Hotel entity);
+
 
 
     }

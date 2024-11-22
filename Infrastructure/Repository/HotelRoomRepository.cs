@@ -13,10 +13,5 @@ namespace Infrastructure.Repository
             _db = db;
         }
 
-        public bool Exists(HotelRoom entity)
-        {
-            return _db.HotelRooms.Any(hr => hr.RoomId == entity.RoomId && hr.HotelId == entity.HotelId);
-            
-        }
     }
 }

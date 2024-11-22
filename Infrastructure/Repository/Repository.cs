@@ -63,11 +63,6 @@ namespace Infrastructure.Repository
             return await query.ToListAsync();
         }
 
-        public bool Any(Expression<Func<T, bool>> filter)
-        {
-            return dbSet.Any(filter);
-        }
-
 
         // Allow derived classes to override this method
         public virtual void Add(T entity)
@@ -83,6 +78,31 @@ namespace Infrastructure.Repository
         public virtual void Update(T entity)
         {
             dbSet.Update(entity);
+        }
+
+        public virtual bool Any(Expression<Func<T, bool>> filter, string? includeProperties = null)
+        {
+
+            IQueryable<T> query = dbSet;
+
+            // Apply include properties if specified
+            if (!string.IsNullOrEmpty(includeProperties))
+            {
+                foreach (var property in includeProperties.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+                {
+                    query = query.Include(property);
+                }
+            }
+
+            // Apply the filter if specified
+            if (filter != null)
+            {
+                query = query.Where(filter);
+            }
+
+            // Check if any matching records exist
+            return query.Any();
+        
         }
     }
 }

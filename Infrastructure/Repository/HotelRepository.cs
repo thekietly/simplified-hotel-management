@@ -13,10 +13,6 @@ namespace Infrastructure.Repository
             _db = db;
         }
 
-        // Check if a hotel with the same name already exists
-        public bool Exists(Hotel entity)
-        {
-            return _db.Hotels.Any(e => e.Name == entity.Name);
-        }
+
     }
 }
