@@ -25,4 +25,4 @@ function toggleEditForm() {
         });
     });
 }
-document.addEventListener('DOMContentLoaded', initializeFieldToggles);
+document.addEventListener('DOMContentLoaded', toggleEditForm);
