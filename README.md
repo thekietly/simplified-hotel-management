@@ -1,8 +1,13 @@
-# simplified-hotel-management
+# Simplified Hotel Management
  Adopting SGV-restaurant repo to develop this hotel management website. 
+ In summary, different users will be able to use different components of this website: 
+ 1. __Website admin__ will be able to use the CMS where you modify/delete hotels/rooms/amenities/reviews.
+ 2. __Anonymous users__ will be able to view a list of hotels and rooms with their associated average price per night.
+ 3. __Registered users__ will be able to make bookings.
+ 4. __Hotel admin__ will be able to update their hotel/rooms details.
 
 # Tools
-Ultilise .NET, Boostrap and SQL Server Management Studio v20
+Ultilise .NET v8, Boostrap v5.3 and SQL Server Management Studio v20
 
 # Design tools
 SQL Server Management Studio Database Diagram, Class diagram (Umlet) and User case diagram (Umlet)
@@ -14,9 +19,37 @@ Trello board (kanban board).
 Layered Architecture, MVC, Repository patterns and Identity.
 
 # Goals
-Mimicking the features of booking.com and deploy it as a CMS website.
+Mimicking the features of booking.com and deploy it as a general website (including CMS).
 
 # Features
-Booking, Registeration, Hotel, Room, Review and Amenity.
+6 core components will be Booking, Registeration, Hotel, Room, Review and Amenity.
+ 1. __Website admin__
+     - Have access to CMS where you modify/delete hotels/rooms/amenities/reviews.
+     - Admin dashboard -> provides website insights such as hotel registeration, revenue, users, etc
+ 4. __Anonymous users__
+     - will be able to view a list of hotels and rooms with their associated average price per night.
+ 6. __Registered users__
+     - Same as anonymous users
+     - will also be able to make bookings.       
+ 8. __Hotel admin__
+     - Have acess to CMS where you update your hotel/rooms details.
+     - You will have a similar report insights however, you can only see your user bookings, revenue and reviews.
+       
+# Approach
+I will try to implement the website first then design everything along the way so I don't fall into a state where I design everything but hadn't got anything completed.
 
+# Current progress:
+## Completed
+CMS: Completed Hotels / Hotel rooms / Amenity
+
+## In progress
+Booking CRUD
+
+## Future plans/remaning features: 
+- __Users Identity__ (Anonymous, Registered, Admin, Hotel Admin)
+- Reviews for Registered Users
+- Provide __reports insights__ to website admin and 
+- Focucs on website designs - re-design Hotels, Rooms, Amenities, Bookings
+
+  
 
