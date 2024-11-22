@@ -56,7 +56,7 @@ namespace client.Controllers
 
                 // Check if the hotel name already exists in the database
                 
-                if (_unitOfWork.Hotel.Exists(hotel))
+                if (_unitOfWork.Hotel.Any(h => h.Name == hotel.Name))
                 {
                     // key in AddModelError refers to the property in the model - in this case, error appears under the Name property
                     ModelState.AddModelError("Name", "A hotel with the same name already exists.");

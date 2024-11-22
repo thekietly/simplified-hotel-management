@@ -166,7 +166,7 @@ namespace client.Controllers
                 }
                 // Check if the hotel room already exists in the database
                 
-                if (_unitOfWork.HotelRoom.Exists(hotelRoomView.HotelRoomVM))
+                if (_unitOfWork.HotelRoom.Any(hr => hr.RoomId == hotelRoomView.HotelRoomVM.RoomId && hr.HotelId == hotelRoomView.HotelRoomVM.HotelId))
                 {
                     ModelState.AddModelError("", "The hotel room already exists in the database. Consider using a different room number or a different hotel.");
                     return View(hotelRoomView);
