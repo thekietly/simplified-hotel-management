@@ -20,9 +20,38 @@ namespace client.Controllers
             var amenities = await _unitOfWork.Amenity.GetAll();
             return View(amenities);
         }
+        // GET: AmenityController/Update
+        public async Task<IActionResult> Update(int? id)
+        {
 
+            Amenity amenity= await _unitOfWork.Amenity.Get(a => a.Id == id);
+            // any edge case where the hotel room is not found? go directly to this page without hotel room?
+            if (amenity == null)
+            {
+                TempData["Error"] = "The amenity you are trying to update does not exist.";
+                return RedirectToAction("Error", "Home");
+            }
+            return View(amenity);
+        }
+
+        [HttpPost]
+        // Post: /Amenity/Update/{id}
+        public IActionResult Update(Amenity amenity)
+        {
+            // if model is not entered correctly return view
+            if (!ModelState.IsValid)
+            {
+                // return view with the hotel room
+                return View(amenity);
+            }
+            // if user inputs are valid then update hotel room details
+            _unitOfWork.Amenity.Update(amenity);
+            // update database
+            _unitOfWork.Save();
+            return RedirectToAction("Index", "Amenity");
+        }
         // GET: AmenityController/Create
-        public async Task<IActionResult> Create()
+        public IActionResult Create()
         {
             return View();
         }
