@@ -53,6 +53,10 @@ namespace Domain.Entities
         public string? SpecialDetails { get; set; }
         public virtual Hotel? Hotel { get; set; }
 
+
+        public DateTime? Created { get; set; }
+        public DateTime? Updated { get; set; }
+
         public ICollection<RoomAmenity>? RoomAmenities { get; set; }
     }
 }

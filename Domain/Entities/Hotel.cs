@@ -31,7 +31,8 @@ namespace Domain.Entities
         public double Size { get; set; }
 
 
-        public DateTime? UpdatedBy { get; set; }
+        public DateTime? Created { get; set; }
+        public DateTime? Updated { get; set; }
 
         public virtual ICollection<HotelRoom>? HotelRooms { get; set; }
         public virtual ICollection<HotelAmenity>? HotelAmenities { get; set; }
