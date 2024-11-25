@@ -38,7 +38,7 @@ namespace Infrastructure.Data
                 Description = "Standard Room Description",
                 ImageUrl = "https://acihome.vn/uploads/15/tieu-chuan-biet-thu-5-sao-co-canh-quan-dep-gan-gui-voi-thien-nhien.jpg",
                 Size = 200,
-                UpdatedBy = DateTime.Now,
+                Updated = DateTime.Now,
 
             },
             new Hotel
@@ -49,7 +49,7 @@ namespace Infrastructure.Data
                 Description = "Standard Room Description",
                 ImageUrl = "https://acihome.vn/uploads/15/tieu-chuan-biet-thu-5-sao-co-canh-quan-dep-gan-gui-voi-thien-nhien.jpg",
                 Size = 200,
-                UpdatedBy = null
+                Updated = null
             }
 
             );

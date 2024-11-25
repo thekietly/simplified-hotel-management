@@ -12,10 +12,7 @@ namespace client.Models
         public DateOnly CheckOut { get; set; }
         // Nights
         public int Nights { get; set; }
-        // Created date
-        public DateTime Created { get; set; }
-        // Updated date
-        public DateTime Updated { get; set; }
+
 
     }
 }

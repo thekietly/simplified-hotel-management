@@ -17,12 +17,10 @@ namespace client.Controllers
         public async Task<IActionResult> Index()
         {
             HomeViewModel homePage = new() {
-                Hotels = await _unitOfWork.Hotel.GetAll(),
+                Hotels = await _unitOfWork.Hotel.GetAll(includeProperties: "HotelAmenities,Amenity"),
                 Nights = 1,
                 CheckIn = DateOnly.FromDateTime(DateTime.Now),
-                CheckOut = DateOnly.FromDateTime(DateTime.Now.AddDays(1)),
-                Created = DateTime.Now,
-                Updated = DateTime.Now
+                CheckOut = DateOnly.FromDateTime(DateTime.Now.AddDays(1))
 
             };
             
