@@ -8,8 +8,7 @@
                 
             </div>
         </div>
-    </div>
-    
+    </div>    
     <div class="card-body border p-4">
         <div class="row pb-4">
             <div class="col-6 offset-6 text-end">
@@ -25,8 +24,12 @@
                     <th>
                         Description
                     </th>
-                    <th>Amenity Type</th>
-                    <th>Actions</th>
+                    <th>
+                        Amenity Type
+                    </th>
+                    <th>
+                        Actions
+                    </th>
 
                 </tr></thead>
                 <tbody>
@@ -72,8 +75,7 @@
                                 </div>
                             </div>
                             @* Delete Form *@
-                            <form id="deleteForm-@item.Id" asp-action="Delete" asp-controller="Amenity" asp-route-id="@item.Id" method="post">
-                               
+                            <form id="deleteForm-@item.Id" asp-action="Delete" asp-controller="Amenity" asp-route-id="@item.Id" method="post">                             
                             </form>
 
                         </div>
