@@ -13,23 +13,6 @@
         </div>
     </div>
 
-    <form method="post" >
-        <div class="row p-0 py-3 mx-0">
-            <div class="col-12 col-md-6">
-                <div class="form-group">
-                    <label>Check in</label>
-                    <input asp-for="CheckIn" class="form-control" />
-                </div>
-            </div>
-            <div class="col-12 col-md-6">
-                <div class="form-group">
-                    <label>Check out</label>
-                    <input asp-for="CheckOut" class="form-control" />
-                </div>
-            </div>
-        </div>
-
-    </form>
 
     <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="prev">
         <span class="carousel-control-prev-icon" aria-hidden="true"></span>
@@ -40,6 +23,32 @@
         <span class="visually-hidden">Next</span>
     </button>
 </div>
+
+<form method="post" style="background-color: blanchedalmond">
+    <div class="container">
+        <div class="row p-0 py-3 mx-0">
+            <div class="col rounded-3">
+                <i class="bi bi-search"></i>
+                <input placeholder="Enter a destination or property" />
+            </div>
+            <div class="col rounded-3">
+                <label>Check in</label>
+                <input asp-for="CheckIn" />
+            </div>
+            <div class="col">
+                <label>Check out</label>
+                <input asp-for="CheckOut"/>
+            </div>
+            <div class="col">
+                <button type="submit" class="btn btn-primary">
+                    Search
+                </button>
+            </div>
+        </div>
+    </div>
+    
+</form>
+
 <div class="card" style="width: 18rem;">
     <img src="..." class="card-img-top" alt="...">
     <div class="card-body">
