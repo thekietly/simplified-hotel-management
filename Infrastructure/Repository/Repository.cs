@@ -16,52 +16,56 @@ namespace Infrastructure.Repository
             _db = db;
             dbSet = _db.Set<T>();
         }
-        public async Task<T> Get(Expression<Func<T, bool>> filter, string? includeProperties = null, bool tracked= true)
+        public async Task<T> Get(
+            Expression<Func<T, bool>>? filter = null,
+            Func<IQueryable<T>, IQueryable<T>>? include = null,
+            bool tracked = true)
         {
-            IQueryable<T> query =dbSet;
+            IQueryable<T> query = dbSet;
+
             if (!tracked)
             {
                 query = query.AsNoTracking();
             }
-            // if filter is not null, apply the filter i.e h => h.Id == 1
+
             if (filter != null)
             {
                 query = query.Where(filter);
             }
-            // if include properties is not null, include them i.e include(h => h.Hotel)
-            if (!string.IsNullOrEmpty(includeProperties))
+
+            if (include != null)
             {
-                foreach (var property in includeProperties.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
-                {
-                    query = query.Include(property);
-                }
+                query = include(query);
             }
+
             return query.FirstOrDefault();
         }
 
-        public async Task<IEnumerable<T>>GetAll(Expression<Func<T, bool>>? filter = null, string? includeProperties = null, bool tracked = true)
+        public async Task<IEnumerable<T>> GetAll(
+            Expression<Func<T, bool>>? filter = null,
+            Func<IQueryable<T>, IQueryable<T>>? include = null,
+            bool tracked = true)
         {
-            // Read-only operations should not be tracked. No need to modify the records.
             IQueryable<T> query = dbSet;
+
             if (!tracked)
             {
                 query = query.AsNoTracking();
             }
-            // if filter is not null, apply the filter i.e h => h.Id == 1
+
             if (filter != null)
             {
                 query = query.Where(filter);
             }
-            // if include properties is not null, include them i.e include(h => h.Hotel)
-            if (!string.IsNullOrEmpty(includeProperties))
+
+            if (include != null)
             {
-                foreach (var property in includeProperties.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
-                {
-                    query = query.Include(property);
-                }
+                query = include(query);
             }
+
             return await query.ToListAsync();
         }
+
 
 
         // Allow derived classes to override this method
