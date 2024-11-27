@@ -19,6 +19,13 @@ namespace Domain.Entities
         King,
         Twin
     }
+    public enum RoomStatus
+    {
+        Available,
+        Booked,
+        OutOfService,
+        HouseKeeping
+    }
     public class HotelRoom
     {
         [Key, Column(Order = 0)]
@@ -34,13 +41,13 @@ namespace Domain.Entities
 
         public RoomType RoomType { get; set; }
 
-        [Range(1, 8)]
+        [Range(1, 30)]
         public int Occupancy { get; set; }
         [MaxLength(50)]
         [Required]
         public  string Name { get; set; }
 
-        [Range(1, 5)]
+        [Range(1, 10)]
         public int Beds { get; set; }
 
         public BedType BedType { get; set; }
@@ -52,8 +59,7 @@ namespace Domain.Entities
 
         public string? SpecialDetails { get; set; }
         public virtual Hotel? Hotel { get; set; }
-
-
+        public RoomStatus? RoomStatus { get; set; }
         public DateTime? Created { get; set; }
         public DateTime? Updated { get; set; }
 
