@@ -25,7 +25,7 @@ namespace client.Controllers
                 CheckIn = DateOnly.FromDateTime(DateTime.Now),
                 CheckOut = DateOnly.FromDateTime(DateTime.Now.AddDays(1))
             };
-            return View();
+            return View(homePage);
         }
 
         public IActionResult Privacy()
