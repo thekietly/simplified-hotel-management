@@ -25,3 +25,14 @@ i.bi {
     font-size: 1.75rem;
     line-height: 1.2;
 }
+.mb-n7 {
+    margin-bottom: -1.25rem !important;
+
+}
+.btn {
+    letter-spacing: 0.5px;
+}
+.btn-lg {
+    font-size: 1.5rem;
+    border-radius: 0.75rem;
+}
