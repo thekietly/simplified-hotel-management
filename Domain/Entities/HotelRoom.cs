@@ -33,11 +33,11 @@ namespace Domain.Entities
         [ForeignKey("Hotel")]
         public int HotelId { get; set; }
 
-
+        // Room number within the hotel
         [Key, Column(Order = 1)]
         [Required(ErrorMessage = "Room number is required")]
         [RegularExpression("^[0-9]+$", ErrorMessage = "Only numeric values are allowed for the room number")]
-        public  string RoomId { get; set; } // Room number within the hotel
+        public  string RoomId { get; set; } 
 
         public RoomType RoomType { get; set; }
 
@@ -49,20 +49,26 @@ namespace Domain.Entities
 
         [Range(1, 10)]
         public int Beds { get; set; }
-
+        // Base price of the room - This can be changed based on the season/promotion/availability
+        [Range(1, 10000)]
+        public double BasePrice { get; set; }
         public BedType BedType { get; set; }
         [Range(1, 200)]
-        public int RoomSize { get; set; }   
+        public int RoomSize { get; set; }
+        // Room status - Available, Booked, Out of service, Housekeeping
+        public RoomStatus? RoomStatus { get; set; }
+        // Upload image of the room - Not mapped to the database
         [NotMapped]
         public IFormFile? Image { get; set; }
-        public string? ImageUrl { get; set; }
 
+        // Image URL of the room
+        public string? ImageUrl { get; set; }
+        // Special details about the room - no-smoking, pet-friendly, etc.
         public string? SpecialDetails { get; set; }
-        public virtual Hotel? Hotel { get; set; }
-        public RoomStatus? RoomStatus { get; set; }
+        // Created and updated date of the room
         public DateTime? Created { get; set; }
         public DateTime? Updated { get; set; }
-
+        public virtual Hotel? Hotel { get; set; }
         public ICollection<RoomAmenity>? RoomAmenities { get; set; }
     }
 }
