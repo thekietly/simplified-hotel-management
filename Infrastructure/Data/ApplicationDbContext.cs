@@ -66,6 +66,7 @@ namespace Infrastructure.Data
                 Name = "Standard Room",
                 RoomType = RoomType.Standard,
                 BedType = BedType.Double,
+                BasePrice = 150,
                 RoomSize = 200
             },
             new HotelRoom
@@ -79,6 +80,7 @@ namespace Infrastructure.Data
                 Name = "Standard Room",
                 RoomType = RoomType.Standard,
                 BedType = BedType.Double,
+                BasePrice = 150,
                 RoomSize = 200
             },
             new HotelRoom
@@ -92,6 +94,7 @@ namespace Infrastructure.Data
                 Name = "Standard Room",
                 RoomType = RoomType.Standard,
                 BedType = BedType.Double,
+                BasePrice = 150,
                 RoomSize = 200
             },
             new HotelRoom
@@ -105,6 +108,7 @@ namespace Infrastructure.Data
                 Name = "Standard Room",
                 RoomType = RoomType.Standard,
                 BedType = BedType.Double,
+                BasePrice = 150,
                 RoomSize = 200
             }
             );
