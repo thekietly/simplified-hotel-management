@@ -1,28 +1,5 @@
 ﻿@model client.Models.HomeViewModel
 
-<div id="carouselExampleControls" class="carousel slide" data-bs-ride="carousel">
-    <div class="carousel-inner">
-        <div class="carousel-item active">
-            <img src="https://acihome.vn/uploads/15/tieu-chuan-biet-thu-5-sao-co-canh-quan-dep-gan-gui-voi-thien-nhien.jpg" class="d-block w-100" alt="First Slide">
-        </div>
-        <div class="carousel-item">
-            <img src="https://acihome.vn/uploads/15/tieu-chuan-biet-thu-5-sao-co-canh-quan-dep-gan-gui-voi-thien-nhien.jpg" class="d-block w-100" alt="Second Slide">
-        </div>
-        <div class="carousel-item">
-            <img src="https://acihome.vn/uploads/15/tieu-chuan-biet-thu-5-sao-co-canh-quan-dep-gan-gui-voi-thien-nhien.jpg" class="d-block w-100" alt="Third Slide">
-        </div>
-    </div>
-
-
-    <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="prev">
-        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-        <span class="visually-hidden">Previous</span>
-    </button>
-    <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="next">
-        <span class="carousel-control-next-icon" aria-hidden="true"></span>
-        <span class="visually-hidden">Next</span>
-    </button>
-</div>
 
 <form method="post" style="background-color: blanchedalmond; position: relative">
     <div class="container">
@@ -58,20 +35,60 @@
     </div>
     
 </form>
+<h2>Featured Hotels</h2>
 
-@foreach (var hotel in Model.Hotels)
-{
-    <a class="text-decoration-none" asp-controller="Hotel" asp-action="Details" asp-route-id="@hotel.Id">
-        <div class="card mt-5" style="width: 18rem;">
-            <img src="@hotel.ImageUrl" class="card-img-top" style="background-color: #555; height: 180px;" alt="@hotel.Name">
-            <div class="card-body">
-                <h5 class="card-title">@hotel.Name</h5>
-                <p class="card-text">@hotel.Description</p>
-
+<div class="container">
+    <div class="row">
+        @foreach (var hotel in Model.Hotels)
+        {
+            <div class="col-6 col-md-2 mb-4">
+                <a class="text-decoration-none" asp-controller="Hotel" asp-action="Details" asp-route-id="@hotel.Id">
+                    <div class="card mt-5 mx-auto" style="width: 100%;">
+                        <img src="@hotel.ImageUrl" class="card-img-top" style="background-color: #555; height: 180px;" alt="@hotel.Name">
+                        <div class="card-body">
+                            <h5 class="card-title">@hotel.Name</h5>
+                            <p class="card-text">@hotel.Description</p>
+                        </div>
+                    </div>
+                </a>
             </div>
-        </div>
-    </a>
-    
+        }
+    </div>
+</div>
 
 
-}
+
+@* 
+<div id="carouselExampleControls" class="carousel slide" data-bs-ride="carousel">
+    <div class="carousel-inner">
+        @{
+            int index = 0; 
+        }
+        @foreach (var hotel in Model.Hotels)
+        {
+            var isActive = index == 0 ? "active" : ""; 
+            <div class="carousel-item @isActive">
+                <a class="text-decoration-none" asp-controller="Hotel" asp-action="Details" asp-route-id="@hotel.Id">
+                    <div class="card mt-5" style="width: 18rem;">
+                        <img src="@hotel.ImageUrl" class="card-img-top" style="background-color: #555; height: 180px;" alt="@hotel.Name">
+                        <div class="card-body">
+                            <h5 class="card-title">@hotel.Name</h5>
+                            <p class="card-text">@hotel.Description</p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            index++; 
+        }
+    </div>
+    <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Previous</span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Next</span>
+    </button>
+</div>
+
+ *@
