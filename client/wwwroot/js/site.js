@@ -26,4 +26,3 @@ function toggleEditForm() {
     });
 }
 document.addEventListener('DOMContentLoaded', toggleEditForm);
-let bootstrapCarousel = new bootstrap.Carousel('#myCarousel');

@@ -2,6 +2,7 @@
 using Domain.Entities;
 
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace client.Controllers
 {
@@ -101,8 +102,7 @@ namespace client.Controllers
          */
         public async Task<IActionResult> Details(int? id)
         {
-
-            Hotel hotel = await _unitOfWork.Hotel.Get(h => h.Id == id);
+            Hotel hotel = await _unitOfWork.Hotel.Get(h => h.Id == id, include: q => q.Include(hr => hr.HotelRooms).Include(ha => ha.HotelAmenities).ThenInclude(a => a.Amenity));
             // any edge case where the hotel room is not found? go directly to this page without hotel room?
             if (hotel == null)
             {

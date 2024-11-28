@@ -1,1 +1,53 @@
-﻿@model IEnumerable<Domain.Entities.Hotel>
+﻿@model Domain.Entities.Hotel
+<h1>@Model.Name</h1>
+
+<div>
+    <strong>Address:</strong> @Model.Address
+</div>
+<div>
+    <strong>Description:</strong> @Model.Description
+</div>
+<div>
+    <strong>Size:</strong> @Model.Size m²
+</div>
+
+@if (!string.IsNullOrEmpty(Model.ImageUrl))
+{
+    <div>
+        <img src="@Model.ImageUrl" alt="Hotel Image" width="300" />
+    </div>
+}
+
+<h3>Amenities:</h3>
+@if (Model.HotelAmenities != null && Model.HotelAmenities.Any())
+{
+    <ul>
+        @foreach (var hotelAmenity in Model.HotelAmenities)
+        {
+            <li>@hotelAmenity.Amenity.Name</li>
+        }
+    </ul>
+}
+else
+{
+    <p>No amenities available.</p>
+}
+
+<h3>Rooms:</h3>
+@if (Model.HotelRooms != null && Model.HotelRooms.Any())
+{
+    <ul>
+        @foreach (var room in Model.HotelRooms)
+        {
+            <li>
+                <strong>@room.Name</strong> - @room.RoomType
+                <br />
+                <strong>Price:</strong> $@room.BasePrice
+            </li>
+        }
+    </ul>
+}
+else
+{
+    <p>No rooms available.</p>
+}
