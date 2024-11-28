@@ -48,8 +48,9 @@ Booking CRUD
 ## Future plans/remaning features: 
 - __Users Identity__ (Anonymous, Registered, Admin, Hotel Admin)
 - Reviews for Registered Users
-- Provide __reports insights__ to website admin and 
+- Provide __reports insights__ to website admin and hotel admin
 - Focucs on website designs - re-design Hotels, Rooms, Amenities, Bookings
+- Promotion/ Special offers system, meaning that this will affect each booking final price
 
   
 
