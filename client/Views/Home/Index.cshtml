@@ -56,39 +56,6 @@
     </div>
 </div>
 
+<h2>Promotions and Benefits</h2>
 
-
-@* 
-<div id="carouselExampleControls" class="carousel slide" data-bs-ride="carousel">
-    <div class="carousel-inner">
-        @{
-            int index = 0; 
-        }
-        @foreach (var hotel in Model.Hotels)
-        {
-            var isActive = index == 0 ? "active" : ""; 
-            <div class="carousel-item @isActive">
-                <a class="text-decoration-none" asp-controller="Hotel" asp-action="Details" asp-route-id="@hotel.Id">
-                    <div class="card mt-5" style="width: 18rem;">
-                        <img src="@hotel.ImageUrl" class="card-img-top" style="background-color: #555; height: 180px;" alt="@hotel.Name">
-                        <div class="card-body">
-                            <h5 class="card-title">@hotel.Name</h5>
-                            <p class="card-text">@hotel.Description</p>
-                        </div>
-                    </div>
-                </a>
-            </div>
-            index++; 
-        }
-    </div>
-    <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="prev">
-        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-        <span class="visually-hidden">Previous</span>
-    </button>
-    <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="next">
-        <span class="carousel-control-next-icon" aria-hidden="true"></span>
-        <span class="visually-hidden">Next</span>
-    </button>
-</div>
-
- *@
+@*Add all current promotions/offers*@

@@ -92,6 +92,26 @@ namespace client.Controllers
             }
             
         }
+        // GET: /Hotel/Details/{id}
+        /*
+         Display the details of the hotel room with the given id.
+         Along with amenities, hotel rooms, and other details.
+         It will also display a table of all the hotel rooms with prices and other details.
+         
+         */
+        public async Task<IActionResult> Details(int? id)
+        {
+
+            Hotel hotel = await _unitOfWork.Hotel.Get(h => h.Id == id);
+            // any edge case where the hotel room is not found? go directly to this page without hotel room?
+            if (hotel == null)
+            {
+                TempData["Error"] = "The hotel room you are trying to update does not exist.";
+                return RedirectToAction("Error", "Home");
+            }
+            return View(hotel);
+        }
+
         // Get: /Hotel/Update/{id}
         /*
          Purposes of Update method:
