@@ -19,7 +19,7 @@ namespace Domain.Entities
 
         public string? Description{ get; set; }
         [NotMapped]
-        public IFormFile? Image { get; set; }
+        public ICollection<IFormFile>? Images { get; set; } // allow multiple images upload
         public string? ImageUrl { get; set; }
         [Required]
         [Range(50, 3000, ErrorMessage = "Please enter the correct value from 50 to 3000")]
