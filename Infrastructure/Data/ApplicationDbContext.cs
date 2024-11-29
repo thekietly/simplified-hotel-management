@@ -18,13 +18,11 @@ namespace Infrastructure.Data
 
         }
         public DbSet<Hotel> Hotels { get; set; }
-
         public DbSet<HotelRoom> HotelRooms { get; set; }
-
         public DbSet<Amenity> Amenities { get; set; }
-
         public DbSet<RoomAmenity> RoomAmenities { get; set; }
         public DbSet<HotelAmenity> HotelAmenities { get; set; }
+        public DbSet<HotelImageGallery> HotelImageGalleries { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -39,7 +37,6 @@ namespace Infrastructure.Data
                 ImageUrl = "https://images.pexels.com/photos/2957461/pexels-photo-2957461.jpeg?auto=compress&cs=tinysrgb&w=600&lazy=load",
                 Size = 200,
                 Updated = DateTime.Now,
-
             },
             new Hotel
             {
@@ -51,8 +48,70 @@ namespace Infrastructure.Data
                 Size = 200,
                 Updated = null
             }
-
             );
+            // Hotel image gallery
+            modelBuilder.Entity<HotelImageGallery>().HasKey(hig => new { hig.HotelId, hig.Id });
+            modelBuilder.Entity<HotelImageGallery>().HasData(new HotelImageGallery
+            {
+                Id = 1,
+                HotelId = 1,
+                ImageUrl = "https://images.pexels.com/photos/2957461/pexels-photo-2957461.jpeg?auto=compress&cs=tinysrgb&w=600&lazy=load"
+            },
+            new HotelImageGallery
+            {
+                Id = 2,
+                HotelId = 1,
+                ImageUrl = "https://images.pexels.com/photos/2957461/pexels-photo-2957461.jpeg?auto=compress&cs=tinysrgb&w=600&lazy=load"
+            },
+            new HotelImageGallery
+            {
+                Id = 3,
+                HotelId = 1,
+                ImageUrl = "https://images.pexels.com/photos/2957461/pexels-photo-2957461.jpeg?auto=compress&cs=tinysrgb&w=600&lazy=load"
+            },
+            new HotelImageGallery
+            {
+                Id = 4,
+                HotelId = 1,
+                ImageUrl = "https://images.pexels.com/photos/2957461/pexels-photo-2957461.jpeg?auto=compress&cs=tinysrgb&w=600&lazy=load"
+            },
+            new HotelImageGallery
+            {
+                Id = 5,
+                HotelId = 1,
+                ImageUrl = "https://images.pexels.com/photos/2957461/pexels-photo-2957461.jpeg?auto=compress&cs=tinysrgb&w=600&lazy=load"
+            },
+            new HotelImageGallery
+            {
+                Id = 6,
+                HotelId = 2,
+                ImageUrl = "https://images.pexels.com/photos/2957461/pexels-photo-2957461.jpeg?auto=compress&cs=tinysrgb&w=600&lazy=load"
+            },
+            new HotelImageGallery
+            {
+                Id = 7,
+                HotelId = 2,
+                ImageUrl = "https://images.pexels.com/photos/2957461/pexels-photo-2957461.jpeg?auto=compress&cs=tinysrgb&w=600&lazy=load"
+            },
+            new HotelImageGallery
+            {
+                Id = 8,
+                HotelId = 2,
+                ImageUrl = "https://images.pexels.com/photos/2957461/pexels-photo-2957461.jpeg?auto=compress&cs=tinysrgb&w=600&lazy=load"
+            },
+            new HotelImageGallery
+            {
+                Id = 9,
+                HotelId = 2,
+                ImageUrl = "https://images.pexels.com/photos/2957461/pexels-photo-2957461.jpeg?auto=compress&cs=tinysrgb&w=600&lazy=load"
+            },
+            new HotelImageGallery
+            {
+                Id = 10,
+                HotelId = 2,
+                ImageUrl = "https://images.pexels.com/photos/2957461/pexels-photo-2957461.jpeg?auto=compress&cs=tinysrgb&w=600&lazy=load"
+            });
+
             // Composite key - hotel id and room id allows for multiple rooms in a hotel while each room is unique.
             modelBuilder.Entity<HotelRoom>().HasKey(hr => new { hr.HotelId, hr.RoomId });
             modelBuilder.Entity<HotelRoom>().HasData(new HotelRoom
