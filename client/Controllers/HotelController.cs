@@ -89,8 +89,13 @@ namespace client.Controllers
                 }
 
                 // Add hotel to the database
-                hotel.HotelImageGalleries = imageGallery;
                 _unitOfWork.Hotel.Add(hotel);
+
+                // loop through image gallery and add to database
+                foreach (var image in imageGallery)
+                {
+                    image.HotelId = hotel.Id;
+                }
                 _unitOfWork.Save();
 
                 return RedirectToAction("Index", "Hotel");
@@ -154,34 +159,43 @@ namespace client.Controllers
                 // return view with the hotel room
                 return View(hotel);
             }
-
-            // If hotel image is not null then remove the old image and add the new image
-            if (hotel.Image != null)
+            // Process uploaded images
+            var imageGallery = new List<HotelImageGallery>();
+            if (hotel.Images != null && hotel.Images.Any())
             {
-                // Generate a new unique file name
-                string fileName = Guid.NewGuid().ToString() + Path.GetExtension(hotel.Image.FileName);
-
-                // Retrieve the file path of the new image
                 string imagePath = Path.Combine(_webHostEnvironment.WebRootPath, @"assets\img\Hotel");
-                // Navigate to the file path and create the file
-                using (var fileStream = new FileStream(Path.Combine(imagePath, fileName), FileMode.Create))
+                foreach (var image in hotel.Images)
                 {
-                    hotel.Image.CopyTo(fileStream);
-                }
-                // Remove the old image
-
-                if (!string.IsNullOrEmpty(fileName))
-                {
-                    // Retrieve the file path of the old image
-                    string oldImagePath = Path.Combine(_webHostEnvironment.WebRootPath, hotel.ImageUrl.TrimStart('\\'));
-                    // Delete the old image
-                    if (System.IO.File.Exists(oldImagePath))
+                    string fileName = Guid.NewGuid().ToString() + Path.GetExtension(image.FileName);
+                    using (var fileStream = new FileStream(Path.Combine(imagePath, fileName), FileMode.Create))
                     {
-                        System.IO.File.Delete(oldImagePath);
+                        image.CopyTo(fileStream);
                     }
+                    // Remove the old image
+
+                    if (!string.IsNullOrEmpty(fileName))
+                    {
+                        // Retrieve the file path of the old image
+                        string oldImagePath = Path.Combine(_webHostEnvironment.WebRootPath, hotel.ImageUrl.TrimStart('\\'));
+                        // Delete the old image
+                        if (System.IO.File.Exists(oldImagePath))
+                        {
+                            System.IO.File.Delete(oldImagePath);
+                        }
+                    }
+                    imageGallery.Add(new HotelImageGallery
+                    {
+                        ImageUrl = @"\assets\img\Hotel\" + fileName
+                    });
                 }
-                // Set the image URL to new file path
-                hotel.ImageUrl = @"\assets\img\Hotel\" + fileName;
+            }
+            else
+            {
+                // Add a default image if no images are uploaded
+                imageGallery.Add(new HotelImageGallery
+                {
+                    ImageUrl = "https://images.pexels.com/photos/2957461/pexels-photo-2957461.jpeg?auto=compress&cs=tinysrgb&w=600"
+                });
             }
 
             // if user inputs are valid then update hotel room details
@@ -205,7 +219,6 @@ namespace client.Controllers
                 return RedirectToAction("Error", "Home");
             }
 
-            // TODO: Delete this hotel also deletes all the hotel rooms associated with it - this hotel ought to be deleted from the database
             // Delete this hotel also deletes the image associated with it
             if (hotel.ImageUrl != null) {
                 string imagePath = Path.Combine(_webHostEnvironment.WebRootPath, hotel.ImageUrl.TrimStart('\\'));
@@ -213,7 +226,6 @@ namespace client.Controllers
                 {
                     System.IO.File.Delete(imagePath);
                 }
-
             }
             _unitOfWork.Hotel.Remove(hotel);
             _unitOfWork.Save();
