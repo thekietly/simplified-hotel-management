@@ -79,7 +79,7 @@ namespace client.Controllers
                 }
                 // Add default image. 
                 else { 
-                    hotel.ImageUrl = "https://pix8.agoda.net/hotelImages/2418908/-1/d97ea16b355f57cb293d11b5ce90d530.jpg?ca=8&ce=1&s=450x450";
+                    hotel.ImageUrl = "https://images.pexels.com/photos/2957461/pexels-photo-2957461.jpeg?auto=compress&cs=tinysrgb&w=600";
                 }
 
                 // if user inputs are valid then add hotel room to database
