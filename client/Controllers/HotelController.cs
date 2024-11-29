@@ -43,56 +43,64 @@ namespace client.Controllers
 
         public IActionResult Create(Hotel hotel)
         {
-            try {
+            try
+            {
                 if (hotel.Name == hotel.Description)
                 {
-                    // key in AddModelError refers to the property in the model - in this case, error appears under the Name property
-                    ModelState.AddModelError("Name", "Please be creative! The room's name cannot be the same as its description.");
+                    ModelState.AddModelError("Name", "Please be creative! The hotel's name cannot be the same as its description.");
                 }
-                // if not valid
+
                 if (!ModelState.IsValid)
                 {
                     return View(hotel);
                 }
 
-                // Check if the hotel name already exists in the database
-                
                 if (_unitOfWork.Hotel.Any(h => h.Name == hotel.Name))
                 {
-                    // key in AddModelError refers to the property in the model - in this case, error appears under the Name property
                     ModelState.AddModelError("Name", "A hotel with the same name already exists.");
                     return View(hotel);
                 }
-                // User has uploaded an image
-                if (hotel.Image != null)
+
+                // Process uploaded images
+                var imageGallery = new List<HotelImageGallery>();
+                if (hotel.Images != null && hotel.Images.Any())
                 {
-                    // Generate a new unique id + file extension to prevent duplicate file names
-                    string fileName = Guid.NewGuid().ToString() + Path.GetExtension(hotel.Image.FileName);
                     string imagePath = Path.Combine(_webHostEnvironment.WebRootPath, @"assets\img\Hotel");
-                    // Navigate to the file path and create the file
-                    using (var fileStream = new FileStream(Path.Combine(imagePath, fileName), FileMode.Create))
+                    foreach (var image in hotel.Images)
                     {
-                        hotel.Image.CopyTo(fileStream);
+                        string fileName = Guid.NewGuid().ToString() + Path.GetExtension(image.FileName);
+                        using (var fileStream = new FileStream(Path.Combine(imagePath, fileName), FileMode.Create))
+                        {
+                            image.CopyTo(fileStream);
+                        }
+                        imageGallery.Add(new HotelImageGallery
+                        {
+                            ImageUrl = @"\assets\img\Hotel\" + fileName
+                        });
                     }
-                    // Set the image URL to the file path
-                    hotel.ImageUrl = @"\assets\img\Hotel\"+ fileName;
                 }
-                // Add default image. 
-                else { 
-                    hotel.ImageUrl = "https://images.pexels.com/photos/2957461/pexels-photo-2957461.jpeg?auto=compress&cs=tinysrgb&w=600";
+                else
+                {
+                    // Add a default image if no images are uploaded
+                    imageGallery.Add(new HotelImageGallery
+                    {
+                        ImageUrl = "https://images.pexels.com/photos/2957461/pexels-photo-2957461.jpeg?auto=compress&cs=tinysrgb&w=600"
+                    });
                 }
 
-                // if user inputs are valid then add hotel room to database
+                // Add hotel to the database
+                hotel.HotelImageGalleries = imageGallery;
                 _unitOfWork.Hotel.Add(hotel);
-                // update database
                 _unitOfWork.Save();
-                return RedirectToAction("Index", "Hotel"); 
 
-            } catch {
+                return RedirectToAction("Index", "Hotel");
+            }
+            catch
+            {
                 return RedirectToAction("Error", "Home");
             }
-            
         }
+
         // GET: /Hotel/Details/{id}
         /*
          Display the details of the hotel room with the given id.
