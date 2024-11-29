@@ -12,6 +12,4 @@ namespace Infrastructure.Repository
             _db = db;
         }
     }
-    {
-    }
 }
