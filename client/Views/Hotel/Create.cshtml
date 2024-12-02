@@ -1,11 +1,11 @@
-﻿@model Domain.Entities.Hotel
+﻿@model Domain.Entities.Hotel;
 
 <h1>Creating hotel</h1>
 
 
 <div class="card-body border p-4">
     
-    <form method="post" class="row" enctype="multipart/form-data">
+    <form method="post" class="row" enctype="multipart/form-data" asp-controller="Hotel" asp-action="Create">
 
         <div class="p-3">
 
@@ -13,7 +13,7 @@
             <div class="form-floating py-2 col-12">
                 @*Use display names from the model instead*@
                 <label asp-for="Name" class="ms-2">Hotel name</label>
-                <input asp-for="Name" class="form-control border shadow"/>
+                <input asp-for="Name" class="form-control border shadow" />
                 <span asp-validation-for="Name" class="text-danger"></span>
 
             </div>
@@ -37,17 +37,16 @@
             </div>
 
             <div class="form-floating py-2 col-12">
-                <label asp-for="Images" class="ms-2">Hotel image</label>
-                <input asp-for="Images" class="form-control border shadow" type="file" multiple />
-                <span asp-validation-for="Images" class="text-danger"></span>
+                <label asp-for="Image" class="ms-2">Hotel image</label>
+                <input asp-for="Image" class="form-control border shadow" type="file" />
+                <span asp-validation-for="Image" class="text-danger"></span>
             </div>
+
             <div class="form-floating py-2 col-12">
-                <label asp-for="ImageUrl" hidden class="ms-2">Hotel image</label>
-                <input asp-for="ImageUrl" hidden class="form-control border shadow" />
+                <label asp-for="ImageUrl" class="ms-2" hidden>Hotel image url</label>
+                <input asp-for="ImageUrl" class="form-control border shadow" hidden/>
                 <span asp-validation-for="ImageUrl" class="text-danger"></span>
-
             </div>
-
             <div class="row pt-2 ">
 
                 <div class="col-6 col-md-3">

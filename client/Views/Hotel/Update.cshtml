@@ -11,7 +11,7 @@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             
             <div class="col-2">
-                <img src="@Model.ImageUrl" class="rounded" alt="@(Model.Name ?? "Hotel") Image" />
+                <img src="@Model.ImageUrl" class="rounded" style="width: 100%; height: auto;" alt="@(Model.Name ?? "Hotel") Image" />
             </div>
             <div class="form-floating py-2 col-12">
                 @*Use display names from the model instead*@
@@ -42,9 +42,9 @@
 
             </div>
             <div class="form-floating py-2 col-12">
-                <label asp-for="Images" class="ms-2">Hotel image</label>
-                <input asp-for="Images" class="form-control border shadow" value="ImageUrl" type="file" multiple/>
-                <span asp-validation-for="Images" class="text-danger"></span>
+                <label asp-for="Image" class="ms-2">Hotel image</label>
+                <input asp-for="Image" class="form-control border shadow" value="ImageUrl" type="file"/>
+                <span asp-validation-for="Image" class="text-danger"></span>
             </div>
             <div class="form-floating py-2 col-12">
                 <label asp-for="ImageUrl" hidden class="ms-2">Hotel image</label>
