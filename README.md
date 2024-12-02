@@ -44,6 +44,7 @@ CMS: Completed Hotels / Hotel rooms / Amenity
 
 ## In progress
 Booking CRUD
+Hotel/Room Image Gallery
 
 ## Future plans/remaning features: 
 - __Users Identity__ (Anonymous, Registered, Admin, Hotel Admin)
