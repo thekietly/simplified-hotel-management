@@ -22,7 +22,7 @@ namespace Domain.Entities
         public IFormFile Image { get; set; }
         public string? ImageUrl { get; set; }
         [Required]
-        [Range(50, 3000, ErrorMessage = "Please enter the correct value from 50 to 3000")]
+        [Range(50, 30000, ErrorMessage = "Please enter the correct value from 50 to 30000")]
         public double Size { get; set; }
 
 
