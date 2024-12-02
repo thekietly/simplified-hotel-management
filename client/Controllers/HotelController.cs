@@ -64,14 +64,7 @@ namespace client.Controllers
                 // Process uploaded image
                 if (hotel.Image != null)
                 {
-                    string imagePath = Path.Combine(_webHostEnvironment.WebRootPath, @"assets\img\Hotel");
-                 
-                        string fileName = Guid.NewGuid().ToString() + Path.GetExtension(hotel.Image.FileName);
-                        using (var fileStream = new FileStream(Path.Combine(imagePath, fileName), FileMode.Create))
-                        {
-                            hotel.Image.CopyToAsync(fileStream);
-                        }
-                        hotel.ImageUrl = @"\assets\img\Hotel\" + fileName;
+                    hotel.ImageUrl=  UploadImageAsync(hotel.Image).Result;
                 }
                 // Add hotel to the database
                 _unitOfWork.Hotel.Add(hotel);
@@ -140,25 +133,13 @@ namespace client.Controllers
             // Process uploaded images
             if (hotel.Image != null)
             {
-                string imagePath = Path.Combine(_webHostEnvironment.WebRootPath, @"assets\img\Hotel");
-              
-                    string fileName = Guid.NewGuid().ToString() + Path.GetExtension(hotel.Image.FileName);
-                    using (var fileStream = new FileStream(Path.Combine(imagePath, fileName), FileMode.Create))
-                    {
-                        hotel.Image.CopyTo(fileStream);
-                    }
-                    // Remove the old image
-                    if (!string.IsNullOrEmpty(fileName))
-                    {
-                        // Retrieve the file path of the old image
-                        string oldImagePath = Path.Combine(_webHostEnvironment.WebRootPath, hotel.ImageUrl.TrimStart('\\'));
-                        // Delete the old image
-                        if (System.IO.File.Exists(oldImagePath))
-                        {
-                            System.IO.File.Delete(oldImagePath);
-                        }
-                    }
+
+                if (hotel.ImageUrl != null)
+                {
+                    DeleteImage(hotel.ImageUrl);
                 }
+                hotel.ImageUrl = UploadImageAsync(hotel.Image).Result;
+            }
             
 
             // if user inputs are valid then update hotel room details
@@ -184,17 +165,47 @@ namespace client.Controllers
 
             // Delete this hotel also deletes the image associated with it
             if (hotel.ImageUrl != null) {
-                string imagePath = Path.Combine(_webHostEnvironment.WebRootPath, hotel.ImageUrl.TrimStart('\\'));
-                if (System.IO.File.Exists(imagePath))
-                {
-                    System.IO.File.Delete(imagePath);
-                }
+                DeleteImage(hotel.ImageUrl);
             }
             _unitOfWork.Hotel.Remove(hotel);
             _unitOfWork.Save();
             TempData["Success"] = hotel.Name + " has been deleted successfully.";
             return RedirectToAction("Index", "Hotel");
 
+        }
+        // Method to upload the image and return the image URL
+        private async Task<string> UploadImageAsync(IFormFile image)
+        {
+            string imagePath = Path.Combine(_webHostEnvironment.WebRootPath, @"assets\img\Hotel");
+            string fileName = Guid.NewGuid().ToString() + Path.GetExtension(image.FileName);
+            string filePath = Path.Combine(imagePath, fileName);
+
+            // Ensure the directory exists
+            if (!Directory.Exists(imagePath))
+            {
+                Directory.CreateDirectory(imagePath);
+            }
+
+            using (var fileStream = new FileStream(filePath, FileMode.Create))
+            {
+                await image.CopyToAsync(fileStream);
+            }
+
+            return @"\assets\img\Hotel\" + fileName;
+        }
+
+        // Method to delete the image based on its URL
+        private void DeleteImage(string imageUrl)
+        {
+            
+            if (!string.IsNullOrEmpty(imageUrl))
+            {
+                string imagePath = Path.Combine(_webHostEnvironment.WebRootPath, imageUrl.TrimStart('\\'));
+                if (System.IO.File.Exists(imagePath))
+                {
+                    System.IO.File.Delete(imagePath);
+                }
+            }
         }
     }
 }
