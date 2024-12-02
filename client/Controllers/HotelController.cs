@@ -61,43 +61,21 @@ namespace client.Controllers
                     return View(hotel);
                 }
 
-                // Process uploaded images
-                var imageGallery = new List<HotelImageGallery>();
-                if (hotel.Images != null && hotel.Images.Any())
+                // Process uploaded image
+                if (hotel.Image != null)
                 {
                     string imagePath = Path.Combine(_webHostEnvironment.WebRootPath, @"assets\img\Hotel");
-                    foreach (var image in hotel.Images)
-                    {
-                        string fileName = Guid.NewGuid().ToString() + Path.GetExtension(image.FileName);
+                 
+                        string fileName = Guid.NewGuid().ToString() + Path.GetExtension(hotel.Image.FileName);
                         using (var fileStream = new FileStream(Path.Combine(imagePath, fileName), FileMode.Create))
                         {
-                            image.CopyTo(fileStream);
+                            hotel.Image.CopyToAsync(fileStream);
                         }
-                        imageGallery.Add(new HotelImageGallery
-                        {
-                            ImageUrl = @"\assets\img\Hotel\" + fileName
-                        });
-                    }
+                        hotel.ImageUrl = @"\assets\img\Hotel\" + fileName;
                 }
-                else
-                {
-                    // Add a default image if no images are uploaded
-                    imageGallery.Add(new HotelImageGallery
-                    {
-                        ImageUrl = "https://images.pexels.com/photos/2957461/pexels-photo-2957461.jpeg?auto=compress&cs=tinysrgb&w=600"
-                    });
-                }
-
                 // Add hotel to the database
                 _unitOfWork.Hotel.Add(hotel);
-
-                // loop through image gallery and add to database
-                foreach (var image in imageGallery)
-                {
-                    image.HotelId = hotel.Id;
-                }
                 _unitOfWork.Save();
-
                 return RedirectToAction("Index", "Hotel");
             }
             catch
@@ -160,19 +138,16 @@ namespace client.Controllers
                 return View(hotel);
             }
             // Process uploaded images
-            var imageGallery = new List<HotelImageGallery>();
-            if (hotel.Images != null && hotel.Images.Any())
+            if (hotel.Image != null)
             {
                 string imagePath = Path.Combine(_webHostEnvironment.WebRootPath, @"assets\img\Hotel");
-                foreach (var image in hotel.Images)
-                {
-                    string fileName = Guid.NewGuid().ToString() + Path.GetExtension(image.FileName);
+              
+                    string fileName = Guid.NewGuid().ToString() + Path.GetExtension(hotel.Image.FileName);
                     using (var fileStream = new FileStream(Path.Combine(imagePath, fileName), FileMode.Create))
                     {
-                        image.CopyTo(fileStream);
+                        hotel.Image.CopyTo(fileStream);
                     }
                     // Remove the old image
-
                     if (!string.IsNullOrEmpty(fileName))
                     {
                         // Retrieve the file path of the old image
@@ -183,20 +158,8 @@ namespace client.Controllers
                             System.IO.File.Delete(oldImagePath);
                         }
                     }
-                    imageGallery.Add(new HotelImageGallery
-                    {
-                        ImageUrl = @"\assets\img\Hotel\" + fileName
-                    });
                 }
-            }
-            else
-            {
-                // Add a default image if no images are uploaded
-                imageGallery.Add(new HotelImageGallery
-                {
-                    ImageUrl = "https://images.pexels.com/photos/2957461/pexels-photo-2957461.jpeg?auto=compress&cs=tinysrgb&w=600"
-                });
-            }
+            
 
             // if user inputs are valid then update hotel room details
             _unitOfWork.Hotel.Update(hotel);
