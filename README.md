@@ -22,7 +22,7 @@ Layered Architecture, MVC, Repository patterns and Identity.
 Mimicking the features of booking.com and deploy it as a general website (including CMS).
 
 # Features
-6 core components will be Booking, Registeration, Hotel, Room, Review and Amenity.
+6 core components will be Booking, Registration, Hotel, Room, Review and Amenity.
  1. __Website admin__
      - Have access to CMS where you modify/delete hotels/rooms/amenities/reviews.
      - Admin dashboard -> provides website insights such as hotel registeration, revenue, users, etc
