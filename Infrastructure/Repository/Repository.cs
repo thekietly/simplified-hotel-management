@@ -38,7 +38,7 @@ namespace Infrastructure.Repository
                 query = include(query);
             }
 
-            return query.FirstOrDefault();
+            return await query.FirstOrDefaultAsync();
         }
 
         public async Task<IEnumerable<T>> GetAll(

@@ -1,5 +1,6 @@
 ﻿using Application.Common.Interface;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace client.Controllers
 {
@@ -16,7 +17,8 @@ namespace client.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllHotels()
         {
-            var hotels = await _unitOfWork.Hotel.GetAll();
+            var hotels = await _unitOfWork.Hotel.GetAll(include: q => q.Include(hr => hr.HotelRooms).Include(ha => ha.HotelAmenities).ThenInclude(a => a.Amenity));
+            //var hotels = await _unitOfWork.Hotel.GetAll();
             return Ok(hotels);
         }
     }

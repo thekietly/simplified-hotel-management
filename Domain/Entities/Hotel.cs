@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace Domain.Entities
 {
@@ -30,7 +31,7 @@ namespace Domain.Entities
         public DateTime? Updated { get; set; }
 
         public virtual ICollection<HotelRoom>? HotelRooms { get; set; }
-        public virtual ICollection<HotelAmenity>? HotelAmenities { get; set; }
+        public virtual ICollection<HotelAmenity> HotelAmenities { get; set; }
         public virtual ICollection<HotelImageGallery>? HotelImageGalleries { get; set; }
     }
 }

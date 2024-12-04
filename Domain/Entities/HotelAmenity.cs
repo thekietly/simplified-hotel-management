@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 
 namespace Domain.Entities
@@ -14,8 +15,8 @@ namespace Domain.Entities
         [ForeignKey("Hotel")]
         public int HotelId { get; set; }
 
-        public Hotel Hotel { get; set; }
-
-        public Amenity Amenity { get; set; }
+        [JsonIgnore]
+        public virtual Hotel Hotel { get; set; }
+        public virtual Amenity Amenity { get; set; }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace Domain.Entities
 {
@@ -17,7 +18,9 @@ namespace Domain.Entities
         public string Description { get; set; }
 
         public AmenityType? AmenityType { get; set; }
+        [JsonIgnore]
         public ICollection<RoomAmenity>? RoomAmenities { get; set; }
+        [JsonIgnore]
         public ICollection<HotelAmenity>? HotelAmenities { get; set; }
     }
 

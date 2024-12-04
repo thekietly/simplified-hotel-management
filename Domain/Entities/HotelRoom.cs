@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace Domain.Entities
 {
@@ -68,6 +69,7 @@ namespace Domain.Entities
         // Created and updated date of the room
         public DateTime? Created { get; set; }
         public DateTime? Updated { get; set; }
+        [JsonIgnore]
         public virtual Hotel? Hotel { get; set; }
         public ICollection<RoomAmenity>? RoomAmenities { get; set; }
     }
