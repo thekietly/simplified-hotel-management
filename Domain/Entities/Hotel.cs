@@ -1,13 +1,11 @@
 ﻿using Microsoft.AspNetCore.Http;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Text.Json.Serialization;
 
 namespace Domain.Entities
 {
     public class Hotel
     {
-
         public int Id { get; set; }
 
         [Required(ErrorMessage = "Please enter your hotel name")]
@@ -25,8 +23,6 @@ namespace Domain.Entities
         [Required]
         [Range(50, 30000, ErrorMessage = "Please enter the correct value from 50 to 30000")]
         public double Size { get; set; }
-
-
         public DateTime? Created { get; set; }
         public DateTime? Updated { get; set; }
 
