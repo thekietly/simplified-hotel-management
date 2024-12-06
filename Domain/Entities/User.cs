@@ -1,20 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace Domain.Entities
 {
-    public enum Gender
-    {
-        Male,
-        Female,
-        NonBinary,
-        Other,
-        PreferNotToSay
-    }
     public class User
     {
         public int Id { get; set; }
@@ -35,9 +22,6 @@ namespace Domain.Entities
         [StringLength(64, ErrorMessage = "Please do not enter values over 64 characters")]
         [MinLength(8, ErrorMessage = "Password must be at least 8 characters long")]
         public required string Password { get; set; }
-
-        [Required(ErrorMessage = "Please select your gender")]
-        public Gender Gender { get; set; }
 
         public DateTime ?CreatedAt { get; set; }
         public DateTime ?UpdatedAt { get; set; }
