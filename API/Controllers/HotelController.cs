@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace client.Controllers
 {
-    [Route("/api/[controller]")]
+
     [ApiController]
     public class HotelController : ControllerBase
     {
@@ -14,8 +14,23 @@ namespace client.Controllers
         {
             _unitOfWork = unitOfWork;
         }
+        [Route("api/hotel/{hotelId}/details")]
         [HttpGet]
-        public async Task<IActionResult> GetAllHotels()
+        public async Task<IActionResult> GetHotelDetails(int hotelId)
+        {
+            var hotels = await _unitOfWork.Hotel.GetAll(include: q => q.Include(hr => hr.HotelRooms).Include(ha => ha.HotelAmenities).ThenInclude(a => a.Amenity));
+            return Ok(hotels);
+        }
+        [Route("api/hotels/summary")]
+        [HttpGet]
+        public async Task<IActionResult> GetSummarisedHotelsInformation()
+        {
+            var hotels = await _unitOfWork.Hotel.GetAll(include: q => q.Include(hr => hr.HotelRooms).Include(ha => ha.HotelAmenities).ThenInclude(a => a.Amenity));
+            return Ok(hotels);
+        }
+        [Route("api/hotels/full-details")]
+        [HttpGet]
+        public async Task<IActionResult> GetHotelsWithCompleteInformation()
         {
             var hotels = await _unitOfWork.Hotel.GetAll(include: q => q.Include(hr => hr.HotelRooms).Include(ha => ha.HotelAmenities).ThenInclude(a => a.Amenity));
             return Ok(hotels);

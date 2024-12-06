@@ -16,6 +16,7 @@ namespace Infrastructure.Data
         public DbSet<RoomAmenity> RoomAmenities { get; set; }
         public DbSet<HotelAmenity> HotelAmenities { get; set; }
         public DbSet<HotelImageGallery> HotelImageGalleries { get; set; }
+        
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
