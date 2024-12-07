@@ -67,8 +67,8 @@ namespace Domain.Entities
         // Special details about the room - no-smoking, pet-friendly, etc.
         public string? SpecialDetails { get; set; }
         // Created and updated date of the room
-        public DateTime? Created { get; set; }
-        public DateTime? Updated { get; set; }
+        public DateTime CreatedDate { get; set; }
+        public DateTime LastUpdated { get; set; }
         [JsonIgnore]
         public virtual Hotel? Hotel { get; set; }
         public ICollection<RoomAmenity>? RoomAmenities { get; set; }
