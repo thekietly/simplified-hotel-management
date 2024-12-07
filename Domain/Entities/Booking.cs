@@ -6,7 +6,7 @@ namespace Domain.Entities
     {
         public int Id { get; set; }
         public int UserId { get; set; }
-        public int HotelRoomId { get; set; }
+        public int RoomId { get; set; }
         public required string BookingReference { get; set; }
         public required string Status { get; set; }
         public double TotalPrice { get; set; }
@@ -14,7 +14,7 @@ namespace Domain.Entities
         public DateOnly BookingDate { get; set; }
         public DateOnly CheckInDate { get; set; }
         public DateOnly CheckOutDate { get; set; }
-        public DateTime ActualCheckInDate { get; set; }
-        public DateTime ActualCheckOutDate { get; set; }
+        public DateTime CreatedDate { get; set; }
+        public DateTime LastUpdated { get; set; }
     }
 }
