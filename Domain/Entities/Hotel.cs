@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace Domain.Entities
 {
@@ -17,14 +15,12 @@ namespace Domain.Entities
         public required string Address { get; set; }
 
         public string? Description{ get; set; }
-        [NotMapped]
-        public IFormFile Image { get; set; }
         public string? ImageUrl { get; set; }
         [Required]
         [Range(50, 30000, ErrorMessage = "Please enter the correct value from 50 to 30000")]
         public double Size { get; set; }
-        public DateTime? Created { get; set; }
-        public DateTime? Updated { get; set; }
+        public DateTime CreatedDate { get; set; }
+        public DateTime LastUpdated { get; set; }
 
         public virtual ICollection<HotelRoom>? HotelRooms { get; set; }
         public virtual ICollection<HotelAmenity> HotelAmenities { get; set; }
