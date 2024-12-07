@@ -4,6 +4,11 @@ namespace Domain.Entities
 {
     public class User
     {
+        public enum Role { 
+            Registered,
+            WebsiteAdmin,
+            HotelAdmin
+        }
         public int Id { get; set; }
 
         [Required(ErrorMessage = "Please enter your first name")]
@@ -22,8 +27,8 @@ namespace Domain.Entities
         [StringLength(64, ErrorMessage = "Please do not enter values over 64 characters")]
         [MinLength(8, ErrorMessage = "Password must be at least 8 characters long")]
         public required string Password { get; set; }
-
-        public DateTime ?CreatedAt { get; set; }
-        public DateTime ?UpdatedAt { get; set; }
+        public Role? UserRole { get; set; }
+        public DateTime? CreatedDate { get; set; }
+        public DateTime? LastUpdated { get; set; }
     }
 }
