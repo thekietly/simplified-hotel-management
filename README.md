@@ -1,5 +1,5 @@
 # Simplified Hotel Management
- This project folder contains only .NET Web API where I focus solely on delivering RESTful APIs. I will create a React project that will consume the APIs from .NET Web API project in order to separate .NET MVC into front-end (React.js) and back-end (.NET Web API).
+ This project folder contains only .NET Web API where I focus solely on delivering RESTful APIs. A React project will be created to consume the APIs from .NET Web API project in order to separate .NET MVC into front-end (React.js) and back-end (.NET Web API).
  In summary, different users will be able to use different components of this website: 
  1. __Website admin__ will be able to use the CMS where you modify/delete hotels/rooms/amenities/reviews.
  2. __Anonymous users__ will be able to view a list of hotels and rooms with their associated average price per night.
