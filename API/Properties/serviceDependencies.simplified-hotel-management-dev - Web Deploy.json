@@ -1,0 +1,8 @@
+{
+  "dependencies": {
+    "apis1": {
+      "resourceId": "/subscriptions/[parameters('subscriptionId')]/resourceGroups/[parameters('resourceGroupName')]/providers/Microsoft.ApiManagement/service/api-service-hotel-management-dev/apis/hotel-api-management-dev-001",
+      "type": "apis.azure"
+    }
+  }
+}

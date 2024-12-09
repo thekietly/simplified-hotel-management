@@ -30,10 +30,8 @@ builder.Services.AddCors(options =>
     });
 });
 // Add database service
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
-{
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
-});
+var sqlConnection = builder.Configuration["ConnectionStrings:HotelWeb:SqlDb"];
+builder.Services.AddSqlServer<ApplicationDbContext>(sqlConnection, options => options.EnableRetryOnFailure());
 
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
