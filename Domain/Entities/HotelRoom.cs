@@ -29,16 +29,16 @@ namespace Domain.Entities
     }
     public class HotelRoom
     {
-        [Key, Column(Order = 0)]
+
+        public int Id { get; set; }
         [Required]
         [ForeignKey("Hotel")]
         public int HotelId { get; set; }
 
         // Room number within the hotel
-        [Key, Column(Order = 1)]
         [Required(ErrorMessage = "Room number is required")]
         [RegularExpression("^[0-9]+$", ErrorMessage = "Only numeric values are allowed for the room number")]
-        public  string RoomId { get; set; } 
+        public required string RoomNumber { get; set; } 
 
         public RoomType RoomType { get; set; }
 
@@ -46,7 +46,7 @@ namespace Domain.Entities
         public int Occupancy { get; set; }
         [MaxLength(50)]
         [Required]
-        public  string Name { get; set; }
+        public required  string Name { get; set; }
 
         [Range(1, 10)]
         public int Beds { get; set; }
@@ -58,10 +58,6 @@ namespace Domain.Entities
         public int RoomSize { get; set; }
         // Room status - Available, Booked, Out of service, Housekeeping
         public RoomStatus? RoomStatus { get; set; }
-        // Upload image of the room - Not mapped to the database
-        [NotMapped]
-        public IFormFile? Image { get; set; }
-
         // Image URL of the room
         public string? ImageUrl { get; set; }
         // Special details about the room - no-smoking, pet-friendly, etc.

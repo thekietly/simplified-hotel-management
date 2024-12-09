@@ -8,6 +8,8 @@ namespace Domain.Entities
     public class HotelAmenity
     {
         [Key, Column(Order = 0)]
+        [Required]
+        [ForeignKey("Amenity")]
         public int AmenityId { get; set; }
 
         [Key, Column(Order = 1)]
