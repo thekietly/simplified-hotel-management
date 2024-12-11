@@ -412,6 +412,7 @@ namespace Infrastructure.Data
             },
             new Amenity
             {
+
                 Id = 33,
                 Name = "Desk",
                 Description = "Desk in the room",
