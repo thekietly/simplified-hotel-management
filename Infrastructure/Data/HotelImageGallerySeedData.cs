@@ -1,7 +1,7 @@
 ﻿using Domain.Entities;
 namespace Infrastructure.Data
 {
-    internal class HotelImageGallerySeedData
+    public static class HotelImageGallerySeedData
     {
         public static IEnumerable<HotelImageGallery> GetHotelImageGalleries() 
         {
