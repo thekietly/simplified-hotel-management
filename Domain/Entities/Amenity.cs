@@ -19,9 +19,9 @@ namespace Domain.Entities
 
         public AmenityType? AmenityType { get; set; }
         [JsonIgnore]
-        public ICollection<RoomAmenity>? RoomAmenities { get; set; }
+        public virtual ICollection<RoomAmenity>? RoomAmenities { get; set; }
         [JsonIgnore]
-        public ICollection<HotelAmenity>? HotelAmenities { get; set; }
+        public virtual ICollection<HotelAmenity>? HotelAmenities { get; set; }
     }
 
 }
