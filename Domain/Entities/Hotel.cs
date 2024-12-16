@@ -23,7 +23,7 @@ namespace Domain.Entities
         public DateTime LastUpdated { get; set; }
 
         public virtual ICollection<HotelRoom>? HotelRooms { get; set; }
-        public virtual ICollection<HotelAmenity> HotelAmenities { get; set; }
+        public virtual ICollection<HotelAmenity>? HotelAmenities { get; set; }
         public virtual ICollection<HotelImageGallery>? HotelImageGalleries { get; set; }
     }
 }
