@@ -75,5 +75,18 @@ namespace API.Controllers
             return Ok(roomToBeUpdated);
         }
 
+        [Route("api/hotel-room/{roomId}")]
+        [HttpDelete]
+        public async Task<IActionResult> DeleteRoom(int roomId)
+        {
+            var room = await _unitOfWork.HotelRoom.Get(filter: r => r.Id == roomId);
+            if (room == null)
+                return NotFound();
+
+            _unitOfWork.HotelRoom.Remove(room);
+            _unitOfWork.Save();
+            return Ok();
+        }
+
     }
 }
