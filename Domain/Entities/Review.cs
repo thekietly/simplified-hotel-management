@@ -33,6 +33,6 @@ namespace Domain.Entities
 
         public DateTime CreatedDate { get; set; }
         public DateTime LastUpdated { get; set; }
-        public Hotel? Hotel { get; set; }
+        public virtual Hotel? Hotel { get; set; }
     }
 }

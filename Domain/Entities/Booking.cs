@@ -23,7 +23,7 @@ namespace Domain.Entities
         public DateTime CreatedDate { get; set; }
         public DateTime LastUpdated { get; set; }
 
-        public virtual User User { get; set; }
-        public virtual HotelRoom HotelRoom { get; set; }
+        public virtual User? User { get; set; }
+        public virtual HotelRoom? HotelRoom { get; set; }
     }
 }
