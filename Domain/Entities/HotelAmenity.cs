@@ -18,7 +18,7 @@ namespace Domain.Entities
         public int HotelId { get; set; }
 
         [JsonIgnore]
-        public virtual Hotel Hotel { get; set; }
-        public virtual Amenity Amenity { get; set; }
+        public virtual Hotel? Hotel { get; set; }
+        public virtual Amenity? Amenity { get; set; }
     }
 }
