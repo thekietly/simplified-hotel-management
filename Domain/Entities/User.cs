@@ -30,5 +30,6 @@ namespace Domain.Entities
         public Role? UserRole { get; set; }
         public DateTime? CreatedDate { get; set; }
         public DateTime? LastUpdated { get; set; }
+        public virtual ICollection<Booking>? Bookings{ get; set; }
     }
 }
