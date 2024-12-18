@@ -34,7 +34,8 @@ namespace Domain.Entities
 
         [Range(0, 10)]
         public int RoomComfortAndQuality { get; set; }
-
+        public string? Like { get; set; }
+        public string? Dislike { get; set; }
         public DateTime CreatedDate { get; set; }
         public DateTime LastUpdated { get; set; }
         [JsonIgnore]
