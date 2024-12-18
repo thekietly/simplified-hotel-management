@@ -14,6 +14,9 @@ namespace Domain.Entities
         [Required]
         [ForeignKey("Hotel")]
         public int HotelId { get; set; }
+        [Required]
+        [ForeignKey("User")]
+        public int UserId { get; set; }
         [Range(0, 10)]
         public int Location { get; set; }
 
@@ -31,10 +34,13 @@ namespace Domain.Entities
 
         [Range(0, 10)]
         public int RoomComfortAndQuality { get; set; }
-
+        public string? Like { get; set; }
+        public string? Dislike { get; set; }
         public DateTime CreatedDate { get; set; }
         public DateTime LastUpdated { get; set; }
         [JsonIgnore]
         public virtual Hotel? Hotel { get; set; }
+        [JsonIgnore]
+        public virtual User? User { get; set; }
     }
 }

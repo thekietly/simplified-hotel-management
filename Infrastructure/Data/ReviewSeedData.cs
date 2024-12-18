@@ -13,6 +13,7 @@ namespace Infrastructure.Data
                 {
                     Id = 1,
                     HotelId = 1,
+                    UserId = 1,
                     Location = 8,
                     ValueForMoney = 7,
                     Service = 9,
@@ -26,6 +27,7 @@ namespace Infrastructure.Data
                 {
                     Id = 2,
                     HotelId = 1,
+                    UserId = 1,
                     Location = 9,
                     ValueForMoney = 8,
                     Service = 9,
@@ -39,6 +41,7 @@ namespace Infrastructure.Data
                 {
                     Id = 3,
                     HotelId = 1,
+                    UserId = 1,
                     Location = 7,
                     ValueForMoney = 6,
                     Service = 7,
@@ -52,6 +55,7 @@ namespace Infrastructure.Data
                 {
                     Id = 4,
                     HotelId = 1,
+                    UserId = 1,
                     Location = 10,
                     ValueForMoney = 9,
                     Service = 10,
