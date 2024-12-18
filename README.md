@@ -16,7 +16,7 @@ SQL Server Management Studio Database Diagram, Class diagram (Umlet) and User ca
 Trello board (kanban board).
 
 # Methodologies and software designs
-Layered Architecture, MVC, Repository patterns and Identity.
+Layered Architecture, Restful APIs, DTO with AutoMapper, Repository patterns and Identity.
 
 # Goals
 Mimicking the features of booking.com and deploy it as a general website (including CMS).
