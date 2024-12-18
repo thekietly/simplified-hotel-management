@@ -25,5 +25,6 @@ namespace Domain.Entities
         public virtual ICollection<HotelRoom>? HotelRooms { get; set; }
         public virtual ICollection<HotelAmenity>? HotelAmenities { get; set; }
         public virtual ICollection<HotelImageGallery>? HotelImageGalleries { get; set; }
+        public virtual ICollection<Review>? Reviews { get; set; }
     }
 }

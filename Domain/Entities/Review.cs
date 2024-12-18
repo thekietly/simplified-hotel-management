@@ -1,6 +1,7 @@
 ﻿
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 namespace Domain.Entities
 {
     public class Review
@@ -33,6 +34,7 @@ namespace Domain.Entities
 
         public DateTime CreatedDate { get; set; }
         public DateTime LastUpdated { get; set; }
+        [JsonIgnore]
         public virtual Hotel? Hotel { get; set; }
     }
 }

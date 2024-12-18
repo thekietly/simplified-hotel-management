@@ -3,7 +3,7 @@ using Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-namespace client.Controllers
+namespace API.Controllers
 {
 
     [ApiController]
