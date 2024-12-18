@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace client.Controllers
 {
-
+    [Route("api/hotel")]
     [ApiController]
     public class HotelController : ControllerBase
     {
@@ -15,8 +15,8 @@ namespace client.Controllers
         {
             _unitOfWork = unitOfWork;
         }
-        [Route("api/hotel/{hotelId}/details")]
-        [HttpGet]
+
+        [HttpGet("{hotelId}")]
         public async Task<IActionResult> GetHotelDetails(int hotelId)
         {
             var hotels = await _unitOfWork.Hotel.Get(filter: h => h.Id == hotelId);
@@ -24,22 +24,14 @@ namespace client.Controllers
 
             return Ok(hotels);
         }
-        [Route("api/hotels/summary")]
+
         [HttpGet]
         public async Task<IActionResult> GetSummarisedHotelsInformation()
         {
             var hotels = await _unitOfWork.Hotel.GetAll(include: q => q.Include(hr => hr.HotelRooms));
             return Ok(hotels);
         }
-        [Route("api/hotels/full-details")]
-        [HttpGet]
-        public async Task<IActionResult> GetHotelsWithCompleteInformation()
-        {
-            var hotels = await _unitOfWork.Hotel.GetAll(include: q => q.Include(hr => hr.HotelRooms).Include(ha => ha.HotelAmenities).ThenInclude(a => a.Amenity));
-            return Ok(hotels);
-        }
 
-        [Route("api/hotel/create")]
         [HttpPost]
         public Task<IActionResult> CreateHotel([FromBody] Hotel hotel)
         {
@@ -54,8 +46,8 @@ namespace client.Controllers
             // returns 201 if successfully added
             return Task.FromResult<IActionResult>(CreatedAtAction(nameof(GetHotelDetails), new { hotelId = hotel.Id }, hotel));
         }
-        [Route("api/hotel/{hotelId}")]
-        [HttpPut]
+
+        [HttpPut("{hotelId}")]
         public async Task<IActionResult> UpdateHotel(int hotelId, [FromBody] Hotel updatedHotel)
         {
             var hotelToBeUpdated = await _unitOfWork.Hotel.Get(filter: h => h.Id == hotelId);
@@ -77,8 +69,7 @@ namespace client.Controllers
             return Ok(hotelToBeUpdated);
         }
 
-        [Route("api/hotel/{hotelId}")]
-        [HttpDelete]
+        [HttpDelete("{hotelId}")]
         public async Task<IActionResult> DeleteHotel(int hotelId)
         {
             var hotel = await _unitOfWork.Hotel.Get(filter: h => h.Id == hotelId);
