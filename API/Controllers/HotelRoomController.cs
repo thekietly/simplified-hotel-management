@@ -5,6 +5,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
 {
+
+    [Route("api/hotel-room")]
     [ApiController]
     public class HotelRoomController : ControllerBase
     {
@@ -13,8 +15,8 @@ namespace API.Controllers
             _unitOfWork = unitOfWork;
         }
 
-        [Route("api/hotel-room/{RoomId}")]
-        [HttpGet]
+
+        [HttpGet("{roomId}")]
         public async Task<IActionResult> GetRoomDetails(int roomId) {
             var roomDetails = await _unitOfWork.HotelRoom.Get(filter: r => r.Id == roomId);
             // if not found returns 404 code
@@ -25,14 +27,13 @@ namespace API.Controllers
             return Ok(roomDetails);
         }
 
-        [Route("api/hotel-room")]
+
         [HttpGet]
         public async Task<IActionResult> GetAllRooms() { 
             var allRooms = await _unitOfWork.HotelRoom.GetAll();
             return Ok(allRooms);
         }
 
-        [Route("api/hotel-room")]
         [HttpPost]
         public Task<IActionResult> Create([FromBody] HotelRoom hotelRoom) {
             if (!ModelState.IsValid)
@@ -45,8 +46,7 @@ namespace API.Controllers
             _unitOfWork.Save();
             return Task.FromResult<IActionResult>(CreatedAtAction(nameof(GetRoomDetails), new { roomId = hotelRoom.Id }, hotelRoom));
         }
-        [Route("api/hotel-room/{roomId}")]
-        [HttpPatch]
+        [HttpPatch("{roomId}")]
         public async Task<IActionResult> UpdateHotelRoomPartial(int roomId, [FromBody] JsonPatchDocument<HotelRoom> patchDocument)
         {
             if (patchDocument == null)
@@ -75,8 +75,8 @@ namespace API.Controllers
             return Ok(roomToBeUpdated);
         }
 
-        [Route("api/hotel-room/{roomId}")]
-        [HttpDelete]
+
+        [HttpDelete("{roomId}")]
         public async Task<IActionResult> DeleteRoom(int roomId)
         {
             var room = await _unitOfWork.HotelRoom.Get(filter: r => r.Id == roomId);
