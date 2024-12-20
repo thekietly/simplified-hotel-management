@@ -18,6 +18,7 @@ namespace Application.Common.Interface
         public IRoomAmenityRepository RoomAmenity { get; }
         public IAmenityRepository Amenity { get; }
         public IHotelImageGalleryRepository HotelImageGallery { get; }  
+        public IReviewRepository Review { get; }
 
         // Save changes to the database asynchronously
         void Save();
