@@ -14,7 +14,7 @@ namespace Infrastructure.Repository
         public IAmenityRepository Amenity { get; private set; }
         public IHotelImageGalleryRepository HotelImageGallery { get; private set; }
         public IHotelRoomImageGalleryRepository HotelRoomImageGallery { get; private set; }
-
+        public IReviewRepository Review { get; private set; }
         public UnitOfWork(ApplicationDbContext db)
         {
             _db = db;
@@ -26,6 +26,7 @@ namespace Infrastructure.Repository
             RoomAmenity = new RoomAmenityRepository(_db);
             HotelImageGallery = new HotelImageGalleryRepository(_db);
             HotelRoomImageGallery = new HotelRoomImageGalleryRepository(_db);
+            Review = new ReviewRepository(_db);
         }
         public void Save()
         {
