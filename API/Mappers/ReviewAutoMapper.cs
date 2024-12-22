@@ -6,6 +6,25 @@ namespace API.Mappers
 {
     public static class ReviewAutoMapper
     {
+        public static UserReviewDto ToUserReviewDto(this Review review)
+        {
+            var averageReview = (review.Cleanliness
+                + review.Facilities
+                + review.RoomComfortAndQuality
+                + review.ValueForMoney
+                + review.Location
+                + review.Service) / 6.0;
+            return new UserReviewDto
+            {
+                Id = review.Id,
+                UserId = review.UserId,
+                UserName = review.User.Email,
+                AverageReview = averageReview,
+                Like = review.Like,
+                Dislike = review.Dislike,
+                CreatedDate = review.CreatedDate
+            };
+        }
         public static OverallReviewDto ToOverallReviewDto(this IEnumerable<Review> reviews) 
         {
             // If no reviews for this hotel
