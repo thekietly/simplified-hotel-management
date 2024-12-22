@@ -22,9 +22,22 @@ namespace API.Controllers
             {
                 return BadRequest("Hotel ID is required.");
             }
-            var reviews = await _unitOfWork.Review.GetAll(filter: r => r.HotelId == hotelId);
-            var overallReviewDto = reviews.ToOverallReviewDto();
-            return Ok(overallReviewDto);
+            if (type.Equals("overall", StringComparison.OrdinalIgnoreCase))
+            {
+                var reviews = await _unitOfWork.Review.GetAll(filter: r => r.HotelId == hotelId);
+                var overallReviewDto = reviews.ToOverallReviewDto();
+                return Ok(overallReviewDto);
+            }
+            else if (type.Equals("user", StringComparison.OrdinalIgnoreCase)) 
+            {
+                var reviews = await _unitOfWork.Review.GetAll(filter: r => r.HotelId == hotelId, include: q => q.Include(u => u.User));
+                var overallReviewDto = reviews.Select(r => r.ToUserReviewDto()).ToList();
+                return Ok(overallReviewDto);
+            }
+            else 
+            {
+                return BadRequest("This type of review is not supported.");
+            }
         }
     }
 }
