@@ -28,6 +28,8 @@ namespace Application.Common.Interface
         void Update(T entity);
         // Remove a record from the database
         void Remove(T entity);
+        // Remove a list of records
+        void RemoveRange(IEnumerable<T> entities);
 
 
     }
