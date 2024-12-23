@@ -42,7 +42,20 @@ namespace API.Controllers
             _unitOfWork.HotelAmenity.AddRange(hotelAmenities);
             _unitOfWork.Save();
             return Ok(hotelAmenities);
-
+        }
+        [HttpDelete]
+        public async Task<IActionResult> DeleteAmenitiesFromHotel([FromBody] HotelAmenityDto hotelAmenityDto) 
+        {
+            // hotelId = x | amenityList = [1,2,3,4,5]
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+            // Convert this dto to a list of hotel amenities
+            var hotelAmenities = hotelAmenityDto.ToHotelAmenityList();
+            if (hotelAmenities == null)
+                return BadRequest(ModelState);
+            _unitOfWork.HotelAmenity.RemoveRange(hotelAmenities);
+            _unitOfWork.Save();
+            return Ok(hotelAmenities);
         }
     }
 }
