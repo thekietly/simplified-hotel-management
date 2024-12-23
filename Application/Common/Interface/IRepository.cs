@@ -23,6 +23,7 @@ namespace Application.Common.Interface
         bool Any(Expression<Func<T, bool>> filter, string? includeProperties = null);
         // Add a new record to the database
         void Add(T entity);
+        void AddRange(IEnumerable<T> entities);
         // Update an existing record in the database
         void Update(T entity);
         // Remove a record from the database

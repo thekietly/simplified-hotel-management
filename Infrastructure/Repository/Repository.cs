@@ -73,6 +73,11 @@ namespace Infrastructure.Repository
         {
             dbSet.Add(entity);
         }
+        public virtual void AddRange(IEnumerable<T> entities) 
+        {
+            dbSet.AddRange(entities);
+        }
+
         // Allow derived classes to override this method
         public virtual void Remove(T entity)
         {
