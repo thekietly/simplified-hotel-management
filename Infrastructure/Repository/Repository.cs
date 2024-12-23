@@ -65,18 +65,25 @@ namespace Infrastructure.Repository
 
             return await query.ToListAsync();
         }
-
-
-
         // Allow derived classes to override this method
         public virtual void Add(T entity)
         {
             dbSet.Add(entity);
         }
+        public virtual void AddRange(IEnumerable<T> entities) 
+        {
+            dbSet.AddRange(entities);
+        }
+
         // Allow derived classes to override this method
         public virtual void Remove(T entity)
         {
             dbSet.Remove(entity);
+        }
+        // Remove a list of entities
+        public virtual void RemoveRange(IEnumerable<T> entities) 
+        { 
+            dbSet.RemoveRange(entities);
         }
         // Allow derived classes to override this method
         public virtual void Update(T entity)
