@@ -8,10 +8,6 @@ namespace API.Mappers
         // Mapping all amenity ids to a list then convert to a dto
         public static HotelAmenityDto ToHotelAmenityDto(this IEnumerable<HotelAmenity> hotelAmenities) 
         {
-            if (hotelAmenities == null || !hotelAmenities.Any()) 
-            {
-                return null;
-            }
             return new HotelAmenityDto
             {
                 HotelId = hotelAmenities.First().HotelId,
