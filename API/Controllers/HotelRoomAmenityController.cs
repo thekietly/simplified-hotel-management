@@ -69,17 +69,39 @@ namespace API.Controllers
             return Ok(roomAmenities);
         }
         [HttpDelete]
-        public IActionResult Delete([FromBody] RoomAmenityDto roomAmenityDto ) 
+        public async Task<IActionResult> Delete([FromBody] RoomAmenityDto roomAmenityDto ) 
         {
             if (!ModelState.IsValid) 
             {
                 return BadRequest("Invalid room id or amenity id");
             }
-            var roomAmenities = roomAmenityDto.ToRoomAmenityList();
-            if (!roomAmenities.Any()) 
+            // validate the room id is correct
+            var roomExist = _unitOfWork.HotelRoom.Any(r => r.Id == roomAmenityDto.Id);
+            if (!roomExist)
             {
-                return BadRequest(ModelState);
+                return BadRequest("Invalid room id!");
             }
+            // no duplicate amenities in the request
+            var duplicateAmenities = roomAmenityDto.AmenityList.GroupBy(id => id)
+                .Where(group => group.Count() > 1)
+                .Select(group => group.Key)
+                .ToList();
+            if (duplicateAmenities.Any())
+            {
+                return BadRequest($"Duplicate amenities detected in the request: {string.Join(", ", duplicateAmenities)}");
+            }
+            // checking if there's any amenity records with these ids
+            var roomAmenitiesDb = await _unitOfWork.RoomAmenity.GetAll(filter: ra => ra.RoomId == roomAmenityDto.Id);
+            var existingAmenities = roomAmenitiesDb.Select(ra => ra.AmenityId).ToHashSet();
+            // validate the amenity ids
+            var invalidAmenityIds = roomAmenityDto.AmenityList.Where(amenityId => !existingAmenities.Contains(amenityId)).ToList();
+            // if an amenity id does not exist
+            if (invalidAmenityIds.Any())
+            {
+                return BadRequest($"The room does not have the following amenities: {string.Join(", ", invalidAmenityIds)}");
+            }
+            // from a list of room amenities, select the ones that are in the amenity list.
+            var roomAmenities = roomAmenitiesDb.Where(ra => roomAmenityDto.AmenityList.Contains(ra.AmenityId)).ToList();
             _unitOfWork.RoomAmenity.RemoveRange(roomAmenities);
             _unitOfWork.Save();
             return Ok();
