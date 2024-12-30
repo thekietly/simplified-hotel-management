@@ -48,8 +48,23 @@ namespace API.Controllers
             return Ok(hotelImages);
         }
         [HttpDelete]
-        public async Task<IActionResult> DeleteImages() 
+        public IActionResult DeleteImages([FromQuery] int hotelId, [FromBody] HotelImageDto hotelImageDto) 
         {
+            // Validate input
+            if (hotelImageDto.ImageUrls == null || !hotelImageDto.ImageUrls.Any())
+            {
+                return BadRequest("No images provided for deletion.");
+            }
+            var hotelImages = hotelImageDto.ImageUrls.Select(url => new HotelImageGallery
+            {
+                HotelId = hotelImageDto.HotelId,
+                ImageUrl = url
+            }).ToList();
+
+            _unitOfWork.HotelImageGallery.RemoveRange(hotelImages);
+            _unitOfWork.Save();
+            return Ok();
+
         }
     }
 }
