@@ -1,65 +1,118 @@
 ﻿using Domain.Entities;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
 using Services.SqlDatabaseContextService;
 
 namespace Infrastructure.Repository
 {
     public class SqlDatabaseApplicationFacilityRepository : IApplicationFacilityContextService, IDisposable
     {
-        private readonly ApplicationDbContext _db;
-        public SqlDatabaseApplicationFacilityRepository(ApplicationDbContext db)
+        private readonly ApplicationDbContext database;
+        public SqlDatabaseApplicationFacilityRepository(ApplicationDbContext database)
         {
-            _db = db;
-
+            this.database = database;
         }
 
-        public Task<Amenity> AddAmenityAsync(Amenity amenity)
+        public async Task<CreateResult> AddAmenityAsync(Amenity amenity)
         {
-            throw new NotImplementedException();
+            this.database.Amenities.Add(amenity);
+            await this.database.SaveChangesAsync();
+            return CreateResult.SuccessResult(amenity.Id);
         }
 
-        public Task<Review> CreateReviewAsync(Review review)
+        public async Task<CreateResult> CreateReviewAsync(Review review)
         {
-            throw new NotImplementedException();
+            this.database.Reviews.Add(review);
+            await this.database.SaveChangesAsync();
+            return CreateResult.SuccessResult(review.Id);
         }
 
-        public Task<Amenity> DeleteAmenityAsync(Amenity amenity)
+        public async Task<DeleteResult> DeleteAmenityAsync(ICollection<int> amenityIds)
         {
-            throw new NotImplementedException();
+            var amenitiesToDelete = database.Amenities
+                                    .Where(a => amenityIds.Contains(a.Id))
+                                    .ToList();
+
+            if (!amenitiesToDelete.Any()) 
+            {
+                return DeleteResult.SuccessResult();
+            }
+            // Remove associations from HotelAmenities 
+            var hotelAmenitiesToDelete = database.HotelAmenities
+                                        .Where(ha => amenityIds.Contains(ha.AmenityId))
+                                        .ToList();
+            if (hotelAmenitiesToDelete.Any())
+            {
+                database.HotelAmenities.RemoveRange(hotelAmenitiesToDelete);
+            }
+
+            // Remove associations from RoomAmenities
+            var roomAmenitiesToDelete = database.RoomAmenities
+                                        .Where(ra => amenityIds.Contains(ra.AmenityId))
+                                        .ToList();
+            if (roomAmenitiesToDelete.Any())
+            {
+                database.RoomAmenities.RemoveRange(roomAmenitiesToDelete);
+            }
+
+            database.Amenities.RemoveRange(amenitiesToDelete);
+            await database.SaveChangesAsync();
+            return DeleteResult.SuccessResult();
         }
 
-        public Task<Review> DeleteReviewAsync(Review review)
+        public async Task<DeleteResult> DeleteReviewAsync(int reviewId)
         {
-            throw new NotImplementedException();
+            var review = await database.Reviews.Where(r => r.Id == reviewId).SingleOrDefaultAsync();
+            if (review != null)
+            {
+                database.Reviews.Remove(review);
+                await database.SaveChangesAsync();
+            }
+            return DeleteResult.SuccessResult();
+
         }
 
         public void Dispose()
         {
-            throw new NotImplementedException();
+            if (database != null) 
+            { 
+                database.Dispose(); 
+            }
         }
 
-        public Task<Amenity> GetAllAmenitiesAsync()
+        public async Task<ICollection<Amenity>> GetAllAmenitiesAsync()
         {
-            throw new NotImplementedException();
+            return await this.database.Amenities.AsNoTracking().ToListAsync();  
         }
 
-        public Task<Review> GetAllReviewsByHotelIdAsync(int hotelId)
+        public async Task<PagedResult<Review>> GetAllReviewsByHotelIdAsync(int hotelId, int skip, int take)
         {
-            throw new NotImplementedException();
+            var pageOfData = await this.database.Reviews
+                .AsNoTracking()
+                .Where(r => r.HotelId == hotelId)
+                .OrderByDescending(r => r.Id)
+                .Skip(skip)
+                .Take(take)
+                .ToListAsync();
+            var totalCount = await this.database.Reviews.Where(r => r.HotelId == hotelId).CountAsync();
+            return new PagedResult<Review>(pageOfData, totalCount);
         }
 
-        public Task<Amenity> GetAmenityByIdAsync(int amenityId)
+        public async Task<Amenity?> GetAmenityByIdAsync(int amenityId)
         {
-            throw new NotImplementedException();
+            return await this.database.Amenities.Where(a => a.Id == amenityId).SingleOrDefaultAsync();
         }
 
-        public Task<Review> GetReviewByReviewIdAsync(int reviewId)
+        public async Task<Review?> GetReviewByReviewIdAsync(int reviewId)
         {
-            throw new NotImplementedException();
+            return await this.database.Reviews.Where(r => r.Id == reviewId).SingleOrDefaultAsync();
         }
 
-        public Task<Review> UpdateReviewAsync(Review review)
+        public async Task<UpdateResult> UpdateReviewAsync(Review review)
         {
-            throw new NotImplementedException();
+            database.Reviews.Update(review);
+            await this.database.SaveChangesAsync();
+            return UpdateResult.SuccessResult();
         }
     }
 }
