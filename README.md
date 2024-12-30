@@ -17,6 +17,7 @@ Trello board (kanban board).
 
 # Methodologies and software designs
 Layered Architecture, Restful APIs, DTO with AutoMapper, Repository patterns and Identity.
+This software design is inspired by [Reliable Web App Pattern Dotnet](https://github.com/Azure/reliable-web-app-pattern-dotnet) by Microsoft Azure
 
 # Goals
 Mimicking the features of booking.com and deploy it as a general website (including CMS).
