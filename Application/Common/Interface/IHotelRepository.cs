@@ -1,8 +1,9 @@
 ﻿using Domain.Entities;
+using Services.SqlDatabaseContextService;
 
 namespace Application.Common.Interface
 {
-    public interface IHotelRepository : IRepository<Hotel>
+    public interface IHotelRepository : ISQLRepository<Hotel>
     {
 
 
