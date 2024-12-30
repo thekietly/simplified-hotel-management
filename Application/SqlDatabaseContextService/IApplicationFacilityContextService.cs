@@ -5,17 +5,17 @@ namespace Services.SqlDatabaseContextService
     public interface IApplicationFacilityContextService
     {
         #region Amenity
-        Task<Amenity> GetAllAmenitiesAsync();
-        Task<Amenity> GetAmenityByIdAsync(int amenityId);
-        Task<Amenity> AddAmenityAsync(Amenity amenity);
-        Task<Amenity> DeleteAmenityAsync(Amenity amenity);
+        Task<ICollection<Amenity>> GetAllAmenitiesAsync();
+        Task<Amenity?> GetAmenityByIdAsync(int amenityId);
+        Task<CreateResult> AddAmenityAsync(Amenity amenity);
+        Task<DeleteResult> DeleteAmenityAsync(ICollection<int> amenityIds);
         #endregion
         #region Review
-        Task<Review> GetAllReviewsByHotelIdAsync(int hotelId);
-        Task<Review> GetReviewByReviewIdAsync(int reviewId);   
-        Task<Review> CreateReviewAsync(Review review);
-        Task<Review> DeleteReviewAsync(Review review);
-        Task<Review> UpdateReviewAsync(Review review);
+        Task<PagedResult<Review>> GetAllReviewsByHotelIdAsync(int hotelId, int skip, int take);
+        Task<Review?> GetReviewByReviewIdAsync(int reviewId);   
+        Task<CreateResult> CreateReviewAsync(Review review);
+        Task<DeleteResult> DeleteReviewAsync(int reviewId);
+        Task<UpdateResult> UpdateReviewAsync(Review review);
         #endregion
     }
 }
