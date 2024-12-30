@@ -1,68 +1,110 @@
 ﻿using Domain.Entities;
+using Microsoft.EntityFrameworkCore;
 using Services.SqlDatabaseContextService;
 
 namespace Infrastructure.Repository
 {
-    public class SqlDatabaseRoomRepository : IRoomManagementContextService
+    public class SqlDatabaseRoomRepository : IRoomManagementContextService, IDisposable
     {
-        private readonly ApplicationDbContext db;
-        public SqlDatabaseRoomRepository(ApplicationDbContext db) 
+        private readonly ApplicationDbContext database;
+        public SqlDatabaseRoomRepository(ApplicationDbContext database)
         { 
-            this.db = db;
-        }
-        public Task<ICollection<RoomAmenity>> AddAmenitiesFromRoomAsync(ICollection<RoomAmenity> roomAmenities)
-        {
-            throw new NotImplementedException();
+            this.database = database;
         }
 
-        public Task<ICollection<HotelRoomImageGallery>> AddRoomImagesByIdAsync(ICollection<HotelRoomImageGallery> hotelRoomImageGalleries)
+        public async Task<ICollection<CreateResult>> AddAmenitiesFromRoomAsync(ICollection<RoomAmenity> roomAmenities)
         {
-            throw new NotImplementedException();
+
+            database.RoomAmenities.AddRange(roomAmenities);
+            await database.SaveChangesAsync();
+            var results = roomAmenities.Select(ra => CreateResult.SuccessResult(ra.AmenityId)).ToList();
+            return results;
         }
 
-        public Task<HotelRoom> CreateRoomAsync(HotelRoom hotelRoom)
+        public async Task<ICollection<CreateResult>> AddRoomImagesByIdAsync(ICollection<HotelRoomImageGallery> hotelRoomImageGalleries)
         {
-            throw new NotImplementedException();
+            database.HotelRoomImageGalleries.AddRange(hotelRoomImageGalleries);
+            await database.SaveChangesAsync();
+            var results = hotelRoomImageGalleries.Select(ri => CreateResult.SuccessResult(ri.Id)).ToList();
+            return results;
         }
 
-        public Task<ICollection<RoomAmenity>> DeleteAmenitiesFromRoomAsync(ICollection<RoomAmenity> roomAmenities)
+        public async Task<CreateResult> CreateRoomAsync(HotelRoom hotelRoom)
         {
-            throw new NotImplementedException();
+            database.HotelRooms.Add(hotelRoom);
+            await database.SaveChangesAsync();
+            return CreateResult.SuccessResult(hotelRoom.Id);
         }
 
-        public Task<HotelRoom> DeleteRoomAsync(int roomId)
+        public async Task<DeleteResult> DeleteAmenitiesFromRoomAsync(ICollection<RoomAmenity> roomAmenities)
         {
-            throw new NotImplementedException();
+            database.RemoveRange(roomAmenities);
+            await database.SaveChangesAsync();
+            return DeleteResult.SuccessResult();
         }
 
-        public Task<ICollection<HotelRoomImageGallery>> DeleteRoomImagesByIdAsync(ICollection<HotelRoomImageGallery> hotelRoomImageGalleries)
+        public async Task<DeleteResult> DeleteRoomAsync(int roomId)
         {
-            throw new NotImplementedException();
+            var room = database.HotelRooms.SingleOrDefault(r => r.Id == roomId);
+            if (room != null)
+            {
+                database.RemoveRange(roomId);
+                await database.SaveChangesAsync();
+            }
+            return DeleteResult.SuccessResult();
         }
 
-        public Task<RoomAmenity> GetAllRoomAmenitiesAsync(int roomId)
+        public async Task<DeleteResult> DeleteRoomImagesByIdAsync(ICollection<int> imageIds)
         {
-            throw new NotImplementedException();
+            var images = database.HotelRoomImageGalleries
+                        .Where(img => imageIds.Contains(img.Id))
+                        .ToList();
+            if (images != null) 
+            {
+                database.RemoveRange(images);
+                await database.SaveChangesAsync();
+            }
+            return DeleteResult.SuccessResult();
         }
 
-        public Task<HotelRoomImageGallery> GetAllRoomImagesByIdAsync(int roomId)
+        public void Dispose()
         {
-            throw new NotImplementedException();
+            if (database != null) 
+            {
+                this.database.Dispose();
+            }
         }
 
-        public Task<HotelRoom> GetAllRoomsAsync()
+        public async Task<ICollection<RoomAmenity>> GetAllRoomAmenitiesAsync(int roomId)
         {
-            throw new NotImplementedException();
+            return await this.database.RoomAmenities.AsNoTracking().Where(ra => ra.RoomId == roomId).ToListAsync();
         }
 
-        public Task<HotelRoom> GetRoomByIdAsync(int roomId)
+        public async Task<ICollection<HotelRoomImageGallery>> GetAllRoomImagesByIdAsync(int roomId)
         {
-            throw new NotImplementedException();
+            return await this.database.HotelRoomImageGalleries.AsNoTracking().Where(ri => ri.RoomId == roomId).ToListAsync();
         }
 
-        public Task<HotelRoom> UpdateRoomAsync(HotelRoom hotelRoom)
+        public async Task<PagedResult<HotelRoom>> GetAllRoomsAsync(int skip, int take)
         {
-            throw new NotImplementedException();
+            var pageOfData = await this.database.HotelRooms.AsNoTracking()
+                .Skip(skip)
+                .Take(take)
+                .ToListAsync();
+            var totalCount = await this.database.HotelRooms.CountAsync();
+            return new PagedResult<HotelRoom>(pageOfData, totalCount);
+        }
+
+        public async Task<HotelRoom?> GetRoomByIdAsync(int roomId)
+        {
+            return await this.database.HotelRooms.AsNoTracking().Where(r => r.Id == roomId).SingleOrDefaultAsync();
+        }
+
+        public async Task<UpdateResult> UpdateRoomAsync(HotelRoom hotelRoom)
+        {
+            database.HotelRooms.Update(hotelRoom);
+            await this.database.SaveChangesAsync();
+            return UpdateResult.SuccessResult();
         }
     }
 }
