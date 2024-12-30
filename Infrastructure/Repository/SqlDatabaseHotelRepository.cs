@@ -1,73 +1,129 @@
 ﻿using Domain.Entities;
+using Microsoft.EntityFrameworkCore;
 using Services.SqlDatabaseContextService;
 
 namespace Infrastructure.Repository
 {
     public class SqlDatabaseHotelRepository : IHotelManagementContextService, IDisposable
     {
-        private readonly ApplicationDbContext db;
-        public SqlDatabaseHotelRepository(ApplicationDbContext db) 
+        private readonly ApplicationDbContext database;
+        public SqlDatabaseHotelRepository(ApplicationDbContext database) 
         {
-            this.db = db;
-        }
-        public Task<ICollection<HotelAmenity>> AddAmenityToHotelAsync(ICollection<HotelAmenity> hotelAmenities)
-        {
-            throw new NotImplementedException();
+            this.database = database;
         }
 
-        public Task<ICollection<HotelImageGallery>> AddHotelImagesByIdAsync(ICollection<HotelImageGallery> hotelImageGalleries)
+        public async Task<ICollection<CreateResult>> AddAmenityToHotelByIdAsync(ICollection<int> amenities, int hotelId)
         {
-            throw new NotImplementedException();
+            var hotelAmenities = amenities.Select(amenityId => new HotelAmenity
+            {
+                AmenityId = amenityId,
+                HotelId = hotelId
+            }).ToList();
+
+            // Add to the database
+            database.AddRange(hotelAmenities);
+            await database.SaveChangesAsync();
+            var results = hotelAmenities.Select(ha => CreateResult.SuccessResult(ha.AmenityId)).ToList();
+            return results;
         }
 
-        public Task<Hotel> CreateHotelAsync(Hotel hotel)
+        public async Task<ICollection<CreateResult>> AddHotelImagesByIdAsync(ICollection<HotelImageGallery> hotelImageGalleries)
         {
-            throw new NotImplementedException();
+            database.AddRange(hotelImageGalleries);
+            await database.SaveChangesAsync();
+            var results = hotelImageGalleries.Select(hotelImageGalleries => CreateResult.SuccessResult(hotelImageGalleries.Id)).ToList();
+            return results;
         }
 
-        public Task<ICollection<HotelAmenity>> DeleteAmenitiesFromHotelAsync(ICollection<HotelAmenity> hotelAmenities)
+        public async Task<CreateResult> CreateHotelAsync(Hotel hotel)
         {
-            throw new NotImplementedException();
+            database.Add(hotel);
+            await database.SaveChangesAsync();
+            return CreateResult.SuccessResult(hotel.Id);
         }
 
-        public Task<Hotel> DeleteHotelAsync(int hotelId)
+        public async Task<DeleteResult> DeleteAmenitiesFromHotelAsync(ICollection<int> amenityIds, int hotelId)
         {
-            throw new NotImplementedException();
+            var existingHotelAmenities = this.database.HotelAmenities
+            .Where(ha => ha.HotelId == hotelId && amenityIds.Contains(ha.AmenityId))
+            .ToList();
+            if (existingHotelAmenities != null) 
+            {
+                database.RemoveRange(existingHotelAmenities);
+                await database.SaveChangesAsync();
+            }
+            return DeleteResult.SuccessResult();
         }
 
-        public Task<ICollection<HotelImageGallery>> DeleteHotelImagesByIdAsync(ICollection<HotelImageGallery> hotelImageGalleries)
+        public async Task<DeleteResult> DeleteHotelAsync(int hotelId)
         {
-            throw new NotImplementedException();
+            var existingHotel = database.Hotels.SingleOrDefault(h => h.Id == hotelId);
+
+            if (existingHotel != null) 
+            {
+                database.Remove(existingHotel);
+                await database.SaveChangesAsync();
+            }
+            return DeleteResult.SuccessResult();
+        }
+
+        public async Task<DeleteResult> DeleteHotelImagesByIdAsync(ICollection<int> imageIds, int hotelId)
+        {
+            var existingHotelImages = this.database.HotelImageGalleries
+                .Where(hi => hi.HotelId == hotelId && imageIds.Contains(hi.Id))
+                .ToList();
+            if (existingHotelImages != null) 
+            {
+                database.RemoveRange(existingHotelImages);
+                await database.SaveChangesAsync();
+            }
+            return DeleteResult.SuccessResult();
         }
 
         public void Dispose()
         {
-            throw new NotImplementedException();
+            if (this.database != null) 
+            {
+                this.database.Dispose();
+            }
         }
 
-        public Task<HotelAmenity> GetAllHotelAmenitiesAsync(int hotelId)
+        public async Task<ICollection<HotelAmenity>> GetAllHotelAmenitiesAsync(int hotelId)
         {
-            throw new NotImplementedException();
+            return await this.database.HotelAmenities.AsNoTracking().Where(ha => ha.HotelId == hotelId).ToListAsync();
         }
 
-        public Task<HotelImageGallery> GetAllHotelImageGalleryByIdAsync(int hotelId)
+        public async Task<ICollection<HotelImageGallery>> GetAllHotelImageGalleryByIdAsync(int hotelId)
         {
-            throw new NotImplementedException();
+            return await this.database.HotelImageGalleries.AsNoTracking().Where(hi => hi.HotelId == hotelId).ToListAsync();
         }
 
-        public Task<Hotel> GetAllHotelsAsync()
+
+
+        public async Task<PagedResult<Hotel>> GetAllHotelsAsync(int skip, int take)
         {
-            throw new NotImplementedException();
+            // Add more includes to show the relevant data about the hotel i.e amenities/ pricing
+            var pageOfData = await this.database.Hotels
+                .AsNoTracking()
+                .OrderByDescending(h => h.Id)
+                .Skip(skip)
+                .Take(take)
+                .ToListAsync();
+            var totalCount = await this.database.Hotels.CountAsync();
+            return new PagedResult<Hotel>(pageOfData, totalCount);
         }
 
-        public Task<Hotel> GetHotelByIdAsync(int hotelId)
+        public async Task<Hotel?> GetHotelByIdAsync(int hotelId)
         {
-            throw new NotImplementedException();
+            return await database.Hotels.AsNoTracking().Where(h => h.Id == hotelId).SingleOrDefaultAsync();
+
         }
 
-        public Task<Hotel> UpdateHotelAsync(Hotel hotel)
+        public async Task<UpdateResult> UpdateHotelAsync(Hotel hotel)
         {
-            throw new NotImplementedException();
+            database.Update(hotel);
+            await database.SaveChangesAsync();
+            return UpdateResult.SuccessResult();
         }
     }
 }
