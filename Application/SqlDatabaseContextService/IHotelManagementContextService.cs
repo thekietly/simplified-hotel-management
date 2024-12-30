@@ -6,17 +6,17 @@ namespace Services.SqlDatabaseContextService
     public interface IHotelManagementContextService
     {
         #region Hotel
-        Task<Hotel> CreateHotelAsync(Hotel hotel);
-        Task<Hotel> GetHotelByIdAsync(int hotelId);
-        Task<Hotel> UpdateHotelAsync(Hotel hotel);
-        Task<Hotel> DeleteHotelAsync(int hotelId);
-        Task<Hotel> GetAllHotelsAsync();
-        Task<HotelAmenity> GetAllHotelAmenitiesAsync(int hotelId);
-        Task<ICollection<HotelAmenity>> AddAmenityToHotelAsync(ICollection<HotelAmenity> hotelAmenities);
-        Task<ICollection<HotelAmenity>> DeleteAmenitiesFromHotelAsync(ICollection<HotelAmenity> hotelAmenities);
-        Task<HotelImageGallery> GetAllHotelImageGalleryByIdAsync(int hotelId);
-        Task<ICollection<HotelImageGallery>> AddHotelImagesByIdAsync(ICollection<HotelImageGallery> hotelImageGalleries);
-        Task<ICollection<HotelImageGallery>> DeleteHotelImagesByIdAsync(ICollection<HotelImageGallery> hotelImageGalleries);
+        Task<CreateResult> CreateHotelAsync(Hotel hotel);
+        Task<Hotel?> GetHotelByIdAsync(int hotelId);
+        Task<UpdateResult> UpdateHotelAsync(Hotel hotel);
+        Task<DeleteResult> DeleteHotelAsync(int hotelId);
+        Task<PagedResult<Hotel>> GetAllHotelsAsync(int skip, int take);
+        Task<ICollection<HotelAmenity>> GetAllHotelAmenitiesAsync(int hotelId);
+        Task<ICollection<CreateResult>> AddAmenityToHotelByIdAsync(ICollection<int> amenities, int hotelId);
+        Task<DeleteResult> DeleteAmenitiesFromHotelAsync(ICollection<int> amenityIds, int hotelId);
+        Task<ICollection<HotelImageGallery>> GetAllHotelImageGalleryByIdAsync(int hotelId);
+        Task<ICollection<CreateResult>> AddHotelImagesByIdAsync(ICollection<HotelImageGallery> hotelImageGalleries);
+        Task<DeleteResult> DeleteHotelImagesByIdAsync(ICollection<int> imageIds, int hotelId);
         #endregion
 
     }
