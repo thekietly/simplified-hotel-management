@@ -1,7 +1,8 @@
 ﻿using Domain.Entities;
+using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 
-namespace Infrastructure.Data
+namespace Infrastructure.Repository
 {
     public class ApplicationDbContext : DbContext
     {
@@ -46,7 +47,7 @@ namespace Infrastructure.Data
             modelBuilder.Entity<HotelRoom>().HasData(HotelRoomSeedData.GetHotelRooms());
 
             modelBuilder.Entity<Amenity>().HasData(AmenitySeedData.GetAmenities());
-           
+
             modelBuilder.Entity<RoomAmenity>().HasData(RoomAmenitySeedData.GetRoomAmenities());
 
             modelBuilder.Entity<HotelAmenity>().HasData(HotelAmenitySeedData.GetHotelAmenities());

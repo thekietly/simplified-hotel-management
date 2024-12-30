@@ -1,5 +1,4 @@
 ﻿using Domain.Entities;
-using Infrastructure.Data;
 using Services.SqlDatabaseContextService;
 
 namespace Infrastructure.Repository
