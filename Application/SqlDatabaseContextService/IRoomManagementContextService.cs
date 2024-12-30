@@ -1,7 +1,7 @@
 ﻿using Domain.Entities;
 namespace Services.SqlDatabaseContextService
 {
-    public interface IRoomManagementContextService : IApplicationContextService
+    public interface IRoomManagementContextService
     {
         #region Hotel Room
         Task<HotelRoom> GetRoomByIdAsync(int roomId);

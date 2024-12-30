@@ -3,7 +3,7 @@
 namespace Services.SqlDatabaseContextService
 {
     // An interface that defines the basic CRUD operations
-    public interface IHotelManagementContextService : IApplicationContextService
+    public interface IHotelManagementContextService
     {
         #region Hotel
         Task<Hotel> CreateHotelAsync(Hotel hotel);
