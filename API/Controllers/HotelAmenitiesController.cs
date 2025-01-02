@@ -39,7 +39,7 @@ namespace API.Controllers
             }
         }
         [HttpPost("AddAmenitiesToHotelId")]
-        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(CreateResult))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ICollection<CreateResult>))]
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(ICollection<HotelAmenity>))]
         public async Task<IActionResult> AddAmenitiesAsync(int hotelId, [FromBody] AmenityDto hotelAmenityDto) 
         {
@@ -66,7 +66,7 @@ namespace API.Controllers
 
                 if (invalidIds.Any())
                 {
-                    return BadRequest(new DeleteResult
+                    return BadRequest(new CreateResult
                     {
                         Success = false,
                         ErrorMessages = ModelState.ServerError("Cannot add some amenities because some of them are invalid!")
@@ -74,7 +74,7 @@ namespace API.Controllers
                 }
                 // add to database
                 var results = await this.hotelRepository.AddAmenityToHotelByIdAsync(hotelId, hotelAmenityDto.AmenityIdList);
-                return CreatedAtRoute("GetAllAmenities", hotelId);
+                return CreatedAtRoute("AddAmenitiesToHotelId", new { hotelId }, results);
             } catch (Exception ex) 
             {
                 this.logger.LogError(ex, "Unhandled exception from HotelAmenitiesController.AddAmenitiesAsync");
