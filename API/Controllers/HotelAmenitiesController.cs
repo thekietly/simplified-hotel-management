@@ -1,4 +1,4 @@
-﻿using API.Dtos.HotelAmenityDto;
+﻿using API.Dtos.AmenityDto;
 using API.Mappers;
 using Domain.Entities;
 using Microsoft.AspNetCore.Http.HttpResults;
@@ -41,7 +41,7 @@ namespace API.Controllers
         [HttpPost("AddAmenitiesToHotelId")]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(CreateResult))]
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(ICollection<HotelAmenity>))]
-        public async Task<IActionResult> AddAmenitiesAsync(int hotelId, [FromBody] HotelAmenityDto hotelAmenityDto) 
+        public async Task<IActionResult> AddAmenitiesAsync(int hotelId, [FromBody] AmenityDto hotelAmenityDto) 
         {
             try 
             {
@@ -85,7 +85,7 @@ namespace API.Controllers
         [ProducesResponseType(StatusCodes.Status202Accepted)]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(DeleteResult))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> DeleteAmenitiesFromHotelAsync(int hotelId, [FromBody] HotelAmenityDto hotelAmenityDto) 
+        public async Task<IActionResult> DeleteAmenitiesFromHotelAsync(int hotelId, [FromBody] AmenityDto hotelAmenityDto) 
         {
             try 
             {

@@ -6,15 +6,15 @@ namespace API.Mappers
     public static class HotelAmenityAutoMapper
     {
         // Mapping all amenity ids to a list then convert to a dto
-        public static HotelAmenityDto ToHotelAmenityDto(this IEnumerable<HotelAmenity> hotelAmenities) 
+        public static AmenityDto ToHotelAmenityDto(this IEnumerable<HotelAmenity> hotelAmenities) 
         {
-            return new HotelAmenityDto
+            return new AmenityDto
             {
                 HotelId = hotelAmenities.First().HotelId,
                 AmenityIdList = hotelAmenities.Select(ha => ha.AmenityId).ToList()
             };
         }
-        public static List<HotelAmenity> ToHotelAmenityList(this HotelAmenityDto hotelAmenity) 
+        public static List<HotelAmenity> ToHotelAmenityList(this AmenityDto hotelAmenity) 
         {
             if (hotelAmenity == null || hotelAmenity.AmenityIdList == null || !hotelAmenity.AmenityIdList.Any())
                 return new List<HotelAmenity>();
