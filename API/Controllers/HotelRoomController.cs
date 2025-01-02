@@ -1,91 +1,136 @@
-﻿using Application.Common.Interface;
-using Domain.Entities;
+﻿using Domain.Entities;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
+using Services.SqlDatabaseContextService;
 
 namespace API.Controllers
 {
 
-    [Route("api/hotel-room")]
+    [Route("api/hotels/{hotelId}/rooms")]
     [ApiController]
     public class HotelRoomController : ControllerBase
     {
-        private readonly IUnitOfWork _unitOfWork;
-        public HotelRoomController(IUnitOfWork unitOfWork) {
-            _unitOfWork = unitOfWork;
+        private readonly IRoomManagementContextService roomRepository;
+        private readonly ILogger logger;
+        private const int DefaultNumberOfRoomsPerPage = 5;
+        public HotelRoomController(IRoomManagementContextService roomRepository, ILogger logger) {
+            this.roomRepository = roomRepository;
+            this.logger = logger;
         }
 
 
-        [HttpGet("{roomId}")]
-        public async Task<IActionResult> GetRoomDetails(int roomId) {
-            var roomDetails = await _unitOfWork.HotelRoom.Get(filter: r => r.Id == roomId);
-            // if not found returns 404 code
-            if (roomDetails == null)
+        [HttpGet("{roomId}", Name = "GetRoomById")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(HotelRoom))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> GetAsync(int roomId) {
+            try 
             {
-                return NotFound();
+                var roomDetails = await this.roomRepository.GetRoomByIdAsync(roomId);
+                // if not found returns 404 code
+                if (roomDetails == null)
+                {
+                    return NotFound();
+                }
+                return Ok(roomDetails);
+            } catch (Exception ex) 
+            {
+                this.logger.LogError(ex, "Unhandled exception from HotelRoomController.GetAsync");
+                return Problem("Unable to GET the room by this id");
             }
-            return Ok(roomDetails);
+            
         }
 
 
-        [HttpGet]
-        public async Task<IActionResult> GetAllRooms() { 
-            var allRooms = await _unitOfWork.HotelRoom.GetAll();
-            return Ok(allRooms);
+        [HttpGet("GetAllRooms", Name = "GetAll")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(PagedResult<HotelRoom>))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> GetAllAsync(int hotelId, int skip = 0, int take = DefaultNumberOfRoomsPerPage) {
+            try 
+            {
+                var allRooms = await this.roomRepository.GetAllRoomsAsync(hotelId, skip, take);
+                return Ok(allRooms);
+            } catch (Exception ex)
+            {
+                this.logger.LogError(ex, "Unhandled exception from HotelRoomController.GetAllAsync");
+                return Problem("Unable to GetAll the room");
+            }
         }
 
-        [HttpPost]
-        public Task<IActionResult> Create([FromBody] HotelRoom hotelRoom) {
-            if (!ModelState.IsValid)
-                return Task.FromResult<IActionResult>(BadRequest(ModelState));
+        [HttpPost(Name = "CreateHotelRoom")]
+        [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(HotelRoom))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(CreateResult))]
 
-            hotelRoom.CreatedDate = DateTime.UtcNow;
-            hotelRoom.LastUpdated = DateTime.UtcNow;
-
-            _unitOfWork.HotelRoom.Add(hotelRoom);
-            _unitOfWork.Save();
-            return Task.FromResult<IActionResult>(CreatedAtAction(nameof(GetRoomDetails), new { roomId = hotelRoom.Id }, hotelRoom));
-        }
-        [HttpPatch("{roomId}")]
-        public async Task<IActionResult> UpdateHotelRoomPartial(int roomId, [FromBody] JsonPatchDocument<HotelRoom> patchDocument)
+        public async Task<IActionResult> CreateAsync([FromBody] HotelRoom hotelRoom) 
         {
-            if (patchDocument == null)
-                return BadRequest("Invalid patch document.");
+            try
+            {
+                if (!ModelState.IsValid) 
+                {
+                    return BadRequest(new CreateResult
+                    {
+                        Success = false,
+                        ErrorMessages = ModelState.ConvertToErrorMessages()
+                    });
+                }
 
-            // Retrieve the existing room
-            var roomToBeUpdated = await _unitOfWork.HotelRoom.Get(filter: r => r.Id == roomId);
-
-            // Return 404 if not found
-            if (roomToBeUpdated == null)
-                return NotFound();
-
-            // Apply the patch
-            patchDocument.ApplyTo(roomToBeUpdated);
-
-            // Check model if it's valid now before writing to the database
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
-            // Add to the database
-            roomToBeUpdated.LastUpdated = DateTime.UtcNow; 
-            _unitOfWork.HotelRoom.Update(roomToBeUpdated);
-            _unitOfWork.Save();
-
-            // Return 200 as it's successfully added to the database
-            return Ok(roomToBeUpdated);
+                var newRoomResult = await this.roomRepository.CreateRoomAsync(hotelRoom);
+                return CreatedAtRoute("GetRoomById", new { id = newRoomResult.NewId}, hotelRoom);
+            }
+            catch (Exception ex)
+            {
+                this.logger.LogError(ex, "Unhandled exception from HotelRoomController.CreateAsync");
+                return Problem("Unable to Create the room");
+            } 
+        }
+        [HttpPut(Name="UpdateRoom")]
+        [ProducesResponseType(StatusCodes.Status202Accepted, Type = typeof(HotelRoom))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(UpdateResult))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> UpdateAsync([FromBody] HotelRoom hotelRoom)
+        {
+            try 
+            {
+                var existingRoom = await this.roomRepository.GetRoomByIdAsync(hotelRoom.Id);
+                if (existingRoom == null)
+                {
+                    return NotFound();
+                }
+                else if (!ModelState.IsValid) 
+                {
+                    return BadRequest(new UpdateResult 
+                    {
+                        Success=false,
+                        ErrorMessages = ModelState.ConvertToErrorMessages()
+                    });
+                }
+                await this.roomRepository.UpdateRoomAsync(hotelRoom);
+                return Accepted(hotelRoom);
+            } catch (Exception ex) 
+            {
+                this.logger.LogError(ex, "Unhandled exception from HotelRoomController.UpdateAsync");
+                return Problem("Unable to Update the room");
+            }
         }
 
 
-        [HttpDelete("{roomId}")]
-        public async Task<IActionResult> DeleteRoom(int roomId)
+        [HttpDelete("{roomId}", Name = "DeleteRoom")]
+        [ProducesResponseType(StatusCodes.Status202Accepted)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> DeleteAsync(int roomId)
         {
-            var room = await _unitOfWork.HotelRoom.Get(filter: r => r.Id == roomId);
-            if (room == null)
-                return NotFound();
-
-            _unitOfWork.HotelRoom.Remove(room);
-            _unitOfWork.Save();
-            return Ok();
+            try
+            {
+                var room = await this.roomRepository.GetRoomByIdAsync(roomId);
+                if (room == null)
+                    return NotFound();
+                await this.roomRepository.DeleteRoomAsync(roomId);
+                return Ok();
+            } catch (Exception ex) 
+            {
+                this.logger.LogError(ex, "Unhandled exception from HotelRoomController.DeleteAsync");
+                return Problem("Unable to Delete the room");
+            }
         }
 
     }
