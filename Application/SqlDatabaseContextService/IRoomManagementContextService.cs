@@ -5,7 +5,7 @@ namespace Services.SqlDatabaseContextService
     {
         #region Hotel Room
         Task<HotelRoom?> GetRoomByIdAsync(int roomId);
-        Task<PagedResult<HotelRoom>> GetAllRoomsAsync(int skip, int take);
+        Task<PagedResult<HotelRoom>> GetAllRoomsAsync(int hotelId, int skip, int take);
         Task<CreateResult> CreateRoomAsync(HotelRoom hotelRoom);
         Task<UpdateResult> UpdateRoomAsync(HotelRoom hotelRoom);
         Task<DeleteResult> DeleteRoomAsync(int roomId);
