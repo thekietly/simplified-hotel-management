@@ -1,69 +1,99 @@
 ﻿using API.Dtos.HotelImageDto;
-using Application.Common.Interface;
 using Domain.Entities;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
+using Services.SqlDatabaseContextService;
 
 namespace API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/hotels/{hotelId}/images")]
     [ApiController]
     public class HotelImageGalleryController : ControllerBase
     {
-        private readonly IUnitOfWork _unitOfWork;
-        public HotelImageGalleryController(IUnitOfWork unitOfWork) 
+        private readonly IHotelManagementContextService hotelRepository;
+        private readonly ILogger logger;
+        public HotelImageGalleryController(IHotelManagementContextService hotelRepository, ILogger logger) 
         { 
-            _unitOfWork = unitOfWork;
+            this.hotelRepository = hotelRepository;
+            this.logger = logger;
         }
-        [HttpGet]
-        public async Task<IActionResult> GetAll([FromQuery] int hotelId)
+        [HttpGet(Name = "GetAllImages")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(HotelImageGallery))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> GetAllAsync(int hotelId)
         {
-            if (hotelId <= 0) 
+            try
             {
-                return BadRequest("Invalid hotel id!");
+                var images = await this.hotelRepository.GetAllHotelImageGalleryByIdAsync(hotelId);
+                if (images == null)
+                    return NotFound();
+                return Ok(images);
             }
-            var hotelImages = await _unitOfWork.HotelImageGallery.GetAll(filter: hi => hi.HotelId == hotelId);
-            if (!hotelImages.Any())
+            catch (Exception ex) 
             {
-                return BadRequest("Invalid hotel id! There is no hotel record of this id.");
+                this.logger.LogError(ex, "Unhandled exception from HotelImageGalleryController.GetAllAsync");
+                return Problem("Unable to get all the images from the hotel id provided");
             }
-            return Ok(hotelImages);
         }
-        [HttpPost]
-        public IActionResult AddImages([FromBody] HotelImageDto hotelImageDto) 
+        [HttpPost(Name = "AddImagesToHotel")]
+        [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(ICollection<CreateResult>))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(CreateResult))]
+        public async Task<IActionResult> AddImagesAsync(int hotelId, [FromBody] HotelImageDto hotelImageDto) 
         {
-            // Must have at least 1 and less than 4 images.
-            if (hotelImageDto.ImageUrls.Count() > 4 || !hotelImageDto.ImageUrls.Any()) 
+            try
             {
-                return BadRequest("Invalid number of images! You need to select up to 4 images.");
+                // Must have at least 1 and less than 4 images.
+                if (hotelImageDto.ImageUrls.Count() > 4 || !hotelImageDto.ImageUrls.Any())
+                {
+                    return BadRequest(new CreateResult
+                    {
+                        Success = false,
+                        ErrorMessages = ModelState.ServerError("Must have at least 1 and less than 4 images.")
+                    });
+                }
+                var results = await this.hotelRepository.AddHotelImagesByIdAsync(hotelId, hotelImageDto.ImageUrls);
+                return CreatedAtRoute("AddImagesToHotel", new { hotelId }, results
+            );
+            } catch (Exception ex) 
+            {
+                this.logger.LogError(ex, "Unhandled exception from HotelImageGalleryController.AddImagesAsync");
+                return Problem("Unable to add images to the hotel id provided");
             }
-            var hotelImages = hotelImageDto.ImageUrls.Select(url => new HotelImageGallery 
+        }
+        [HttpDelete(Name = "DeleteImages")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(DeleteResult))]
+        public async Task<IActionResult> DeleteImagesAsync( int hotelId, [FromBody] ImageDtoToBeDeleted imageDto) 
+        {
+            try 
             {
-                HotelId = hotelImageDto.HotelId,
-                ImageUrl = url
-            }).ToList();
+                // check if these ids are valid
+                var invalidIds = new List<int>();
+                foreach (var imageId in imageDto.imageIds)
+                {
+                    var image = await this.hotelRepository.GetHotelImageGalleryByIdAsync(hotelId, imageId);
+                    if (image == null)
+                    {
+                        invalidIds.Add(imageId);
+                    }
+                }
 
-            _unitOfWork.HotelImageGallery.AddRange(hotelImages);
-            _unitOfWork.Save();
-            return Ok(hotelImages);
-        }
-        [HttpDelete]
-        public IActionResult DeleteImages([FromQuery] int hotelId, [FromBody] HotelImageDto hotelImageDto) 
-        {
-            // Validate input
-            if (hotelImageDto.ImageUrls == null || !hotelImageDto.ImageUrls.Any())
+                if (invalidIds.Any())
+                {
+                    return BadRequest(new DeleteResult
+                    {
+                        Success = false,
+                        ErrorMessages = ModelState.ServerError("Cannot delete some images because some of them are invalid!")
+                    });
+                }
+                await this.hotelRepository.DeleteHotelImagesByIdAsync(imageDto.imageIds,hotelId);
+                return Ok();
+            } catch (Exception ex) 
             {
-                return BadRequest("No images provided for deletion.");
+                this.logger.LogError(ex, "Unhandled exception from HotelImageGalleryController.DeleteImagesAsync");
+                return Problem("Unable to delete these images");
             }
-            var hotelImages = hotelImageDto.ImageUrls.Select(url => new HotelImageGallery
-            {
-                HotelId = hotelImageDto.HotelId,
-                ImageUrl = url
-            }).ToList();
-
-            _unitOfWork.HotelImageGallery.RemoveRange(hotelImages);
-            _unitOfWork.Save();
-            return Ok();
 
         }
     }

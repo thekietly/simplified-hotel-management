@@ -26,8 +26,13 @@ namespace Infrastructure.Repository
             return results;
         }
 
-        public async Task<ICollection<CreateResult>> AddHotelImagesByIdAsync(ICollection<HotelImageGallery> hotelImageGalleries)
+        public async Task<ICollection<CreateResult>> AddHotelImagesByIdAsync(int hotelId, ICollection<string> imageUrls)
         {
+            var hotelImageGalleries = imageUrls.Select(url => new HotelImageGallery
+            {
+                HotelId = hotelId,
+                ImageUrl = url
+            });
             database.AddRange(hotelImageGalleries);
             await database.SaveChangesAsync();
             var results = hotelImageGalleries.Select(hotelImageGalleries => CreateResult.SuccessResult(hotelImageGalleries.Id)).ToList();
@@ -97,8 +102,6 @@ namespace Infrastructure.Repository
             return await this.database.HotelImageGalleries.AsNoTracking().Where(hi => hi.HotelId == hotelId).ToListAsync();
         }
 
-
-
         public async Task<PagedResult<Hotel>> GetAllHotelsAsync(int skip, int take)
         {
             // Add more includes to show the relevant data about the hotel i.e amenities/ pricing
@@ -123,7 +126,11 @@ namespace Infrastructure.Repository
         public async Task<Hotel?> GetHotelByIdAsync(int hotelId)
         {
             return await database.Hotels.AsNoTracking().Where(h => h.Id == hotelId).SingleOrDefaultAsync();
+        }
 
+        public async Task<HotelImageGallery?> GetHotelImageGalleryByIdAsync(int imageId, int hotelId)
+        {
+            return await database.HotelImageGalleries.AsNoTracking().Where(hig => hig.HotelId == hotelId && hig.Id == imageId).SingleOrDefaultAsync();
         }
 
         public async Task<UpdateResult> UpdateHotelAsync(Hotel hotel)

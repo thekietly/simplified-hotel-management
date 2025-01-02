@@ -2,7 +2,6 @@
 {
     public class HotelImageDto
     {
-        public int HotelId { get; set; }
-        public List<string>? ImageUrls { get; set; }
+        public List<string> ImageUrls { get; set; } = new List<string>();
     }
 }
