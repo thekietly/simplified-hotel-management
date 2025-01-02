@@ -12,14 +12,13 @@ namespace Infrastructure.Repository
             this.database = database;
         }
 
-        public async Task<ICollection<CreateResult>> AddAmenityToHotelByIdAsync(ICollection<int> amenities, int hotelId)
+        public async Task<ICollection<CreateResult>> AddAmenityToHotelByIdAsync(int hotelId, ICollection<int> amenitiesIds)
         {
-            var hotelAmenities = amenities.Select(amenityId => new HotelAmenity
+            var hotelAmenities = amenitiesIds.Select(amenityId => new HotelAmenity
             {
                 AmenityId = amenityId,
                 HotelId = hotelId
             }).ToList();
-
             // Add to the database
             database.AddRange(hotelAmenities);
             await database.SaveChangesAsync();
@@ -42,10 +41,10 @@ namespace Infrastructure.Repository
             return CreateResult.SuccessResult(hotel.Id);
         }
 
-        public async Task<DeleteResult> DeleteAmenitiesFromHotelAsync(ICollection<int> amenityIds, int hotelId)
+        public async Task<DeleteResult> DeleteAmenitiesFromHotelAsync(int hotelId, ICollection<int> amenitiesIds)
         {
             var existingHotelAmenities = this.database.HotelAmenities
-            .Where(ha => ha.HotelId == hotelId && amenityIds.Contains(ha.AmenityId))
+            .Where(ha => ha.HotelId == hotelId && amenitiesIds.Contains(ha.AmenityId))
             .ToList();
             if (existingHotelAmenities != null) 
             {
@@ -111,6 +110,14 @@ namespace Infrastructure.Repository
                 .ToListAsync();
             var totalCount = await this.database.Hotels.CountAsync();
             return new PagedResult<Hotel>(pageOfData, totalCount);
+        }
+
+        public async Task<HotelAmenity?> GetHotelAmenityById(int hotelId, int amenityId)
+        {
+            return await database.HotelAmenities
+                .AsNoTracking()
+                .Where(h => h.HotelId == hotelId && h.AmenityId == amenityId)
+                .FirstOrDefaultAsync();
         }
 
         public async Task<Hotel?> GetHotelByIdAsync(int hotelId)

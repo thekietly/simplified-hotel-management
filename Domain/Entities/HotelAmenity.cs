@@ -12,6 +12,7 @@ namespace Domain.Entities
         [ForeignKey("Amenity")]
         public int AmenityId { get; set; }
 
+
         [Key, Column(Order = 1)]
         [Required]
         [ForeignKey("Hotel")]

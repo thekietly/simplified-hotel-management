@@ -85,9 +85,10 @@ namespace Infrastructure.Repository
             return await this.database.HotelRoomImageGalleries.AsNoTracking().Where(ri => ri.RoomId == roomId).ToListAsync();
         }
 
-        public async Task<PagedResult<HotelRoom>> GetAllRoomsAsync(int skip, int take)
+        public async Task<PagedResult<HotelRoom>> GetAllRoomsAsync(int hotelId, int skip, int take)
         {
             var pageOfData = await this.database.HotelRooms.AsNoTracking()
+                .Where(r => r.HotelId == hotelId)
                 .Skip(skip)
                 .Take(take)
                 .ToListAsync();
