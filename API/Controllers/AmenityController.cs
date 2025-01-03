@@ -1,7 +1,8 @@
-﻿using Application.Common.Interface;
+﻿using API.Dtos.AmenityDto;
 using Domain.Entities;
-using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
+using Services.SqlDatabaseContextService;
 
 namespace API.Controllers
 {
@@ -9,62 +10,120 @@ namespace API.Controllers
     [ApiController]
     public class AmenityController : ControllerBase
     {
-        private readonly IUnitOfWork _unitOfWork;
-        public AmenityController(IUnitOfWork unitOfWork) 
+        private readonly IApplicationFacilityContextService generalQueriesDatabase;
+        private readonly ILogger<AmenityController> logger;
+
+        public AmenityController(IApplicationFacilityContextService generalQueriesDatabase, ILogger<AmenityController> logger) 
         {
-            _unitOfWork = unitOfWork;
+            this.generalQueriesDatabase = generalQueriesDatabase;
+            this.logger = logger;
         }
 
-        [HttpGet]
-        public async Task<IActionResult> GetAll() 
+        [HttpGet(Name = "GetAllAmenities")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ICollection<Amenity>))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> GetAllAsync() 
         {
-            var amenities = await _unitOfWork.Amenity.GetAll();
-            if (amenities == null) 
+            try 
             {
-                return NotFound();
+                var amenities = await this.generalQueriesDatabase.GetAllAmenitiesAsync();
+                if (amenities == null)
+                {
+                    return NotFound();
+                }
+                return Ok(amenities);
+            } catch (Exception ex)
+            {
+                this.logger.LogError(ex, "Unhandled exception from AmenityController.GetAllAsync");
+                return Problem("Unable to get all amenities");
             }
-            return Ok(amenities);
+            
         }
-        [HttpGet("{amenityId}")]
-        public async Task<IActionResult> Get(int amenityId) 
+        [HttpGet("{amenityId}", Name = "GetAmenityById")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Amenity))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> GetAmenityByIdAsync(int amenityId) 
         {
-            if (amenityId <= 0) 
+            try
             {
-                return BadRequest("Invalid amenity id!");
+                var amenity = await this.generalQueriesDatabase.GetAmenityByIdAsync(amenityId);
+                if (amenity == null) 
+                { 
+                    return NotFound(); 
+                }
+                return Ok(amenity);
             }
-            var amenity = await _unitOfWork.Amenity.Get(filter: a => a.Id == amenityId);
-            if (amenity == null) 
+            catch (Exception ex) 
             {
-                return NotFound("This record does not exist!");
+                this.logger.LogError(ex, "Unhandled exception from AmenityController.GetAmenityByIdAsync");
+                return Problem("Unable to get amenity with this id");
             }
-            return Ok(amenity);
         }
-        [HttpPost]
-        public Task<IActionResult> Create([FromBody] Amenity amenityModel) 
+        [HttpPost(Name = "CreateAmenity")]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(CreateResult))]
+        [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(Amenity))]
+        public async Task<IActionResult> CreateAsync([FromBody] Amenity amenityModel) 
         {
-            if (!ModelState.IsValid) 
+            try 
             {
-                return Task.FromResult<IActionResult>(BadRequest(ModelState));
-            }
-            _unitOfWork.Amenity.Add(amenityModel);
-            _unitOfWork.Save();
-            return Task.FromResult<IActionResult>(CreatedAtAction(nameof(Get), new { amenityId = amenityModel.Id}, amenityModel));
+                if (!ModelState.IsValid) 
+                {
+                    return BadRequest(new CreateResult 
+                    {
+                        Success = false,
+                        ErrorMessages = ModelState.ConvertToErrorMessages()
+                    });
+                }
+                var results = await this.generalQueriesDatabase.AddAmenityAsync(amenityModel);
+                return CreatedAtRoute("GetAmenityById", new { id = results.NewId}, amenityModel);
+            } catch (Exception ex)
+            {
+                this.logger.LogError(ex, "Unhandled exception from AmenityController.CreateAsync");
+                return Problem("Unable to create amenity");
+            }    
         }
-        [HttpDelete("{amenityId}")]
-        public async Task<IActionResult> Delete(int amenityId) 
+        [HttpDelete("{amenityId}", Name = "DeleteAmenity")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(DeleteResult))]
+        public async Task<IActionResult> DeleteAsync([FromBody] AmenityDto amenityDto) 
         {
-            if (amenityId <= 0) 
+            try 
             {
-                return BadRequest("Invalid amenity id!");
-            }
-            var amenity = await _unitOfWork.Amenity.Get(filter: a => a.Id == amenityId);
-            if (amenity == null) 
+                if (!ModelState.IsValid || amenityDto.AmenityIdList != null) 
+                {
+                    return BadRequest(new DeleteResult 
+                    {
+                        Success = false,
+                        ErrorMessages = ModelState.ConvertToErrorMessages()
+                    });
+                }
+                // check if these ids are valid
+                var invalidIds = new List<int>();
+                foreach (var amenityId in amenityDto.AmenityIdList)
+                {
+                    var amenity = await this.generalQueriesDatabase.GetAmenityByIdAsync(amenityId);
+                    if (amenity == null)
+                    {
+                        invalidIds.Add(amenityId);
+                    }
+                }
+
+                if (invalidIds.Any())
+                {
+                    return BadRequest(new DeleteResult
+                    {
+                        Success = false,
+                        ErrorMessages = ModelState.ServerError("Cannot add some amenities because some of them are invalid!")
+                    });
+                }
+
+                await this.generalQueriesDatabase.DeleteAmenityAsync(amenityDto.AmenityIdList);
+                return Ok();    
+            } catch (Exception ex) 
             {
-                return NotFound("This record does not exist!");
+                this.logger.LogError(ex, "Unhandled exception from AmenityController.DeleteAsync");
+                return Problem("Unable to delete these amenities");
             }
-            _unitOfWork.Amenity.Remove(amenity);
-            _unitOfWork.Save();
-            return Ok();
         }
      }
 }

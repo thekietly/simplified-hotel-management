@@ -1,7 +1,6 @@
-using Application.Common.Interface;
-using Infrastructure.Data;
 using Infrastructure.Repository;
 using Microsoft.EntityFrameworkCore;
+using Services.SqlDatabaseContextService;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -38,7 +37,12 @@ builder.Services.AddCors(options =>
 var sqlConnection = builder.Configuration["ConnectionStrings:HotelWeb:SqlDb"];
 builder.Services.AddSqlServer<ApplicationDbContext>(sqlConnection, options => options.EnableRetryOnFailure());
 
-builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+builder.Services.AddScoped<IRoomManagementContextService, SqlDatabaseRoomRepository>();
+
+builder.Services.AddScoped<IHotelManagementContextService, SqlDatabaseHotelRepository>();
+
+builder.Services.AddScoped<IApplicationFacilityContextService, SqlDatabaseApplicationFacilityRepository>();
+builder.Services.AddLogging();
 
 var app = builder.Build();
 

@@ -2,7 +2,6 @@
 {
     public class RoomAmenityDto
     {
-        public int Id { get; set; }
-        public List<int> AmenityList { get; set; }
+        public List<int> AmenityList { get; set; } = new List<int>();
     }
 }

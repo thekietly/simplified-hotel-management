@@ -8,11 +8,11 @@ namespace Domain.Entities
 
         [Required(ErrorMessage = "Please enter your hotel name")]
         [StringLength(50, ErrorMessage = "Please do not enter values over 50 characters")]
-        public required string Name { get; set; }
+        public string Name { get; set; }
 
         [Required(ErrorMessage = "Please enter the address of this hotel")]
         [StringLength(100, ErrorMessage = "Please do not enter values over 100 characters")]
-        public required string Address { get; set; }
+        public string Address { get; set; }
 
         public string? Description{ get; set; }
         public string? ImageUrl { get; set; }

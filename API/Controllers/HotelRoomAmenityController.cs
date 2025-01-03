@@ -1,110 +1,134 @@
 ﻿using API.Dtos.RoomAmenityDto;
-using API.Mappers;
-using Application.Common.Interface;
 using Domain.Entities;
-using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
+using Services.SqlDatabaseContextService;
 
 namespace API.Controllers
 {
-    [Route("api/hotel-room/amenity")]
+    [Route("api/hotels/{hotelId}/rooms/{roomId}/amenities")]
     [ApiController]
     public class HotelRoomAmenityController : ControllerBase
     {
-        private readonly IUnitOfWork _unitOfWork;
-        public HotelRoomAmenityController(IUnitOfWork unitOfWork) 
+        private readonly IRoomManagementContextService roomRepository;
+        private readonly IHotelManagementContextService hotelRepository;
+        private readonly ILogger<HotelRoomAmenityController> logger;
+        public HotelRoomAmenityController(IRoomManagementContextService roomRepository,IHotelManagementContextService hotelRepository, ILogger<HotelRoomAmenityController> logger) 
         {
-            _unitOfWork = unitOfWork;
+            this.roomRepository = roomRepository;
+            this.logger = logger;
+            this.hotelRepository = hotelRepository;
         }
 
-        [HttpGet]
-        public async Task<IActionResult> GetAll([FromQuery] int roomId) 
+        [HttpGet(Name = "GetAllRoomAmenities")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ICollection<RoomAmenity>))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> GetAllAsync(int hotelId, int roomId) 
         {
-            if (roomId <= 0) 
+            try 
+            {   
+                var hotel = await this.hotelRepository.GetHotelByIdAsync(hotelId);
+                if (hotel == null) 
+                {
+                    return NotFound();
+                }
+                var room = await this.roomRepository.GetRoomByIdAsync(roomId);
+                if (room == null)
+                    return NotFound();
+                var amenities = await this.roomRepository.GetAllRoomAmenitiesAsync(roomId);
+                return Ok(amenities);
+            } catch (Exception ex) 
             {
-                return BadRequest("Invalid room id!");
+                this.logger.LogError(ex, "Unhandled exception from HotelRoomAmenityController.GetAllAsync");
+                return Problem("Unable to get all amenities for this room");
             }
-            var roomAmenities = await _unitOfWork.RoomAmenity.GetAll(filter: ra => ra.RoomId == roomId);
-            if (roomAmenities == null) 
-            {
-                return NotFound("This record does not exist!");
-            }
-            return Ok(roomAmenities);
         }
-        [HttpPost]
-        public async Task<IActionResult> Create([FromBody] RoomAmenityDto roomAmenityDto) 
-        {
-            if (!ModelState.IsValid) 
-            {
-                return BadRequest(ModelState);
-            }
-            // validate the room id is correct
-            var roomExist = _unitOfWork.HotelRoom.Any(r => r.Id == roomAmenityDto.Id);
-            if (!roomExist) 
-            {
-                return BadRequest("Invalid room id!");
-            }
-            // no duplicate amenities in the request
-            var duplicateAmenities = roomAmenityDto.AmenityList.GroupBy(id => id)
-                .Where(group => group.Count() > 1)
-                .Select(group => group.Key)
-                .ToList();
-            if (duplicateAmenities.Any()) 
-            {
-                return BadRequest($"Duplicate amenities detected in the request: {string.Join(", ", duplicateAmenities)}");
-            }
-            // no duplicate amenities when adding to the database
-            var roomAmenitiesDb = await _unitOfWork.RoomAmenity.GetAll(filter: ra => ra.RoomId == roomAmenityDto.Id);
-            var existingAmenities = roomAmenitiesDb.Select(ra => ra.AmenityId).ToHashSet();
-            var duplicateInDatabase = roomAmenityDto.AmenityList.Where(amenityId => existingAmenities.Contains(amenityId)).ToList();
+        [HttpPost(Name = "AddAmenitiesToRoom")]
+        [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(ICollection<HotelAmenity>))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type= typeof(CreateResult))]
 
-            if (duplicateInDatabase.Any()) 
-            {
-                return BadRequest($"The room already has the following amenities: {string.Join(", ", duplicateInDatabase)}");
-            }
-            // now convert to a list of room amenity models
-            var roomAmenities = roomAmenityDto.ToRoomAmenityList();
-            _unitOfWork.RoomAmenity.AddRange(roomAmenities);
-            _unitOfWork.Save();
-            return Ok(roomAmenities);
-        }
-        [HttpDelete]
-        public async Task<IActionResult> Delete([FromBody] RoomAmenityDto roomAmenityDto ) 
+        public async Task<IActionResult> AddAmenitiesToRoomAsync(int roomId, [FromBody] RoomAmenityDto roomAmenityDto) 
         {
-            if (!ModelState.IsValid) 
+            try 
             {
-                return BadRequest("Invalid room id or amenity id");
-            }
-            // validate the room id is correct
-            var roomExist = _unitOfWork.HotelRoom.Any(r => r.Id == roomAmenityDto.Id);
-            if (!roomExist)
+                if (!ModelState.IsValid) 
+                {
+                    return BadRequest(new CreateResult 
+                    {
+                        Success = false,
+                        ErrorMessages = ModelState.ConvertToErrorMessages()
+                    });
+                }
+                var invalidIds = new List<int>();
+                foreach (var amenityId in roomAmenityDto.AmenityList) 
+                {
+                    var amenity = await this.roomRepository.GetRoomAmenityById(roomId, amenityId);
+                    if (amenity == null)
+                    {
+                        invalidIds.Add(amenityId);
+                    }
+                }
+                if (invalidIds.Any()) 
+                {
+                    return BadRequest(new CreateResult
+                    {
+                        Success = false,
+                        ErrorMessages = ModelState.ServerError("Cannot add some amenities because some of the room amenities are invalid")
+                    });
+                }
+                var results = await this.roomRepository.AddAmenitiesToRoomAsync(roomId, roomAmenityDto.AmenityList);
+                return CreatedAtRoute("AddAmenitiesToRoom", new { roomId}, results);
+            } catch (Exception ex) 
             {
-                return BadRequest("Invalid room id!");
+                this.logger.LogError(ex, "Unhandled exception from HotelRoomAmentiyController.CreateAsync");
+                return Problem("Unable to add amenities to a room by this id");
             }
-            // no duplicate amenities in the request
-            var duplicateAmenities = roomAmenityDto.AmenityList.GroupBy(id => id)
-                .Where(group => group.Count() > 1)
-                .Select(group => group.Key)
-                .ToList();
-            if (duplicateAmenities.Any())
+        }
+        [HttpDelete(Name = "DeleteAmenitesFromRoom")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(DeleteResult))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> DeleteAsync(int roomId, [FromBody] RoomAmenityDto roomAmenityDto ) 
+        {
+            try 
             {
-                return BadRequest($"Duplicate amenities detected in the request: {string.Join(", ", duplicateAmenities)}");
-            }
-            // checking if there's any amenity records with these ids
-            var roomAmenitiesDb = await _unitOfWork.RoomAmenity.GetAll(filter: ra => ra.RoomId == roomAmenityDto.Id);
-            var existingAmenities = roomAmenitiesDb.Select(ra => ra.AmenityId).ToHashSet();
-            // validate the amenity ids
-            var invalidAmenityIds = roomAmenityDto.AmenityList.Where(amenityId => !existingAmenities.Contains(amenityId)).ToList();
-            // if an amenity id does not exist
-            if (invalidAmenityIds.Any())
+                var room = await this.roomRepository.GetRoomByIdAsync(roomId);
+                if (room == null)
+                    return NotFound();
+                if (!ModelState.IsValid) 
+                {
+                    return BadRequest(new DeleteResult 
+                    {
+                        Success =false,
+                        ErrorMessages = ModelState.ConvertToErrorMessages()
+                    });
+                }
+                var invalidIds = new List<int>();
+                foreach (var amenityId in roomAmenityDto.AmenityList)
+                {
+                    var amenity = await this.roomRepository.GetRoomAmenityById(roomId, amenityId);
+                    if (amenity == null)
+                    {
+                        invalidIds.Add(amenityId);
+                    }
+                }
+                if (invalidIds.Any())
+                {
+                    return BadRequest(new DeleteResult
+                    {
+                        Success = false,
+                        ErrorMessages = ModelState.ServerError("Cannot delete some amenities because some of the room amenities are invalid")
+                    });
+                }
+                await this.roomRepository.DeleteAmenitiesFromRoomAsync(roomId, roomAmenityDto.AmenityList);
+                return Ok();
+
+            } catch (Exception ex) 
             {
-                return BadRequest($"The room does not have the following amenities: {string.Join(", ", invalidAmenityIds)}");
+                this.logger.LogError(ex, "Unhandled exception from HotelRoomAmenityController.DeleteAsync");
+                return Problem("Unable to delete these amenities from this room id");
             }
-            // from a list of room amenities, select the ones that are in the amenity list.
-            var roomAmenities = roomAmenitiesDb.Where(ra => roomAmenityDto.AmenityList.Contains(ra.AmenityId)).ToList();
-            _unitOfWork.RoomAmenity.RemoveRange(roomAmenities);
-            _unitOfWork.Save();
-            return Ok();
+
         }
     }
 }

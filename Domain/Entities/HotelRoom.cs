@@ -38,7 +38,7 @@ namespace Domain.Entities
         // Room number within the hotel
         [Required(ErrorMessage = "Room number is required")]
         [RegularExpression("^[0-9]+$", ErrorMessage = "Only numeric values are allowed for the room number")]
-        public required string RoomNumber { get; set; } 
+        public string RoomNumber { get; set; } 
 
         public RoomType RoomType { get; set; }
 
@@ -46,7 +46,7 @@ namespace Domain.Entities
         public int Occupancy { get; set; }
         [MaxLength(50)]
         [Required]
-        public required  string Name { get; set; }
+        public  string Name { get; set; }
 
         [Range(1, 10)]
         public int Beds { get; set; }

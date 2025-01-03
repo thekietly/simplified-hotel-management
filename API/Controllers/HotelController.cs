@@ -1,89 +1,134 @@
-﻿using API.Mappers;
-using Application.Common.Interface;
+﻿using AutoMapper.Internal;
 using Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+using Services.SqlDatabaseContextService;
 
 namespace API.Controllers
 {
-    [Route("api/hotel")]
+    [Route("api/hotels")]
     [ApiController]
     public class HotelController : ControllerBase
     {
-        private readonly IUnitOfWork _unitOfWork;
-
-        public HotelController(IUnitOfWork unitOfWork)
+        public const int DefaultNumberOfHotelsPerPage = 5;
+        private readonly IHotelManagementContextService hotelRepository;
+        private readonly ILogger<HotelController> logger;
+        public HotelController(IHotelManagementContextService hotelRepository, ILogger<HotelController> logger)
         {
-            _unitOfWork = unitOfWork;
+            this.hotelRepository = hotelRepository;
+            this.logger = logger;
         }
 
-        [HttpGet("{hotelId}")]
-        public async Task<IActionResult> GetHotelDetails(int hotelId)
+        [HttpGet("{hotelId}", Name = "GetHotelById")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type= typeof(Hotel))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> GetAsync(int hotelId)
         {
-            var hotels = await _unitOfWork.Hotel.Get(filter: h => h.Id == hotelId, 
-                include: q=> q.Include(hr=> hr.HotelRooms)
-                .Include(r => r.Reviews)
-                .Include(hig => hig.HotelImageGalleries)
-                .Include(ha => ha.HotelAmenities));
-
-            return Ok(hotels);
+            try 
+            {
+                var hotel = await this.hotelRepository.GetHotelByIdAsync(hotelId);
+                if (hotel == null)
+                {
+                    return NotFound();
+                }
+                return Ok(hotel);
+            } catch (Exception ex)
+            {
+                this.logger.LogError(ex, "Unhandled exception from HotelController.GetAsync");
+                return Problem("Unable to GET the hotel");
+            }
         }
 
-        [HttpGet]
-        public async Task<IActionResult> GetSummarisedHotelsInformation()
+        [HttpGet("AllHotels",Name = "GetAllHotels")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(PagedResult<Hotel>))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> GetAllAsync(int skip = 0, int take = DefaultNumberOfHotelsPerPage)
         {
-            var hotels = await _unitOfWork.Hotel.GetAll(include: q => q.Include(hr => hr.HotelRooms).Include(r=>r.Reviews));
-            var hotelDto = hotels.Select(s=>s.ToHotelDto()).ToList();
-            return Ok(hotelDto);
+            try
+            {
+                var hotels = await this.hotelRepository.GetAllHotelsAsync(skip, take);
+                return Ok(hotels);
+            } catch (Exception ex) 
+            {
+                logger.LogError(ex, "Unhandled exception from HotelController.GetAllAsync");
+                return Problem("Unable to GetAll these hotels");
+            }
         }
 
-        [HttpPost]
-        public Task<IActionResult> CreateHotel([FromBody] Hotel hotel)
+        [HttpPost(Name = "CreateHotel")]
+        [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(Hotel))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(CreateResult))]
+        public async Task<IActionResult> CreateAsync([FromBody] Hotel hotel)
         {
-            if (!ModelState.IsValid)
-                return Task.FromResult<IActionResult>(BadRequest(ModelState));
+            try 
+            {
+                if (!ModelState.IsValid) 
+                {
+                    return BadRequest(new CreateResult
+                    {
+                        Success = false,
+                        ErrorMessages = ModelState.ConvertToErrorMessages()
 
-            hotel.CreatedDate = DateTime.UtcNow;
-            hotel.LastUpdated = DateTime.UtcNow;
-
-            _unitOfWork.Hotel.Add(hotel);
-            _unitOfWork.Save();
-            // returns 201 if successfully added
-            return Task.FromResult<IActionResult>(CreatedAtAction(nameof(GetHotelDetails), new { hotelId = hotel.Id }, hotel));
+                    });
+                }
+                var newHotelResult = await this.hotelRepository.CreateHotelAsync(hotel);
+                return CreatedAtRoute("GetHotelById", new { id = newHotelResult.NewId}, hotel);
+            } catch (Exception ex) 
+            {
+                this.logger.LogError(ex, "Unhandled exception from HotelController.CreateAsync");
+                return Problem("Unable to Create this hotel");
+            }
+            
         }
 
-        [HttpPut("{hotelId}")]
-        public async Task<IActionResult> UpdateHotel(int hotelId, [FromBody] Hotel updatedHotel)
+        [HttpPut("{hotelId}", Name = "UpdateHotel")]
+        [ProducesResponseType(StatusCodes.Status202Accepted, Type = typeof(Hotel))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(UpdateResult))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> UpdateAsync(int hotelId, [FromBody] Hotel updatedHotel)
         {
-            var hotelToBeUpdated = await _unitOfWork.Hotel.Get(filter: h => h.Id == hotelId);
-            if (hotelToBeUpdated == null)
-                return NotFound();
+            try {
+                var hotelToBeUpdated = await this.hotelRepository.GetHotelByIdAsync(hotelId);
+                if (hotelToBeUpdated == null)
+                    return NotFound();
 
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(new UpdateResult
+                    {
+                        Success = false,
+                        ErrorMessages = ModelState.ConvertToErrorMessages()
+                    });
+                }
+                await this.hotelRepository.UpdateHotelAsync(hotelToBeUpdated);
 
-            hotelToBeUpdated.Name = updatedHotel.Name;
-            hotelToBeUpdated.Address = updatedHotel.Address;
-            hotelToBeUpdated.Description = updatedHotel.Description;
-            hotelToBeUpdated.ImageUrl = updatedHotel.ImageUrl;
-            hotelToBeUpdated.Size = updatedHotel.Size;
-            hotelToBeUpdated.LastUpdated = DateTime.UtcNow;
-
-            _unitOfWork.Hotel.Update(hotelToBeUpdated);
-            _unitOfWork.Save();
-            return Ok(hotelToBeUpdated);
+                return Accepted(hotelToBeUpdated);
+            } catch (Exception ex) 
+            {
+                this.logger.LogError(ex, "Unhandled exception from HotelController.UpdateAsync");
+                return Problem("Unable to Update this hotel");
+            }
+            
         }
 
-        [HttpDelete("{hotelId}")]
-        public async Task<IActionResult> DeleteHotel(int hotelId)
+        [HttpDelete("{hotelId}", Name = "DeleteHotel")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> DeleteAsync(int hotelId)
         {
-            var hotel = await _unitOfWork.Hotel.Get(filter: h => h.Id == hotelId);
-            if (hotel == null)
-                return NotFound();
+            try 
+            {
+                var hotel = await this.hotelRepository.GetHotelByIdAsync(hotelId);
+                if (hotel == null)
+                    return NotFound();
 
-            _unitOfWork.Hotel.Remove(hotel);
-            _unitOfWork.Save();
-            return Ok();
+                await this.hotelRepository.DeleteHotelAsync(hotelId);
+                return Ok();
+            } catch (Exception ex) 
+            {
+                this.logger.LogError(ex, "Unhandled exception from HotelController.DeleteAsync");
+                return Problem("Unable to Delete this hotel");
+            } 
+            
         }
 
     }
