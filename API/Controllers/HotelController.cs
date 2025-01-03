@@ -38,7 +38,7 @@ namespace API.Controllers
             }
         }
 
-        [HttpGet("AllHotels",Name = "GetAllHotels")]
+        [HttpGet(Name = "GetAllHotels")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(PagedResult<Hotel>))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> GetAllAsync(int skip = 0, int take = DefaultNumberOfHotelsPerPage)

@@ -52,7 +52,7 @@ namespace API.Controllers
             }
         }
 
-        [HttpPost("CreateReview")]
+        [HttpPost(Name = "CreateReview")]
         public async Task<IActionResult> CreateReviewAsync([FromBody] Review review) 
         {
             try 

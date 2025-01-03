@@ -20,6 +20,7 @@ namespace Domain.Entities
 
         [JsonIgnore]
         public virtual Hotel? Hotel { get; set; }
+        [JsonIgnore]
         public virtual Amenity? Amenity { get; set; }
     }
 }
