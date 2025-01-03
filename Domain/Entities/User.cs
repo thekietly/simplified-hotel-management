@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace Domain.Entities
 {
@@ -30,6 +31,7 @@ namespace Domain.Entities
         public Role? UserRole { get; set; }
         public DateTime? CreatedDate { get; set; }
         public DateTime? LastUpdated { get; set; }
+        [JsonIgnore]
         public virtual ICollection<Booking>? Bookings{ get; set; }
     }
 }

@@ -67,7 +67,9 @@ namespace Domain.Entities
         public DateTime LastUpdated { get; set; }
         [JsonIgnore]
         public virtual Hotel? Hotel { get; set; }
+        [JsonIgnore]
         public virtual ICollection<Booking>? Bookings{ get; set; }
+        [JsonIgnore]
         public virtual ICollection<RoomAmenity>? RoomAmenities { get; set; }
     }
 }

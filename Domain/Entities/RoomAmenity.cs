@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace Domain.Entities
 {
@@ -13,7 +14,9 @@ namespace Domain.Entities
 
         public int RoomId { get; set; }
 
+        [JsonIgnore]
         public virtual HotelRoom? HotelRoom { get; set; }
+        [JsonIgnore]
 
         public virtual Amenity? Amenity { get; set; }
     }

@@ -6,7 +6,7 @@ using Services.SqlDatabaseContextService;
 
 namespace API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/amenities")]
     [ApiController]
     public class AmenityController : ControllerBase
     {

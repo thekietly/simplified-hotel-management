@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace Domain.Entities
 {
@@ -22,9 +23,13 @@ namespace Domain.Entities
         public DateTime CreatedDate { get; set; }
         public DateTime LastUpdated { get; set; }
 
+        [JsonIgnore]
         public virtual ICollection<HotelRoom>? HotelRooms { get; set; }
+        [JsonIgnore]
         public virtual ICollection<HotelAmenity>? HotelAmenities { get; set; }
+        [JsonIgnore]
         public virtual ICollection<HotelImageGallery>? HotelImageGalleries { get; set; }
+        [JsonIgnore]
         public virtual ICollection<Review>? Reviews { get; set; }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace Domain.Entities
 {
@@ -23,7 +24,9 @@ namespace Domain.Entities
         public DateTime CreatedDate { get; set; }
         public DateTime LastUpdated { get; set; }
 
+        [JsonIgnore]
         public virtual User? User { get; set; }
+        [JsonIgnore]
         public virtual HotelRoom? HotelRoom { get; set; }
     }
 }
