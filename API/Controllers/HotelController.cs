@@ -5,7 +5,7 @@ using Services.SqlDatabaseContextService;
 
 namespace API.Controllers
 {
-    [Route("api/hotel")]
+    [Route("api/hotels")]
     [ApiController]
     public class HotelController : ControllerBase
     {

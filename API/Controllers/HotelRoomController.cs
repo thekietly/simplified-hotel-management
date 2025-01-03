@@ -12,9 +12,9 @@ namespace API.Controllers
     public class HotelRoomController : ControllerBase
     {
         private readonly IRoomManagementContextService roomRepository;
-        private readonly ILogger logger;
+        private readonly ILogger<HotelRoomController> logger;
         private const int DefaultNumberOfRoomsPerPage = 5;
-        public HotelRoomController(IRoomManagementContextService roomRepository, ILogger logger) {
+        public HotelRoomController(IRoomManagementContextService roomRepository, ILogger<HotelRoomController> logger) {
             this.roomRepository = roomRepository;
             this.logger = logger;
         }

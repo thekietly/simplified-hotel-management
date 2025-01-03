@@ -1,88 +1,94 @@
-﻿using Application.Common.Interface;
-using API.Mappers;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Mvc;
 using Domain.Entities;
+using Services.SqlDatabaseContextService;
 
 namespace API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/hotels/{hotelId}/reviews")]
     [ApiController]
     public class ReviewController : ControllerBase
     {
-        private readonly IUnitOfWork _unitOfWork;
-        public ReviewController(IUnitOfWork unitOfWork)
+        private const int DefaultNumberOfReviewsPerPage = 10;
+        private readonly IApplicationFacilityContextService generalQueriesDatabase;
+        private readonly ILogger<ReviewController> logger;
+
+        public ReviewController(IApplicationFacilityContextService generalQueriesDatabase, ILogger<ReviewController> logger)
         {
-            _unitOfWork = unitOfWork;
+            this.generalQueriesDatabase = generalQueriesDatabase;
+            this.logger = logger;
         }
-        [HttpGet]
-        public async Task<IActionResult> GetAllReviews([FromQuery] int hotelId, [FromQuery] string type = "overall")
+        [HttpGet(Name = "GetAllReviewsByHotelId")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(PagedResult<Review>))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> GetAllReviewsAsync(int hotelId, int skip = 0, int take = DefaultNumberOfReviewsPerPage )
         {
-            // Check if the request has hotel id
-            if (hotelId <= 0)
+            try 
             {
-                return BadRequest("Hotel ID is required.");
-            }
-            if (type.Equals("overall", StringComparison.OrdinalIgnoreCase))
+                var reviews = await this.generalQueriesDatabase.GetAllReviewsByHotelIdAsync( hotelId, skip, take );
+                if ( reviews == null ) 
+                    return NotFound();
+                return Ok( reviews );
+            } catch (Exception ex)
             {
-                var reviews = await _unitOfWork.Review.GetAll(filter: r => r.HotelId == hotelId);
-                var overallReviewDto = reviews.ToOverallReviewDto();
-                return Ok(overallReviewDto);
-            }
-            else if (type.Equals("user", StringComparison.OrdinalIgnoreCase))
-            {
-                var reviews = await _unitOfWork.Review.GetAll(filter: r => r.HotelId == hotelId, include: q => q.Include(u => u.User));
-                var overallReviewDto = reviews.Select(r => r.ToUserReviewDto()).ToList();
-                return Ok(overallReviewDto);
-            }
-            else
-            {
-                return BadRequest("This type of review is not supported.");
+                this.logger.LogError(ex, "Unhandled exception from ReviewController.GetAllReviewsAsync");
+                return Problem("Unable to get all reviews from this hotel id");
             }
         }
-        [HttpGet("{reviewId}")]
-        public async Task<IActionResult> GetReview(int reviewId)
+        [HttpGet("{reviewId}", Name = "GetReviewByHotelIdAndReviewId")]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Review))]
+        public async Task<IActionResult> GetAsync(int hotelId, int reviewId)
         {
-            if (reviewId <= 0) 
+            try 
             {
-                return BadRequest("Invalid review id");
-            }
-            var review= await _unitOfWork.Review.Get(filter: r => r.Id == reviewId, include: q => q.Include(u => u.User).Include(h => h.Hotel));
-            if (review == null) 
+                var review = await this.generalQueriesDatabase.GetReviewByReviewIdAndHotelIdAsync ( hotelId, reviewId );
+                if ( review == null )
+                    return NotFound();
+                return Ok( review );
+            } catch (Exception ex) 
             {
-                return BadRequest("The review you are looking for is not existed");
+                this.logger.LogError(ex, "Unhandled exception from ReviewController.GetAsync");
+                return Problem("Unable to get review by this hotel id & review id");
             }
-            return Ok(review);
         }
 
-        [HttpPost]
-        public Task<IActionResult> CreateReview([FromBody] Review review) 
+        [HttpPost("CreateReview")]
+        public async Task<IActionResult> CreateReviewAsync([FromBody] Review review) 
         {
-            if (!ModelState.IsValid) 
+            try 
             {
-                return Task.FromResult<IActionResult>(BadRequest(ModelState));
-            }
-            review.CreatedDate = DateTime.Now;
-            review.LastUpdated = DateTime.Now;
-            _unitOfWork.Review.Add(review);
-            _unitOfWork.Save();
-            return Task.FromResult<IActionResult>(CreatedAtAction(nameof(GetReview), new { reviewId = review.Id }, review));
+                if (!ModelState.IsValid) 
+                {
+                    return BadRequest(new CreateResult 
+                    {
+                        Success = false,
+                        ErrorMessages = ModelState.ConvertToErrorMessages()
+                    });
+                }
+                var newReview = await this.generalQueriesDatabase.CreateReviewAsync (review);
+                return CreatedAtRoute("GetReviewByHotelIdAndReviewId", new {id = newReview.NewId}, review);
+            } catch (Exception ex) 
+            {
+                this.logger.LogError(ex, "Unhandled exception from ReviewController.CreateReviewAsync");
+                return Problem("Unable to create review");
+            }    
         }
         [HttpDelete("{reviewId}")]
-        public async Task<IActionResult> DeleteReview(int reviewId) 
+        public async Task<IActionResult> DeleteAsync(int hotelId, int reviewId) 
         {
-            if (reviewId <= 0) 
+            try
             {
-                return BadRequest("Invalid review id");
+                var review = await this.generalQueriesDatabase.GetReviewByReviewIdAndHotelIdAsync(hotelId, reviewId);
+                if (review == null)
+                    return NotFound();
+                await this.generalQueriesDatabase.DeleteReviewAsync(reviewId);
+                return Ok();
             }
-            var review = await _unitOfWork.Review.Get(filter: r => r.Id == reviewId);
-            if (review == null)
+            catch (Exception ex) 
             {
-                return NotFound();
+                this.logger.LogError(ex, "Unhandled exception from ReviewController.DeleteAsync");
+                return Problem("Unable to delete this review");
             }
-            _unitOfWork.Review.Remove(review);
-            _unitOfWork.Save();
-            return Ok();
         }
     }
 }

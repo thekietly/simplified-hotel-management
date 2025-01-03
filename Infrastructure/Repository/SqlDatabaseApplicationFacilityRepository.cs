@@ -1,6 +1,5 @@
 ﻿using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Storage;
 using Services.SqlDatabaseContextService;
 
 namespace Infrastructure.Repository
@@ -103,9 +102,9 @@ namespace Infrastructure.Repository
             return await this.database.Amenities.Where(a => a.Id == amenityId).SingleOrDefaultAsync();
         }
 
-        public async Task<Review?> GetReviewByReviewIdAsync(int reviewId)
+        public async Task<Review?> GetReviewByReviewIdAndHotelIdAsync(int hotelId, int reviewId)
         {
-            return await this.database.Reviews.Where(r => r.Id == reviewId).SingleOrDefaultAsync();
+            return await this.database.Reviews.Where(r => r.Id == reviewId && r.HotelId == hotelId).SingleOrDefaultAsync();
         }
 
         public async Task<UpdateResult> UpdateReviewAsync(Review review)

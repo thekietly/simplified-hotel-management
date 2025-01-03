@@ -12,8 +12,8 @@ namespace API.Controllers
     public class HotelImageGalleryController : ControllerBase
     {
         private readonly IHotelManagementContextService hotelRepository;
-        private readonly ILogger logger;
-        public HotelImageGalleryController(IHotelManagementContextService hotelRepository, ILogger logger) 
+        private readonly ILogger<HotelImageGalleryController> logger;
+        public HotelImageGalleryController(IHotelManagementContextService hotelRepository, ILogger<HotelImageGalleryController> logger) 
         { 
             this.hotelRepository = hotelRepository;
             this.logger = logger;

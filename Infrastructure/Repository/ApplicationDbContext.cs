@@ -40,6 +40,7 @@ namespace Infrastructure.Repository
             // This is the same as RoomAmenity but for HotelAmenity, purpose is to link amenities to hotels.
             modelBuilder.Entity<HotelAmenity>().HasKey(ha => new { ha.HotelId, ha.AmenityId });
 
+
             modelBuilder.Entity<Hotel>().HasData(HotelSeedData.GetHotels());
 
             modelBuilder.Entity<HotelImageGallery>().HasData(HotelImageGallerySeedData.GetHotelImageGalleries());

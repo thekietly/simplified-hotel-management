@@ -12,8 +12,8 @@ namespace API.Controllers
     {
         private readonly IRoomManagementContextService roomRepository;
         private readonly IHotelManagementContextService hotelRepository;
-        private readonly ILogger logger;
-        public HotelRoomAmenityController(IRoomManagementContextService roomRepository,IHotelManagementContextService hotelRepository, ILogger logger) 
+        private readonly ILogger<HotelRoomAmenityController> logger;
+        public HotelRoomAmenityController(IRoomManagementContextService roomRepository,IHotelManagementContextService hotelRepository, ILogger<HotelRoomAmenityController> logger) 
         {
             this.roomRepository = roomRepository;
             this.logger = logger;

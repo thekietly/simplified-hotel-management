@@ -1,7 +1,5 @@
 ﻿using API.Dtos.AmenityDto;
-using API.Mappers;
 using Domain.Entities;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Services.SqlDatabaseContextService;
 
@@ -12,13 +10,13 @@ namespace API.Controllers
     public class HotelAmenitiesController : ControllerBase
     {
         private readonly IHotelManagementContextService hotelRepository;
-        private readonly ILogger logger;
-        public HotelAmenitiesController(IHotelManagementContextService hotelRepository, ILogger logger) 
+        private readonly ILogger<HotelAmenitiesController> logger;
+        public HotelAmenitiesController(IHotelManagementContextService hotelRepository, ILogger<HotelAmenitiesController> logger) 
         {
             this.hotelRepository = hotelRepository;
             this.logger = logger;
         }
-        [HttpGet(Name = "GetAllAmenities")]
+        [HttpGet(Name = "GetAllHotelAmenities")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ICollection<HotelAmenity>))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> GetAllAsync(int hotelId) 

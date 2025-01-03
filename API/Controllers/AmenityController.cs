@@ -11,9 +11,9 @@ namespace API.Controllers
     public class AmenityController : ControllerBase
     {
         private readonly IApplicationFacilityContextService generalQueriesDatabase;
-        private readonly ILogger logger;
+        private readonly ILogger<AmenityController> logger;
 
-        public AmenityController(IApplicationFacilityContextService generalQueriesDatabase, ILogger logger) 
+        public AmenityController(IApplicationFacilityContextService generalQueriesDatabase, ILogger<AmenityController> logger) 
         {
             this.generalQueriesDatabase = generalQueriesDatabase;
             this.logger = logger;

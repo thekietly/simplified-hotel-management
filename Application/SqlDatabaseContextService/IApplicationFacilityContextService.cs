@@ -12,7 +12,7 @@ namespace Services.SqlDatabaseContextService
         #endregion
         #region Review
         Task<PagedResult<Review>> GetAllReviewsByHotelIdAsync(int hotelId, int skip, int take);
-        Task<Review?> GetReviewByReviewIdAsync(int reviewId);   
+        Task<Review?> GetReviewByReviewIdAndHotelIdAsync(int hotelId, int reviewId);   
         Task<CreateResult> CreateReviewAsync(Review review);
         Task<DeleteResult> DeleteReviewAsync(int reviewId);
         Task<UpdateResult> UpdateReviewAsync(Review review);
