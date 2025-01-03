@@ -12,9 +12,13 @@ namespace Infrastructure.Repository
             this.database = database;
         }
 
-        public async Task<ICollection<CreateResult>> AddAmenitiesFromRoomAsync(ICollection<RoomAmenity> roomAmenities)
+        public async Task<ICollection<CreateResult>> AddAmenitiesToRoomAsync(int roomId, ICollection<int> amenityIds)
         {
-
+            var roomAmenities = amenityIds.Select(amenityId => new RoomAmenity 
+            {
+                RoomId = roomId,
+                AmenityId = amenityId
+            });
             database.RoomAmenities.AddRange(roomAmenities);
             await database.SaveChangesAsync();
             var results = roomAmenities.Select(ra => CreateResult.SuccessResult(ra.AmenityId)).ToList();
@@ -36,10 +40,16 @@ namespace Infrastructure.Repository
             return CreateResult.SuccessResult(hotelRoom.Id);
         }
 
-        public async Task<DeleteResult> DeleteAmenitiesFromRoomAsync(ICollection<RoomAmenity> roomAmenities)
+        public async Task<DeleteResult> DeleteAmenitiesFromRoomAsync(int roomId, ICollection<int> amenityIds)
         {
-            database.RemoveRange(roomAmenities);
-            await database.SaveChangesAsync();
+            var existingDeleteAmenities = this.database.RoomAmenities
+             .Where(ha => ha.RoomId == roomId && amenityIds.Contains(ha.AmenityId))
+             .ToList();
+            if (existingDeleteAmenities != null)
+            {
+                database.RemoveRange(existingDeleteAmenities);
+                await database.SaveChangesAsync();
+            }
             return DeleteResult.SuccessResult();
         }
 
@@ -94,6 +104,11 @@ namespace Infrastructure.Repository
                 .ToListAsync();
             var totalCount = await this.database.HotelRooms.CountAsync();
             return new PagedResult<HotelRoom>(pageOfData, totalCount);
+        }
+
+        public async Task<RoomAmenity?> GetRoomAmenityById(int roomId, int amenityId)
+        {
+            return await this.database.RoomAmenities.AsNoTracking().Where(ra => ra.AmenityId == amenityId && ra.RoomId == roomId).SingleOrDefaultAsync();
         }
 
         public async Task<HotelRoom?> GetRoomByIdAsync(int roomId)

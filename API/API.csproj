@@ -19,8 +19,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Application\Application.csproj" />
+    <ProjectReference Include="..\Application\Services.csproj" />
     <ProjectReference Include="..\Infrastructure\Infrastructure.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Dtos\HotelAmenityDto\" />
   </ItemGroup>
 
 </Project>

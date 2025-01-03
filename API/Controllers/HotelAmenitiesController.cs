@@ -39,7 +39,7 @@ namespace API.Controllers
             }
         }
         [HttpPost("AddAmenitiesToHotelId")]
-        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ICollection<CreateResult>))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(CreateResult))]
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(ICollection<HotelAmenity>))]
         public async Task<IActionResult> AddAmenitiesAsync(int hotelId, [FromBody] AmenityDto hotelAmenityDto) 
         {
@@ -89,6 +89,9 @@ namespace API.Controllers
         {
             try 
             {
+                var hotel = await this.hotelRepository.GetHotelByIdAsync(hotelId);
+                if (hotel == null)
+                    return NotFound();
                 // hotelId = x | amenityList = [1,2,3,4,5]
                 if (!ModelState.IsValid)
                     return BadRequest(new DeleteResult 

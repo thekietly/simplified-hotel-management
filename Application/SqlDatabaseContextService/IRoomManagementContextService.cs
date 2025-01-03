@@ -10,8 +10,9 @@ namespace Services.SqlDatabaseContextService
         Task<UpdateResult> UpdateRoomAsync(HotelRoom hotelRoom);
         Task<DeleteResult> DeleteRoomAsync(int roomId);
         Task<ICollection<RoomAmenity>> GetAllRoomAmenitiesAsync(int roomId);
-        Task<ICollection<CreateResult>> AddAmenitiesFromRoomAsync(ICollection<RoomAmenity> roomAmenities);
-        Task<DeleteResult> DeleteAmenitiesFromRoomAsync(ICollection<RoomAmenity> roomAmenities);
+        Task<RoomAmenity?> GetRoomAmenityById(int roomId, int amenityId);
+        Task<ICollection<CreateResult>> AddAmenitiesToRoomAsync(int roomId, ICollection<int> amenityIds);
+        Task<DeleteResult> DeleteAmenitiesFromRoomAsync(int roomId, ICollection<int> amenityIds);
         Task<ICollection<HotelRoomImageGallery>> GetAllRoomImagesByIdAsync(int roomId);
         Task<ICollection<CreateResult>> AddRoomImagesByIdAsync(ICollection<HotelRoomImageGallery> hotelRoomImageGalleries);
         Task<DeleteResult> DeleteRoomImagesByIdAsync(ICollection<int> imageIds);
