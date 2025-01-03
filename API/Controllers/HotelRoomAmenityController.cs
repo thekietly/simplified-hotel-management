@@ -12,11 +12,13 @@ namespace API.Controllers
     {
         private readonly IRoomManagementContextService roomRepository;
         private readonly IHotelManagementContextService hotelRepository;
+        private readonly IApplicationFacilityContextService generalQueriesDatabase;
         private readonly ILogger<HotelRoomAmenityController> logger;
-        public HotelRoomAmenityController(IRoomManagementContextService roomRepository,IHotelManagementContextService hotelRepository, ILogger<HotelRoomAmenityController> logger) 
+        public HotelRoomAmenityController(IApplicationFacilityContextService generalQueriesDatabase, IRoomManagementContextService roomRepository,IHotelManagementContextService hotelRepository, ILogger<HotelRoomAmenityController> logger) 
         {
             this.roomRepository = roomRepository;
             this.logger = logger;
+            this.generalQueriesDatabase = generalQueriesDatabase;
             this.hotelRepository = hotelRepository;
         }
 
@@ -62,7 +64,7 @@ namespace API.Controllers
                 var invalidIds = new List<int>();
                 foreach (var amenityId in roomAmenityDto.AmenityList) 
                 {
-                    var amenity = await this.roomRepository.GetRoomAmenityById(roomId, amenityId);
+                    var amenity = await this.generalQueriesDatabase.GetAmenityByIdAsync(amenityId);
                     if (amenity == null)
                     {
                         invalidIds.Add(amenityId);

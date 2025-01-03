@@ -75,7 +75,7 @@ namespace API.Controllers
                     });
                 }
                 var results = await this.generalQueriesDatabase.AddAmenityAsync(amenityModel);
-                return CreatedAtRoute("GetAmenityById", new { id = results.NewId}, amenityModel);
+                return CreatedAtRoute("GetAmenityById", new { amenityId = results.NewId}, amenityModel);
             } catch (Exception ex)
             {
                 this.logger.LogError(ex, "Unhandled exception from AmenityController.CreateAsync");
@@ -113,7 +113,7 @@ namespace API.Controllers
                     return BadRequest(new DeleteResult
                     {
                         Success = false,
-                        ErrorMessages = ModelState.ServerError("Cannot add some amenities because some of them are invalid!")
+                        ErrorMessages = ModelState.ServerError("Cannot delete some amenities because some of them are invalid!")
                     });
                 }
 
