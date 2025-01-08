@@ -71,7 +71,7 @@ namespace API.Controllers
                     });
                 }
                 var newHotelResult = await this.hotelRepository.CreateHotelAsync(hotel);
-                return CreatedAtRoute("GetHotelById", new { id = newHotelResult.NewId}, hotel);
+                return CreatedAtRoute("GetHotelById", new { hotelId = newHotelResult.NewId}, hotel);
             } catch (Exception ex) 
             {
                 this.logger.LogError(ex, "Unhandled exception from HotelController.CreateAsync");

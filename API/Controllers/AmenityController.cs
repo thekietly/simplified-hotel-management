@@ -75,21 +75,21 @@ namespace API.Controllers
                     });
                 }
                 var results = await this.generalQueriesDatabase.AddAmenityAsync(amenityModel);
-                return CreatedAtRoute("GetAmenityById", new { id = results.NewId}, amenityModel);
+                return CreatedAtRoute("GetAmenityById", new { amenityId = results.NewId}, amenityModel);
             } catch (Exception ex)
             {
                 this.logger.LogError(ex, "Unhandled exception from AmenityController.CreateAsync");
                 return Problem("Unable to create amenity");
             }    
         }
-        [HttpDelete("{amenityId}", Name = "DeleteAmenity")]
+        [HttpDelete(Name = "DeleteAmenities")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(DeleteResult))]
-        public async Task<IActionResult> DeleteAsync([FromBody] AmenityDto amenityDto) 
+        public async Task<IActionResult> DeleteAmenitiesAsync([FromBody] AmenityDto amenityDto) 
         {
             try 
             {
-                if (!ModelState.IsValid || amenityDto.AmenityIdList != null) 
+                if (!ModelState.IsValid || !amenityDto.AmenityIdList.Any()) 
                 {
                     return BadRequest(new DeleteResult 
                     {
@@ -113,7 +113,7 @@ namespace API.Controllers
                     return BadRequest(new DeleteResult
                     {
                         Success = false,
-                        ErrorMessages = ModelState.ServerError("Cannot add some amenities because some of them are invalid!")
+                        ErrorMessages = ModelState.ServerError("Cannot delete some amenities because some of them are invalid!")
                     });
                 }
 
@@ -121,7 +121,7 @@ namespace API.Controllers
                 return Ok();    
             } catch (Exception ex) 
             {
-                this.logger.LogError(ex, "Unhandled exception from AmenityController.DeleteAsync");
+                this.logger.LogError(ex, "Unhandled exception from AmenityController.DeleteAmenitiesAsync");
                 return Problem("Unable to delete these amenities");
             }
         }

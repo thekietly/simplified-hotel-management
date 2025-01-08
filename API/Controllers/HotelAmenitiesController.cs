@@ -10,10 +10,12 @@ namespace API.Controllers
     public class HotelAmenitiesController : ControllerBase
     {
         private readonly IHotelManagementContextService hotelRepository;
+        private readonly IApplicationFacilityContextService generalQueriesDatabase;
         private readonly ILogger<HotelAmenitiesController> logger;
-        public HotelAmenitiesController(IHotelManagementContextService hotelRepository, ILogger<HotelAmenitiesController> logger) 
+        public HotelAmenitiesController(IApplicationFacilityContextService generalQueriesDatabase, IHotelManagementContextService hotelRepository, ILogger<HotelAmenitiesController> logger) 
         {
             this.hotelRepository = hotelRepository;
+            this.generalQueriesDatabase = generalQueriesDatabase;
             this.logger = logger;
         }
         [HttpGet(Name = "GetAllHotelAmenities")]
@@ -55,7 +57,7 @@ namespace API.Controllers
                 var invalidIds = new List<int>();
                 foreach (var amenityId in hotelAmenityDto.AmenityIdList)
                 {
-                    var amenity = await this.hotelRepository.GetHotelAmenityById(hotelId, amenityId);
+                    var amenity = await this.generalQueriesDatabase.GetAmenityByIdAsync(amenityId);
                     if (amenity == null)
                     {
                         invalidIds.Add(amenityId);
@@ -71,7 +73,9 @@ namespace API.Controllers
                     });
                 }
                 // add to database
+                
                 var results = await this.hotelRepository.AddAmenityToHotelByIdAsync(hotelId, hotelAmenityDto.AmenityIdList);
+                // NOTE: Re-work on this return route again
                 return CreatedAtRoute("AddAmenitiesToHotelId", new { hotelId }, results);
             } catch (Exception ex) 
             {
