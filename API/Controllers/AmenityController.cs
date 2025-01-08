@@ -82,14 +82,14 @@ namespace API.Controllers
                 return Problem("Unable to create amenity");
             }    
         }
-        [HttpDelete("{amenityId}", Name = "DeleteAmenity")]
+        [HttpDelete(Name = "DeleteAmenities")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(DeleteResult))]
-        public async Task<IActionResult> DeleteAsync([FromBody] AmenityDto amenityDto) 
+        public async Task<IActionResult> DeleteAmenitiesAsync([FromBody] AmenityDto amenityDto) 
         {
             try 
             {
-                if (!ModelState.IsValid || amenityDto.AmenityIdList != null) 
+                if (!ModelState.IsValid || !amenityDto.AmenityIdList.Any()) 
                 {
                     return BadRequest(new DeleteResult 
                     {
@@ -121,7 +121,7 @@ namespace API.Controllers
                 return Ok();    
             } catch (Exception ex) 
             {
-                this.logger.LogError(ex, "Unhandled exception from AmenityController.DeleteAsync");
+                this.logger.LogError(ex, "Unhandled exception from AmenityController.DeleteAmenitiesAsync");
                 return Problem("Unable to delete these amenities");
             }
         }
