@@ -1,4 +1,4 @@
-﻿namespace API.Dtos.HotelImageDto
+﻿namespace API.Dtos.ImageDto
 {
     public class ImageDtoToBeDeleted
     {

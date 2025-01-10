@@ -1,7 +1,5 @@
-﻿using API.Dtos.HotelImageDto;
+﻿using API.Dtos.ImageDto;
 using Domain.Entities;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Services.SqlDatabaseContextService;
 
@@ -19,7 +17,7 @@ namespace API.Controllers
             this.logger = logger;
         }
         [HttpGet(Name = "GetAllImages")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(HotelImageGallery))]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ICollection<HotelImageGallery>))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> GetAllAsync(int hotelId)
         {
@@ -39,7 +37,7 @@ namespace API.Controllers
         [HttpPost(Name = "AddImagesToHotel")]
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(ICollection<CreateResult>))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(CreateResult))]
-        public async Task<IActionResult> AddImagesAsync(int hotelId, [FromBody] HotelImageDto hotelImageDto) 
+        public async Task<IActionResult> AddImagesAsync(int hotelId, [FromBody] ImageDto hotelImageDto) 
         {
             try
             {
@@ -53,8 +51,7 @@ namespace API.Controllers
                     });
                 }
                 var results = await this.hotelRepository.AddHotelImagesByIdAsync(hotelId, hotelImageDto.ImageUrls);
-                return CreatedAtRoute("AddImagesToHotel", new { hotelId }, results
-            );
+                return CreatedAtRoute("AddImagesToHotel", new { hotelId }, results);
             } catch (Exception ex) 
             {
                 this.logger.LogError(ex, "Unhandled exception from HotelImageGalleryController.AddImagesAsync");
