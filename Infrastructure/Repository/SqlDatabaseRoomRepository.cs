@@ -25,8 +25,13 @@ namespace Infrastructure.Repository
             return results;
         }
 
-        public async Task<ICollection<CreateResult>> AddRoomImagesByIdAsync(ICollection<HotelRoomImageGallery> hotelRoomImageGalleries)
+        public async Task<ICollection<CreateResult>> AddRoomImagesByIdAsync(int roomId, ICollection<string> imageUrls)
         {
+            var hotelRoomImageGalleries = imageUrls.Select(url => new HotelRoomImageGallery 
+            {
+                RoomId =roomId,
+                ImageUrl = url
+            });
             database.HotelRoomImageGalleries.AddRange(hotelRoomImageGalleries);
             await database.SaveChangesAsync();
             var results = hotelRoomImageGalleries.Select(ri => CreateResult.SuccessResult(ri.Id)).ToList();
@@ -64,10 +69,10 @@ namespace Infrastructure.Repository
             return DeleteResult.SuccessResult();
         }
 
-        public async Task<DeleteResult> DeleteRoomImagesByIdAsync(ICollection<int> imageIds)
+        public async Task<DeleteResult> DeleteRoomImagesByIdAsync(ICollection<int> imageIds, int roomId)
         {
             var images = database.HotelRoomImageGalleries
-                        .Where(img => imageIds.Contains(img.Id))
+                        .Where(img => img.RoomId == roomId && imageIds.Contains(img.Id))
                         .ToList();
             if (images != null) 
             {
@@ -114,6 +119,11 @@ namespace Infrastructure.Repository
         public async Task<HotelRoom?> GetRoomByIdAsync(int roomId)
         {
             return await this.database.HotelRooms.AsNoTracking().Where(r => r.Id == roomId).SingleOrDefaultAsync();
+        }
+
+        public async Task<HotelRoomImageGallery?> GetRoomImageByIdAsync(int roomId, int imageId)
+        {
+            return await this.database.HotelRoomImageGalleries.AsNoTracking().Where(ri => ri.RoomId == roomId && ri.Id == imageId).SingleOrDefaultAsync();
         }
 
         public async Task<UpdateResult> UpdateRoomAsync(HotelRoom hotelRoom)

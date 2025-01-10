@@ -1,6 +1,6 @@
-﻿namespace API.Dtos.HotelImageDto
+﻿namespace API.Dtos.ImageDto
 {
-    public class HotelImageDto
+    public class ImageDto
     {
         public List<string> ImageUrls { get; set; } = new List<string>();
     }
