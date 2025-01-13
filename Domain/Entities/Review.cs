@@ -1,4 +1,5 @@
 ﻿
+using Microsoft.AspNetCore.Identity;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
@@ -16,7 +17,7 @@ namespace Domain.Entities
         public int HotelId { get; set; }
         [Required]
         [ForeignKey("User")]
-        public int UserId { get; set; }
+        public string UserId { get; set; }
         [Range(0, 10)]
         public int Location { get; set; }
 
@@ -41,6 +42,6 @@ namespace Domain.Entities
         [JsonIgnore]
         public virtual Hotel? Hotel { get; set; }
         [JsonIgnore]
-        public virtual User? User { get; set; }
+        public virtual IdentityUser? User { get; set; }
     }
 }

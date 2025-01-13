@@ -1,10 +1,12 @@
 ﻿using Domain.Entities;
 using Infrastructure.Data;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Repository
 {
-    public class ApplicationDbContext : DbContext
+    public class ApplicationDbContext :  IdentityDbContext<IdentityUser>
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
@@ -55,11 +57,6 @@ namespace Infrastructure.Repository
 
             modelBuilder.Entity<HotelRoomImageGallery>().HasData(HotelRoomImageGallerySeedData.GetHotelRoomImageGalleries());
 
-            modelBuilder.Entity<Booking>().HasData(BookingSeedData.GetBookings());
-
-            //modelBuilder.Entity<User>().HasData(UserSeedData.GetUsers());
-
-            modelBuilder.Entity<Review>().HasData(ReviewSeedData.GetReviews());
         }
     }
 }

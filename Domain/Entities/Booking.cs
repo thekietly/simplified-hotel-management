@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Identity;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
 
@@ -10,7 +11,7 @@ namespace Domain.Entities
         public int Id { get; set; }
         [Required]
         [ForeignKey("User")]
-        public int UserId { get; set; }
+        public string UserId { get; set; } = string.Empty;
         [Required]
         [ForeignKey("HotelRoom")]
         public int RoomId { get; set; }
@@ -25,7 +26,7 @@ namespace Domain.Entities
         public DateTime LastUpdated { get; set; }
 
         [JsonIgnore]
-        public virtual User? User { get; set; }
+        public virtual IdentityUser? User { get; set; }
         [JsonIgnore]
         public virtual HotelRoom? HotelRoom { get; set; }
     }
