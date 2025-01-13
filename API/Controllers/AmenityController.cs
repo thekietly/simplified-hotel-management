@@ -1,5 +1,6 @@
 ﻿using API.Dtos.AmenityDto;
 using Domain.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Services.SqlDatabaseContextService;
@@ -62,6 +63,7 @@ namespace API.Controllers
         [HttpPost(Name = "CreateAmenity")]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(CreateResult))]
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(Amenity))]
+        [Authorize(UserRoles.HotelAdmin)]
         public async Task<IActionResult> CreateAsync([FromBody] Amenity amenityModel) 
         {
             try 
@@ -85,6 +87,7 @@ namespace API.Controllers
         [HttpDelete(Name = "DeleteAmenities")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(DeleteResult))]
+        [Authorize(UserRoles.HotelAdmin)]
         public async Task<IActionResult> DeleteAmenitiesAsync([FromBody] AmenityDto amenityDto) 
         {
             try 
