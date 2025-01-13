@@ -1,5 +1,4 @@
-﻿using Azure;
-using Domain.Entities;
+﻿using Domain.Entities;
 using Infrastructure.Data;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -76,6 +75,41 @@ namespace API.Controllers
                 return base.StatusCode(StatusCodes.Status500InternalServerError, new AuthResponse { Status = "Error", Message = "User creation failed! Please check user details and try again." });
             }
             return Ok(new AuthResponse {Status = "Success",  Message = "User created successfully!"});
+        }
+        [HttpPost]
+        [Route("register-admin")]
+        public async Task<IActionResult> RegisterAmin([FromBody] RegisterModel model) 
+        {
+            var userExists = await userManager.FindByNameAsync(model.Username);
+            if (userExists != null)
+                return StatusCode(StatusCodes.Status500InternalServerError, new AuthResponse { Status = "Error", Message = "User already exists!" });
+
+            IdentityUser user = new()
+            {
+                Email = model.Email,
+                SecurityStamp = Guid.NewGuid().ToString(),
+                UserName = model.Username
+            };
+            var result = await userManager.CreateAsync(user, model.Password);
+            if (!result.Succeeded)
+                return StatusCode(StatusCodes.Status500InternalServerError, new AuthResponse { Status = "Error", Message = "User creation failed! Please check user details and try again." });
+
+            // Register roles to database
+            if (!await roleManager.RoleExistsAsync(UserRoles.HotelAdmin))
+                await roleManager.CreateAsync(new IdentityRole(UserRoles.HotelAdmin));
+            if (!await roleManager.RoleExistsAsync(UserRoles.User))
+                await roleManager.CreateAsync(new IdentityRole(UserRoles.User));
+
+            if (await roleManager.RoleExistsAsync(UserRoles.HotelAdmin))
+            {
+                await userManager.AddToRoleAsync(user, UserRoles.HotelAdmin);
+            }
+            if (await roleManager.RoleExistsAsync(UserRoles.HotelAdmin))
+            {
+                await userManager.AddToRoleAsync(user, UserRoles.User);
+            }
+            return Ok(new AuthResponse { Status = "Success", Message = "User created successfully!" });
+
         }
         /// <summary>
         /// Generate a token that contains a list of claims
