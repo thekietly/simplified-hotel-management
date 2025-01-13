@@ -17,7 +17,7 @@ namespace Infrastructure.Repository
         public DbSet<HotelImageGallery> HotelImageGalleries { get; set; }
         public DbSet<HotelRoomImageGallery> HotelRoomImageGalleries { get; set; }
         public DbSet<Booking> Bookings { get; set; }
-        public DbSet<User> Users { get; set; }
+        //public DbSet<User> Users { get; set; }
         public DbSet<Review> Reviews { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -57,7 +57,7 @@ namespace Infrastructure.Repository
 
             modelBuilder.Entity<Booking>().HasData(BookingSeedData.GetBookings());
 
-            modelBuilder.Entity<User>().HasData(UserSeedData.GetUsers());
+            //modelBuilder.Entity<User>().HasData(UserSeedData.GetUsers());
 
             modelBuilder.Entity<Review>().HasData(ReviewSeedData.GetReviews());
         }
