@@ -1,3 +1,4 @@
+using Infrastructure.Persistent;
 using Infrastructure.Repository;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;

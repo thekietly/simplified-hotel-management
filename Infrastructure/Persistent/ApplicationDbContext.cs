@@ -4,9 +4,9 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
-namespace Infrastructure.Repository
+namespace Infrastructure.Persistent
 {
-    public class ApplicationDbContext :  IdentityDbContext<IdentityUser>
+    public class ApplicationDbContext : IdentityDbContext<IdentityUser>
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
@@ -42,6 +42,9 @@ namespace Infrastructure.Repository
             // This is the same as RoomAmenity but for HotelAmenity, purpose is to link amenities to hotels.
             modelBuilder.Entity<HotelAmenity>().HasKey(ha => new { ha.HotelId, ha.AmenityId });
 
+            // booking - identity user connection
+            modelBuilder.Entity<Booking>().HasOne(b => b.User).WithMany().HasForeignKey(b => b.UserId);
+            modelBuilder.Entity<Review>().HasOne(r => r.User).WithMany().HasForeignKey(r => r.UserId);
 
             modelBuilder.Entity<Hotel>().HasData(HotelSeedData.GetHotels());
 

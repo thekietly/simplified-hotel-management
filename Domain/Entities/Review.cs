@@ -16,8 +16,8 @@ namespace Domain.Entities
         [ForeignKey("Hotel")]
         public int HotelId { get; set; }
         [Required]
-        [ForeignKey("User")]
-        public string UserId { get; set; }
+        [ForeignKey(nameof(User))]
+        public string UserId { get; set; } = default!;
         [Range(0, 10)]
         public int Location { get; set; }
 

@@ -10,8 +10,8 @@ namespace Domain.Entities
         [Key]
         public int Id { get; set; }
         [Required]
-        [ForeignKey("User")]
-        public string UserId { get; set; } = string.Empty;
+        [ForeignKey(nameof(User))]
+        public string UserId { get; set; } = default!;
         [Required]
         [ForeignKey("HotelRoom")]
         public int RoomId { get; set; }
