@@ -1,3 +1,4 @@
+using Infrastructure.Data;
 using Infrastructure.Persistent;
 using Infrastructure.Repository;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -45,6 +46,7 @@ builder.Services.AddSqlServer<ApplicationDbContext>(sqlConnection, options => op
 builder.Services.AddIdentity<IdentityUser, IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>()
     .AddDefaultTokenProviders();
+
 // App Services
 builder.Services.AddScoped<IRoomManagementContextService, SqlDatabaseRoomRepository>();
 
@@ -87,5 +89,4 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 app.UseAuthentication();
 app.MapControllers();
-
 app.Run();

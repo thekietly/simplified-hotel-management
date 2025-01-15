@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Identity;
+using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
 namespace Domain.Entities
@@ -20,6 +21,8 @@ namespace Domain.Entities
         [Required]
         [Range(50, 30000, ErrorMessage = "Please enter the correct value from 50 to 30000")]
         public double Size { get; set; }
+        public IdentityUser Owner { get; set; } = default!;
+        public string OwnerId { get; set; } = default!;
         public DateTime CreatedDate { get; set; }
         public DateTime LastUpdated { get; set; }
 

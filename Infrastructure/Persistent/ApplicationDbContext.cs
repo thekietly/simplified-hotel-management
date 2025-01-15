@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Persistent
 {
-    public class ApplicationDbContext : IdentityDbContext<IdentityUser>
+    public class ApplicationDbContext : IdentityDbContext<IdentityUser, IdentityRole, string>
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
@@ -43,10 +43,23 @@ namespace Infrastructure.Persistent
             modelBuilder.Entity<HotelAmenity>().HasKey(ha => new { ha.HotelId, ha.AmenityId });
 
             // booking - identity user connection
-            modelBuilder.Entity<Booking>().HasOne(b => b.User).WithMany().HasForeignKey(b => b.UserId);
-            modelBuilder.Entity<Review>().HasOne(r => r.User).WithMany().HasForeignKey(r => r.UserId);
+            modelBuilder.Entity<Booking>().HasOne(b => b.User).WithMany().HasForeignKey(b => b.UserId).OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<Review>().HasOne(r => r.User).WithMany().HasForeignKey(r => r.UserId).OnDelete(DeleteBehavior.Restrict);
+            //modelBuilder.Entity<Review>().HasOne(r => r.Hotel).WithMany().HasForeignKey(r => r.HotelId).OnDelete(DeleteBehavior.Restrict);
 
-            modelBuilder.Entity<Hotel>().HasData(HotelSeedData.GetHotels());
+            // Seed data for hotels and related entities
+
+
+            var roles = UserSeedData.GetRoles();
+            modelBuilder.Entity<IdentityRole>().HasData(roles);
+
+            var users = UserSeedData.GetHotelAdmins();
+            modelBuilder.Entity<IdentityUser>().HasData(users);
+
+            var userRoles = UserSeedData.GetUserRoles(users);
+            modelBuilder.Entity<IdentityUserRole<string>>().HasData(userRoles);
+
+            modelBuilder.Entity<Hotel>().HasData(HotelSeedData.GetHotels(users));
 
             modelBuilder.Entity<HotelImageGallery>().HasData(HotelImageGallerySeedData.GetHotelImageGalleries());
 
