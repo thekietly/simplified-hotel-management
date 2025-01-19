@@ -129,6 +129,11 @@ namespace Infrastructure.Repository
             return await database.Hotels.AsNoTracking().Where(h => h.Id == hotelId).SingleOrDefaultAsync();
         }
 
+        public async Task<Hotel?> GetHotelByUserAsync(string ownerId)
+        {
+            return await database.Hotels.AsNoTracking().Where(h => h.OwnerId == ownerId).SingleOrDefaultAsync();
+        }
+
         public async Task<HotelImageGallery?> GetHotelImageGalleryByIdAsync(int imageId, int hotelId)
         {
             return await database.HotelImageGalleries.AsNoTracking().Where(hig => hig.HotelId == hotelId && hig.Id == imageId).SingleOrDefaultAsync();

@@ -8,6 +8,7 @@ namespace Services.SqlDatabaseContextService
         #region Hotel
         Task<CreateResult> CreateHotelAsync(Hotel hotel);
         Task<Hotel?> GetHotelByIdAsync(int hotelId);
+        Task<Hotel?> GetHotelByUserAsync(string ownerId);
         Task<UpdateResult> UpdateHotelAsync(Hotel hotel);
         Task<DeleteResult> DeleteHotelAsync(int hotelId);
         Task<PagedResult<Hotel>> GetAllHotelsAsync(int skip, int take);
