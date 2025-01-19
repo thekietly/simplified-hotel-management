@@ -26,7 +26,7 @@ namespace Domain.Entities
         public DateTime LastUpdated { get; set; }
 
         [JsonIgnore]
-        public virtual IdentityUser? User { get; set; }
+        public virtual NormalUser? User { get; set; }
         [JsonIgnore]
         public virtual HotelRoom? HotelRoom { get; set; }
     }

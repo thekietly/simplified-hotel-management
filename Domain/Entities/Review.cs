@@ -42,6 +42,6 @@ namespace Domain.Entities
         [JsonIgnore]
         public virtual Hotel? Hotel { get; set; }
         [JsonIgnore]
-        public virtual IdentityUser? User { get; set; }
+        public virtual NormalUser? User { get; set; }
     }
 }
