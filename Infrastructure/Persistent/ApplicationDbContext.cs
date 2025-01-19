@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Persistent
 {
-    public class ApplicationDbContext : IdentityDbContext<IdentityUser, IdentityRole, string>
+    public class ApplicationDbContext : IdentityDbContext
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
@@ -49,18 +49,14 @@ namespace Infrastructure.Persistent
 
             // Seed data for hotels and related entities
 
-
-            var roles = UserSeedData.GetRoles();
-            modelBuilder.Entity<IdentityRole>().HasData(roles);
-
-            var users = UserSeedData.GetHotelAdmins();
-            modelBuilder.Entity<IdentityUser>().HasData(users);
-
-            var userRoles = UserSeedData.GetUserRoles(users);
-            modelBuilder.Entity<IdentityUserRole<string>>().HasData(userRoles);
-
-            modelBuilder.Entity<Hotel>().HasData(HotelSeedData.GetHotels(users));
-
+            var hotelUsers = UserSeedData.GetHotelAdmins().ToList();
+            modelBuilder.Entity<IdentityUser>().HasData(hotelUsers);
+            modelBuilder.Entity<NormalUser>().HasData(NormalUserSeedData.GetNormalUsers());
+            var hotels = HotelSeedData.GetHotels(hotelUsers).ToList();
+            modelBuilder.Entity<Hotel>().HasData(hotels);
+            modelBuilder.Entity<Review>().HasData(ReviewSeedData.GetReviews(hotels, (List<NormalUser>)NormalUserSeedData.GetNormalUsers()));
+            
+            
             modelBuilder.Entity<HotelImageGallery>().HasData(HotelImageGallerySeedData.GetHotelImageGalleries());
 
             modelBuilder.Entity<HotelRoom>().HasData(HotelRoomSeedData.GetHotelRooms());
