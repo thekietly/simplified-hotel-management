@@ -1,5 +1,6 @@
-﻿using AutoMapper.Internal;
-using Domain.Entities;
+﻿using Domain.Entities;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Services.SqlDatabaseContextService;
 
@@ -12,11 +13,14 @@ namespace API.Controllers
         public const int DefaultNumberOfHotelsPerPage = 5;
         private readonly IHotelManagementContextService hotelRepository;
         private readonly ILogger<HotelController> logger;
-        public HotelController(IHotelManagementContextService hotelRepository, ILogger<HotelController> logger)
+        private readonly UserManager<IdentityUser> userManager;
+        public HotelController(IHotelManagementContextService hotelRepository, ILogger<HotelController> logger, UserManager<IdentityUser> userManager)
         {
             this.hotelRepository = hotelRepository;
             this.logger = logger;
+            this.userManager = userManager;
         }
+
 
         [HttpGet("{hotelId}", Name = "GetHotelById")]
         [ProducesResponseType(StatusCodes.Status200OK, Type= typeof(Hotel))]
@@ -37,14 +41,41 @@ namespace API.Controllers
                 return Problem("Unable to GET the hotel");
             }
         }
-
+        [HttpGet("my-hotel", Name = "GetHotelByUser")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Hotel))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        
+        public async Task<IActionResult> GetByUserAsync()
+        {
+            try
+            {
+                var user = await this.userManager.GetUserAsync(User);
+                if (user == null)
+                {
+                    return Unauthorized();
+                }
+                var hotel = await this.hotelRepository.GetHotelByUserAsync(user.Id);
+                if (hotel == null)
+                {
+                    return NotFound();
+                }
+                return Ok(hotel);
+            }
+            catch (Exception ex)
+            {
+                this.logger.LogError(ex, "Unhandled exception from HotelController.GetByUserAsync");
+                return Problem("Unable to GET the hotel by this user");
+            }
+        }
         [HttpGet(Name = "GetAllHotels")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(PagedResult<Hotel>))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [AllowAnonymous]
         public async Task<IActionResult> GetAllAsync(int skip = 0, int take = DefaultNumberOfHotelsPerPage)
         {
             try
             {
+
                 var hotels = await this.hotelRepository.GetAllHotelsAsync(skip, take);
                 return Ok(hotels);
             } catch (Exception ex) 
